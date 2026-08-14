@@ -21,6 +21,13 @@
             --glass: rgba(19, 34, 64, 0.65);
             --radius: 18px;
             --ease: cubic-bezier(0.16, 1, 0.3, 1);
+            /* Kolory legendy */
+            --promo: rgba(126, 211, 33, 0.12);
+            --promo-border: #7ed321;
+            --releg: rgba(239, 68, 68, 0.12);
+            --releg-border: #ef4444;
+            --barage: rgba(245, 166, 35, 0.12);
+            --barage-border: #f5a623;
         }
 
         * { margin:0; padding:0; box-sizing:border-box; }
@@ -49,22 +56,23 @@
         /* NAV */
         nav {
             position:fixed; top:0; left:0; right:0; z-index:100;
-            background: rgba(11, 22, 44, 0.88);
+            background: rgba(11, 22, 44, 0.92);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border);
             height: 78px;
             display:flex; align-items:center; justify-content:space-between; padding:0 5%;
         }
-        .logo-wrap { display:flex; align-items:center; gap:14px; }
+        .logo-wrap { display:flex; align-items:center; gap:14px; flex-shrink:0; }
         .logo-img { height: 52px; width: auto; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4)); }
-        .logo-text { font-size:1.15rem; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; }
+        .logo-text { font-size:1.15rem; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; white-space:nowrap; }
         .logo-text span { color: var(--green); }
         .logo-sub { font-size:0.62rem; color:var(--muted); font-weight:600; letter-spacing:2.5px; text-transform:uppercase; display:block; margin-top:-3px; }
 
-        .tabs { display:flex; gap:0.4rem; flex-wrap:wrap; justify-content:flex-end; }
+        .tabs { display:flex; gap:0.3rem; overflow-x:auto; scrollbar-width:none; max-width:60%; justify-content:flex-end; }
+        .tabs::-webkit-scrollbar { display:none; }
         .tab {
-            padding:0.7rem 1.2rem; border-radius:12px; font-size:0.82rem; font-weight:600;
-            color:var(--muted); transition:all 0.3s var(--ease); position:relative;
+            padding:0.65rem 1.1rem; border-radius:12px; font-size:0.8rem; font-weight:600;
+            color:var(--muted); transition:all 0.3s var(--ease); position:relative; white-space:nowrap; flex-shrink:0;
         }
         .tab:hover { color:var(--white); background:rgba(255,255,255,0.05); }
         .tab.active { color:var(--navy); background:var(--green); box-shadow:0 0 24px var(--green-glow); }
@@ -78,7 +86,7 @@
         .sub-nav::-webkit-scrollbar { display:none; }
         .sub-tab {
             padding:1.1rem 1.8rem; font-size:0.82rem; font-weight:600; color:var(--muted);
-            position:relative; white-space:nowrap; transition:color 0.3s;
+            position:relative; white-space:nowrap; transition:color 0.3s; flex-shrink:0;
         }
         .sub-tab::after {
             content:''; position:absolute; bottom:-1px; left:0; right:0; height:3px;
@@ -90,7 +98,7 @@
         .sub-tab.active::after { transform:scaleX(1); }
 
         /* GLASS CARDS */
-        .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:1.6rem; }
+        .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:1.6rem; }
         .card {
             background: var(--glass);
             backdrop-filter: blur(16px);
@@ -121,21 +129,22 @@
 
         /* MATCHES WITH CRESTS */
         .match-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:0.7rem; }
-        .team-wrap { display:flex; align-items:center; gap:10px; width:40%; }
+        .team-wrap { display:flex; align-items:center; gap:10px; width:40%; min-width:0; }
         .team-wrap.away { flex-direction:row-reverse; text-align:right; }
-        .team-crest { width:32px; height:32px; border-radius:50%; background:rgba(255,255,255,0.1); object-fit:contain; border:1px solid var(--border); }
-        .team-name { font-weight:600; font-size:1.02rem; }
+        .team-crest { width:32px; height:32px; border-radius:50%; background:rgba(255,255,255,0.1); object-fit:contain; border:1px solid var(--border); flex-shrink:0; }
+        .team-name { font-weight:600; font-size:1rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .score-box {
-            width:20%; text-align:center; font-family:'Outfit'; font-size:1.5rem; font-weight:800;
+            width:20%; text-align:center; font-family:'Outfit'; font-size:1.4rem; font-weight:800;
             background:rgba(0,0,0,0.35); border-radius:12px; padding:10px 0;
-            border:1px solid var(--border);
+            border:1px solid var(--border); flex-shrink:0;
         }
         .match-date { text-align:center; font-size:0.7rem; color:var(--muted); margin-top:1.3rem; font-weight:500; letter-spacing:0.5px; }
 
-        /* TABLE WITH CRESTS */
+        /* TABLE WITH CRESTS & LEGEND */
+        .table-container { overflow-x:auto; -webkit-overflow-scrolling:touch; border-radius:var(--radius); }
         .table-wrap {
             background:var(--glass); backdrop-filter:blur(16px);
-            border:1px solid var(--border); border-radius:var(--radius); overflow:hidden;
+            border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; min-width:580px;
         }
         table { width:100%; border-collapse:collapse; }
         th {
@@ -144,11 +153,27 @@
         }
         td { padding:1rem; font-size:0.9rem; border-bottom:1px solid var(--border); transition:background 0.2s; vertical-align:middle; }
         tr:last-child td { border-bottom:none; }
-        tr:hover td { background:rgba(126,211,33,0.07); }
         td:first-child { font-weight:800; color:var(--muted); width:50px; text-align:center; font-family:'Outfit'; font-size:1.1rem; }
         .top-pos { color:var(--gold)!important; text-shadow:0 0 16px rgba(245,166,35,0.5); }
         .team-cell { display:flex; align-items:center; gap:12px; }
-        .table-crest { width:28px; height:28px; border-radius:50%; background:rgba(255,255,255,0.1); object-fit:contain; border:1px solid var(--border); }
+        .table-crest { width:28px; height:28px; border-radius:50%; background:rgba(255,255,255,0.1); object-fit:contain; border:1px solid var(--border); flex-shrink:0; }
+
+        /* Row highlighting for promotion/relegation */
+        tr.row-promo td { background: var(--promo); }
+        tr.row-promo td:first-child { border-left: 3px solid var(--promo-border); }
+        tr.row-barage td { background: var(--barage); }
+        tr.row-barage td:first-child { border-left: 3px solid var(--barage-border); }
+        tr.row-releg td { background: var(--releg); }
+        tr.row-releg td:first-child { border-left: 3px solid var(--releg-border); }
+        tr:hover td { background:rgba(126,211,33,0.07) !important; }
+
+        /* LEGEND */
+        .legend { display:flex; flex-wrap:wrap; gap:1.2rem; margin-top:1.5rem; padding:1.2rem 1.5rem; background:var(--glass); border:1px solid var(--border); border-radius:var(--radius); }
+        .legend-item { display:flex; align-items:center; gap:8px; font-size:0.82rem; color:var(--muted); }
+        .legend-dot { width:12px; height:12px; border-radius:3px; flex-shrink:0; }
+        .dot-promo { background:var(--promo-border); box-shadow:0 0 8px var(--promo-border); }
+        .dot-barage { background:var(--barage-border); box-shadow:0 0 8px var(--barage-border); }
+        .dot-releg { background:var(--releg-border); box-shadow:0 0 8px var(--releg-border); }
 
         /* ADMIN FORMS */
         .admin-box { max-width:720px; margin:0 auto; }
@@ -203,7 +228,7 @@
         .contact-grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; }
         .contact-info { display:flex; flex-direction:column; gap:1.5rem; }
         .contact-item { display:flex; align-items:flex-start; gap:1rem; }
-        .contact-item i { color:var(--green); font-size:1.2rem; margin-top:4px; }
+        .contact-item i { color:var(--green); font-size:1.2rem; margin-top:4px; flex-shrink:0; }
         .contact-item h4 { font-size:0.95rem; margin-bottom:0.3rem; }
         .contact-item p { color:var(--muted); font-size:0.9rem; }
 
@@ -230,16 +255,43 @@
 
         .secret-trigger { position:fixed; bottom:0; right:0; width:60px; height:60px; z-index:999; cursor:default; }
 
+        /* === MOBILE OPTIMIZATION === */
+        @media(max-width:900px){
+            .tabs { max-width:65%; }
+        }
         @media(max-width:768px){
-            nav{padding:0 1rem; height:auto; min-height:72px; flex-direction:column; gap:10px; padding:12px 1rem;}
-            .tabs{gap:0; justify-content:center;} .tab{padding:0.5rem 0.65rem;font-size:0.72rem;}
-            main{margin-top:130px;padding:0 1rem;} .hero h1{font-size:2.1rem;} .grid{grid-template-columns:1fr;}
-            .sub-tab{padding:0.85rem 1.1rem;font-size:0.78rem;} .form-grid,.form-grid-3{grid-template-columns:1fr;}
-            .logo-img{height:42px;} .logo-text{font-size:1rem;}
-            .contact-grid{grid-template-columns:1fr;}
-            .stats-row{gap:1.5rem;} .stat-num{font-size:2rem;}
-            .footer-content{flex-direction:column;}
-            .team-wrap{width:38%;} .team-crest{width:24px;height:24px;} .team-name{font-size:0.9rem;}
+            nav { height:auto; min-height:72px; flex-direction:column; gap:12px; padding:14px 1rem; }
+            .logo-wrap { width:100%; justify-content:center; }
+            .tabs { max-width:100%; width:100%; justify-content:flex-start; padding-bottom:4px; }
+            .tab { padding:0.55rem 0.9rem; font-size:0.75rem; }
+            main { margin-top:140px; padding:0 1rem; }
+            .hero { padding:3.5rem 0 2.5rem; }
+            .hero h1 { font-size:2.2rem; }
+            .hero-logo { width:120px; height:120px; }
+            .grid { grid-template-columns:1fr; gap:1.2rem; }
+            .card { padding:1.5rem; }
+            .sub-tab { padding:0.85rem 1.2rem; font-size:0.78rem; }
+            .form-grid,.form-grid-3 { grid-template-columns:1fr; }
+            .logo-img { height:42px; }
+            .logo-text { font-size:1rem; }
+            .contact-grid { grid-template-columns:1fr; }
+            .stats-row { gap:1.5rem; }
+            .stat-num { font-size:2.2rem; }
+            .footer-content { flex-direction:column; gap:1.5rem; }
+            
+            /* Table mobile fixes */
+            .table-container { margin:0 -1rem; padding:0 1rem; }
+            .team-name { font-size:0.88rem; }
+            .team-crest { width:26px; height:26px; }
+            .score-box { font-size:1.2rem; padding:8px 0; }
+            .legend { gap:0.8rem; padding:1rem; }
+            .legend-item { font-size:0.75rem; }
+        }
+        @media(max-width:380px){
+            .tab { padding:0.5rem 0.7rem; font-size:0.7rem; }
+            .team-name { font-size:0.82rem; }
+            .score-box { font-size:1.1rem; width:22%; }
+            .team-wrap { width:38%; gap:6px; }
         }
     </style>
 </head>
@@ -277,8 +329,8 @@
             <div class="stats-row anim d1">
                 <div class="stat-item"><span class="stat-num">6</span><span class="stat-label">Lig</span></div>
                 <div class="stat-item"><span class="stat-num">96+</span><span class="stat-label">Drużyn</span></div>
-                <div class="stat-item"><span class="stat-num">Na bieżąco</span><span class="stat-label">Aktualizacje</span></div>
-                <div class="stat-item"><span class="stat-num">Podkarpacie</span><span class="stat-label">Okręg</span></div>
+                <div class="stat-item"><span class="stat-num">24/7</span><span class="stat-label">Aktualizacje</span></div>
+                <div class="stat-item"><span class="stat-num">100%</span><span class="stat-label">Podkarpacie</span></div>
             </div>
 
             <div class="home-section anim d2">
@@ -309,8 +361,15 @@
 
             <div class="home-section anim d4">
                 <h2>Szybki podgląd <span>tabeli</span></h2>
-                <div class="table-wrap">
-                    <table><thead><tr><th>#</th><th>Drużyna</th><th>M</th><th>Pkt</th><th>Bilans</th></tr></thead><tbody id="home-tb"></tbody></table>
+                <div class="table-container">
+                    <div class="table-wrap">
+                        <table><thead><tr><th>#</th><th>Drużyna</th><th>M</th><th>Pkt</th><th>Bilans</th></tr></thead><tbody id="home-tb"></tbody></table>
+                    </div>
+                </div>
+                <div class="legend">
+                    <div class="legend-item"><div class="legend-dot dot-promo"></div> Awans</div>
+                    <div class="legend-item"><div class="legend-dot dot-barage"></div> Baraże</div>
+                    <div class="legend-item"><div class="legend-dot dot-releg"></div> Spadek</div>
                 </div>
                 <div style="text-align:center; margin-top:1.5rem;">
                     <button class="btn-sm" onclick="go('table')" style="border:1px solid var(--border); padding:12px 24px;">Zobacz pełną tabelę →</button>
@@ -342,8 +401,15 @@
                 <button class="sub-tab" onclick="loadTable('okr_debica',this)">Okr. Dębica</button>
                 <button class="sub-tab" onclick="loadTable('okr_stalowa',this)">Okr. Stalowa Wola</button>
             </div>
-            <div class="table-wrap anim d1">
-                <table><thead><tr><th>#</th><th>Drużyna</th><th>M</th><th>Pkt</th><th>Bilans</th></tr></thead><tbody id="tb"></tbody></table>
+            <div class="table-container anim d1">
+                <div class="table-wrap">
+                    <table><thead><tr><th>#</th><th>Drużyna</th><th>M</th><th>Pkt</th><th>Bilans</th></tr></thead><tbody id="tb"></tbody></table>
+                </div>
+            </div>
+            <div class="legend anim d2">
+                <div class="legend-item"><div class="legend-dot dot-promo"></div> Awans do wyższej ligi</div>
+                <div class="legend-item"><div class="legend-dot dot-barage"></div> Baraże o awans/utrzymanie</div>
+                <div class="legend-item"><div class="legend-dot dot-releg"></div> Spadek do niższej ligi</div>
             </div>
         </section>
 
@@ -612,6 +678,26 @@
             return crestsCache[teamName?.trim()] || null;
         }
 
+        // === KONFIGURACJA AWANSÓW/SPADKÓW (dostosuj do realiów ligi) ===
+        // promo: miejsca awansu (od 1), barage: miejsca barażowe, releg: miejsca spadkowe (od końca)
+        const ZONES = {
+            iv_liga:     { promo: 1, barage: 1, releg: 3 },
+            okr_jaroslaw:{ promo: 1, barage: 1, releg: 2 },
+            okr_krosno:  { promo: 1, barage: 1, releg: 2 },
+            okr_rzeszow: { promo: 1, barage: 1, releg: 2 },
+            okr_debica:  { promo: 1, barage: 1, releg: 2 },
+            okr_stalowa: { promo: 1, barage: 1, releg: 2 }
+        };
+
+        function getRowClass(index, total, league) {
+            const z = ZONES[league] || { promo:1, barage:0, releg:2 };
+            const pos = index + 1;
+            if (pos <= z.promo) return 'row-promo';
+            if (pos > z.promo && pos <= z.promo + z.barage) return 'row-barage';
+            if (pos > total - z.releg) return 'row-releg';
+            return '';
+        }
+
         // === MECZE ===
         let mc=[];
         async function loadMatches(cid,limit=null){
@@ -667,8 +753,9 @@
                     tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:2rem;">Brak danych. Dodaj drużyny przez Ctrl+M.</td></tr>';return;
                 }
                 const teams=doc.data().teams.sort((a,b)=>b.pts-a.pts||parseInt(b.diff)-parseInt(a.diff));
+                const total = teams.length;
                 tb.innerHTML=teams.map((t,i)=>`
-                    <tr>
+                    <tr class="${getRowClass(i, total, league)}">
                         <td class="${i<3?'top-pos':''}">${i+1}</td>
                         <td>
                             <div class="team-cell">
@@ -689,8 +776,9 @@
                 const doc=await db.collection('standings').doc('iv_liga').get();
                 if(!doc.exists||!doc.data().teams){tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:1.5rem;">Brak danych</td></tr>';return;}
                 const teams=doc.data().teams.sort((a,b)=>b.pts-a.pts).slice(0,5);
+                const total = doc.data().teams.length;
                 tb.innerHTML=teams.map((t,i)=>`
-                    <tr>
+                    <tr class="${getRowClass(i, total, 'iv_liga')}">
                         <td class="${i<3?'top-pos':''}">${i+1}</td>
                         <td>
                             <div class="team-cell">

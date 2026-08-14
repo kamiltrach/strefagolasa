@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strefa Gola - Podkarpacie</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --navy: #0b162c;
+            --navy-light: #132240;
+            --green: #7ed321;
+            --green-glow: rgba(126, 211, 33, 0.25);
+            --gold: #f5a623;
+            --white: #ffffff;
+            --muted: #8b9bb4;
+            --border: rgba(255,255,255,0.08);
+            --glass: rgba(19, 34, 64, 0.65);
+            --radius: 18px;
+            --ease: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; }
+        
+        body {
+            background-color: var(--navy);
+            background-image: 
+                radial-gradient(circle at 10% 5%, rgba(126,211,33,0.07) 0%, transparent 35%),
+                radial-gradient(circle at 90% 95%, rgba(245,166,35,0.05) 0%, transparent 35%),
+                repeating-linear-gradient(90deg, transparent, transparent 120px, rgba(255,255,255,0.012) 120px, rgba(255,255,255,0.012) 240px);
+            color: var(--white);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1,h2,h3,.logo-text { font-family: 'Outfit', sans-serif; letter-spacing: -0.02em; }
+        button { cursor:pointer; border:none; background:none; font-family:inherit; color:inherit; }
+        input,select,textarea { font-family:inherit; }
+
+        @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+        .anim { animation:fadeUp 0.7s var(--ease) forwards; opacity:0; }
+        .d1{animation-delay:.08s} .d2{animation-delay:.16s} .d3{animation-delay:.24s} .d4{animation-delay:.32s}
+
+        /* NAV */
+        nav {
+            position:fixed; top:0; left:0; right:0; z-index:100;
+            background: rgba(11, 22, 44, 0.88);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            height: 78px;
+            display:flex; align-items:center; justify-content:space-between; padding:0 5%;
+        }
+        .logo-wrap { display:flex; align-items:center; gap:14px; }
+        .logo-img { height: 52px; width: auto; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4)); }
+        .logo-text { font-size:1.15rem; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; }
+        .logo-text span { color: var(--green); }
+        .logo-sub { font-size:0.62rem; color:var(--muted); font-weight:600; letter-spacing:2.5px; text-transform:uppercase; display:block; margin-top:-3px; }
+
+        .tabs { display:flex; gap:0.4rem; flex-wrap:wrap; justify-content:flex-end; }
+        .tab {
+            padding:0.7rem 1.2rem; border-radius:12px; font-size:0.82rem; font-weight:600;
+            color:var(--muted); transition:all 0.3s var(--ease); position:relative;
+        }
+        .tab:hover { color:var(--white); background:rgba(255,255,255,0.05); }
+        .tab.active { color:var(--navy); background:var(--green); box-shadow:0 0 24px var(--green-glow); }
+
+        /* LAYOUT */
+        main { max-width:1160px; margin:115px auto 0; padding:0 2rem; min-height:80vh; }
+        .section { display:none; } .section.active { display:block; }
+
+        /* SUB TABS */
+        .sub-nav { display:flex; gap:0; margin-bottom:2.8rem; border-bottom:1px solid var(--border); overflow-x:auto; scrollbar-width:none; }
+        .sub-nav::-webkit-scrollbar { display:none; }
+        .sub-tab {
+            padding:1.1rem 1.8rem; font-size:0.82rem; font-weight:600; color:var(--muted);
+            position:relative; white-space:nowrap; transition:color 0.3s;
+        }
+        .sub-tab::after {
+            content:''; position:absolute; bottom:-1px; left:0; right:0; height:3px;
+            background:var(--green); transform:scaleX(0); transition:transform 0.4s var(--ease);
+            box-shadow: 0 0 16px var(--green-glow);
+        }
+        .sub-tab:hover { color:var(--white); }
+        .sub-tab.active { color:var(--green); }
+        .sub-tab.active::after { transform:scaleX(1); }
+
+        /* GLASS CARDS */
+        .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:1.6rem; }
+        .card {
+            background: var(--glass);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            transition: all 0.4s var(--ease);
+            position: relative;
+            overflow: hidden;
+        }
+        .card::before {
+            content:''; position:absolute; top:0; left:0; right:0; height:3px;
+            background: linear-gradient(90deg, var(--green), var(--gold));
+            opacity:0; transition:opacity 0.4s;
+        }
+        .card:hover {
+            border-color: rgba(126,211,33,0.35);
+            transform: translateY(-5px);
+            box-shadow: 0 16px 48px rgba(0,0,0,0.35);
+        }
+        .card:hover::before { opacity:1; }
+
+        .league-label {
+            font-size:0.6rem; text-transform:uppercase; letter-spacing:2px; font-weight:700;
+            color:var(--green); margin-bottom:1.4rem; display:flex; align-items:center; gap:8px;
+        }
+        .league-label i { font-size:0.45rem; }
+
+        /* MATCHES WITH CRESTS */
+        .match-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:0.7rem; }
+        .team-wrap { display:flex; align-items:center; gap:10px; width:40%; }
+        .team-wrap.away { flex-direction:row-reverse; text-align:right; }
+        .team-crest { width:32px; height:32px; border-radius:50%; background:rgba(255,255,255,0.1); object-fit:contain; border:1px solid var(--border); }
+        .team-name { font-weight:600; font-size:1.02rem; }
+        .score-box {
+            width:20%; text-align:center; font-family:'Outfit'; font-size:1.5rem; font-weight:800;
+            background:rgba(0,0,0,0.35); border-radius:12px; padding:10px 0;
+            border:1px solid var(--border);
+        }
+        .match-date { text-align:center; font-size:0.7rem; color:var(--muted); margin-top:1.3rem; font-weight:500; letter-spacing:0.5px; }
+
+        /* TABLE WITH CRESTS */
+        .table-wrap {
+            background:var(--glass); backdrop-filter:blur(16px);
+            border:1px solid var(--border); border-radius:var(--radius); overflow:hidden;
+        }
+        table { width:100%; border-collapse:collapse; }
+        th {
+            padding:1.2rem; text-align:left; font-size:0.65rem; text-transform:uppercase;
+            letter-spacing:1.5px; color:var(--muted); background:rgba(0,0,0,0.25); border-bottom:1px solid var(--border);
+        }
+        td { padding:1rem; font-size:0.9rem; border-bottom:1px solid var(--border); transition:background 0.2s; vertical-align:middle; }
+        tr:last-child td { border-bottom:none; }
+        tr:hover td { background:rgba(126,211,33,0.07); }
+        td:first-child { font-weight:800; color:var(--muted); width:50px; text-align:center; font-family:'Outfit'; font-size:1.1rem; }
+        .top-pos { color:var(--gold)!important; text-shadow:0 0 16px rgba(245,166,35,0.5); }
+        .team-cell { display:flex; align-items:center; gap:12px; }
+        .table-crest { width:28px; height:28px; border-radius:50%; background:rgba(255,255,255,0.1); object-fit:contain; border:1px solid var(--border); }
+
+        /* ADMIN FORMS */
+        .admin-box { max-width:720px; margin:0 auto; }
+        input,select,textarea {
+            width:100%; padding:15px 18px; margin-bottom:12px;
+            border:1px solid var(--border); border-radius:14px;
+            background:rgba(0,0,0,0.35); color:var(--white); font-size:0.9rem;
+            transition:all 0.3s var(--ease);
+        }
+        input:focus,select:focus,textarea:focus { outline:none; border-color:var(--green); background:rgba(0,0,0,0.5); box-shadow:0 0 0 4px var(--green-glow); }
+        input::placeholder, textarea::placeholder { color:var(--muted); }
+        textarea { resize:vertical; min-height:100px; }
+        
+        .btn {
+            width:100%; padding:17px; background:var(--green); color:var(--navy);
+            border-radius:14px; font-weight:700; margin-top:0.5rem; transition:all 0.3s var(--ease);
+            font-size:0.9rem; text-transform:uppercase; letter-spacing:0.8px;
+        }
+        .btn:hover { background:#8fe635; transform:translateY(-2px); box-shadow:0 10px 28px var(--green-glow); }
+        
+        .btn-sm { padding:9px 16px; border-radius:10px; font-size:0.78rem; color:var(--muted); transition:all 0.2s; font-weight:600; }
+        .btn-sm:hover { background:rgba(255,255,255,0.08); color:var(--green); }
+        .btn-del:hover { color:#ff6b6b; background:rgba(255,107,107,0.12); }
+        
+        .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+        .form-grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
+
+        /* HERO */
+        .hero { text-align:center; padding:5.5rem 0 3.5rem; }
+        .hero-logo { width:150px; height:150px; margin:0 auto 2.2rem; filter:drop-shadow(0 12px 40px rgba(126,211,33,0.25)); }
+        .hero h1 { font-size:3.2rem; margin-bottom:0.7rem; text-transform:uppercase; letter-spacing:1.5px; }
+        .hero h1 span { color:var(--green); }
+        .hero p { color:var(--muted); max-width:500px; margin:0 auto; font-size:1.08rem; }
+
+        /* HOME SECTIONS */
+        .home-section { margin-bottom:4rem; }
+        .home-section h2 { font-size:1.4rem; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:1.8rem; color:var(--white); }
+        .home-section h2 span { color:var(--green); }
+        
+        .features-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.5rem; }
+        .feature-card { text-align:center; padding:2.5rem 1.5rem; }
+        .feature-icon { font-size:2.5rem; color:var(--green); margin-bottom:1.2rem; }
+        .feature-card h3 { font-size:1.1rem; margin-bottom:0.6rem; }
+        .feature-card p { color:var(--muted); font-size:0.9rem; }
+
+        .stats-row { display:flex; justify-content:center; gap:3rem; flex-wrap:wrap; margin:3rem 0; }
+        .stat-item { text-align:center; }
+        .stat-num { font-family:'Outfit'; font-size:2.8rem; font-weight:800; color:var(--green); display:block; }
+        .stat-label { font-size:0.75rem; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); }
+
+        /* CONTACT */
+        .contact-grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; }
+        .contact-info { display:flex; flex-direction:column; gap:1.5rem; }
+        .contact-item { display:flex; align-items:flex-start; gap:1rem; }
+        .contact-item i { color:var(--green); font-size:1.2rem; margin-top:4px; }
+        .contact-item h4 { font-size:0.95rem; margin-bottom:0.3rem; }
+        .contact-item p { color:var(--muted); font-size:0.9rem; }
+
+        /* WIP SECTION */
+        .wip-container { text-align:center; padding:6rem 2rem; }
+        .wip-icon { font-size:4rem; color:var(--gold); margin-bottom:1.5rem; animation:pulse 2s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.7;transform:scale(1.05);} }
+        .wip-title { font-size:1.8rem; margin-bottom:0.8rem; text-transform:uppercase; letter-spacing:1.5px; }
+        .wip-text { color:var(--muted); max-width:500px; margin:0 auto; font-size:1.05rem; }
+        .wip-badge { display:inline-block; margin-top:2rem; padding:8px 20px; background:rgba(245,166,35,0.15); border:1px solid var(--gold); border-radius:20px; color:var(--gold); font-size:0.8rem; font-weight:600; letter-spacing:1px; text-transform:uppercase; }
+
+        /* FOOTER */
+        footer {
+            background: rgba(11, 22, 44, 0.95);
+            border-top: 1px solid var(--border);
+            padding: 3rem 5% 2rem;
+            margin-top: 4rem;
+        }
+        .footer-content { max-width:1160px; margin:0 auto; display:flex; justify-content:space-between; flex-wrap:wrap; gap:2rem; }
+        .footer-col h4 { font-size:0.85rem; text-transform:uppercase; letter-spacing:1.5px; color:var(--green); margin-bottom:1rem; }
+        .footer-col a { display:block; color:var(--muted); font-size:0.88rem; margin-bottom:0.6rem; transition:color 0.2s; }
+        .footer-col a:hover { color:var(--white); }
+        .footer-bottom { max-width:1160px; margin:2rem auto 0; padding-top:1.5rem; border-top:1px solid var(--border); text-align:center; color:var(--muted); font-size:0.8rem; }
+
+        .secret-trigger { position:fixed; bottom:0; right:0; width:60px; height:60px; z-index:999; cursor:default; }
+
+        @media(max-width:768px){
+            nav{padding:0 1rem; height:auto; min-height:72px; flex-direction:column; gap:10px; padding:12px 1rem;}
+            .tabs{gap:0; justify-content:center;} .tab{padding:0.5rem 0.65rem;font-size:0.72rem;}
+            main{margin-top:130px;padding:0 1rem;} .hero h1{font-size:2.1rem;} .grid{grid-template-columns:1fr;}
+            .sub-tab{padding:0.85rem 1.1rem;font-size:0.78rem;} .form-grid,.form-grid-3{grid-template-columns:1fr;}
+            .logo-img{height:42px;} .logo-text{font-size:1rem;}
+            .contact-grid{grid-template-columns:1fr;}
+            .stats-row{gap:1.5rem;} .stat-num{font-size:2rem;}
+            .footer-content{flex-direction:column;}
+            .team-wrap{width:38%;} .team-crest{width:24px;height:24px;} .team-name{font-size:0.9rem;}
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo-wrap">
+            <img src="logo.png" alt="Strefa Gola" class="logo-img" onerror="this.style.display='none'">
+            <div>
+                <div class="logo-text">Strefa<span>Gola</span></div>
+                <div class="logo-sub">Podkarpacie</div>
+            </div>
+        </div>
+        <div class="tabs">
+            <button class="tab active" onclick="go('home')">Start</button>
+            <button class="tab" onclick="go('matches')">Rozgrywki</button>
+            <button class="tab" onclick="go('table')">Tabela</button>
+            <button class="tab" onclick="go('transfers')">Transfery</button>
+            <button class="tab" onclick="go('streams')">Transmisje</button>
+            <button class="tab" onclick="go('contact')">Kontakt</button>
+        </div>
+    </nav>
+
+    <div class="secret-trigger"></div>
+
+    <main>
+        <!-- ==================== START ==================== -->
+        <section id="home" class="section active">
+            <div class="hero anim">
+                <img src="logo.png" alt="Logo" class="hero-logo" onerror="this.outerHTML='<div style=\'width:130px;height:130px;margin:0 auto 2rem;border-radius:50%;border:2px solid var(--green);display:flex;align-items:center;justify-content:center;font-size:3.2rem;color:var(--green);\'><i class=\'fa-solid fa-futbol\'></i></div>'">
+                <h1>Strefa<span>Gola</span></h1>
+                <p>IV Liga, Klasa Okręgowa Jarosław, Krosno, Rzeszów, Dębica, Stalowa Wola.<br>Dane. Statystyki. Profesjonalizm.</p>
+            </div>
+
+            <div class="stats-row anim d1">
+                <div class="stat-item"><span class="stat-num">6</span><span class="stat-label">Lig</span></div>
+                <div class="stat-item"><span class="stat-num">96+</span><span class="stat-label">Drużyn</span></div>
+                <div class="stat-item"><span class="stat-num">Na bieżąco</span><span class="stat-label">Aktualizacje</span></div>
+                <div class="stat-item"><span class="stat-num">Podkarpacie</span><span class="stat-label">Okręg</span></div>
+            </div>
+
+            <div class="home-section anim d2">
+                <h2>Dlaczego <span>Strefa Gola</span>?</h2>
+                <div class="features-grid">
+                    <div class="card feature-card">
+                        <div class="feature-icon"><i class="fa-solid fa-bolt"></i></div>
+                        <h3>Błyskawiczne wyniki</h3>
+                        <p>Aktualizujemy rezultaty spotkań w czasie rzeczywistym. Żadnych opóźnień.</p>
+                    </div>
+                    <div class="card feature-card">
+                        <div class="feature-icon"><i class="fa-solid fa-table"></i></div>
+                        <h3>Pełne tabele z herbami</h3>
+                        <p>Szczegółowe zestawienia dla każdej ligi z wizualną identyfikacją klubów.</p>
+                    </div>
+                    <div class="card feature-card">
+                        <div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                        <h3>Wiarygodne dane</h3>
+                        <p>Informacje weryfikowane przez naszą redakcję. Zero plotek, tylko fakty.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="home-section anim d3">
+                <h2>Ostatnie <span>spotkania</span></h2>
+                <div id="home-grid" class="grid"></div>
+            </div>
+
+            <div class="home-section anim d4">
+                <h2>Szybki podgląd <span>tabeli</span></h2>
+                <div class="table-wrap">
+                    <table><thead><tr><th>#</th><th>Drużyna</th><th>M</th><th>Pkt</th><th>Bilans</th></tr></thead><tbody id="home-tb"></tbody></table>
+                </div>
+                <div style="text-align:center; margin-top:1.5rem;">
+                    <button class="btn-sm" onclick="go('table')" style="border:1px solid var(--border); padding:12px 24px;">Zobacz pełną tabelę →</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== ROZGRYWKI ==================== -->
+        <section id="matches" class="section">
+            <div class="sub-nav anim" id="matches-sub">
+                <button class="sub-tab active" onclick="filterM('all',this)">Wszystkie</button>
+                <button class="sub-tab" onclick="filterM('iv_liga',this)">IV Liga</button>
+                <button class="sub-tab" onclick="filterM('okr_jaroslaw',this)">Okr. Jarosław</button>
+                <button class="sub-tab" onclick="filterM('okr_krosno',this)">Okr. Krosno</button>
+                <button class="sub-tab" onclick="filterM('okr_rzeszow',this)">Okr. Rzeszów</button>
+                <button class="sub-tab" onclick="filterM('okr_debica',this)">Okr. Dębica</button>
+                <button class="sub-tab" onclick="filterM('okr_stalowa',this)">Okr. Stalowa Wola</button>
+            </div>
+            <div id="matches-grid" class="grid anim d1"></div>
+        </section>
+
+        <!-- ==================== TABELA ==================== -->
+        <section id="table" class="section">
+            <div class="sub-nav anim" id="table-sub">
+                <button class="sub-tab active" onclick="loadTable('iv_liga',this)">IV Liga</button>
+                <button class="sub-tab" onclick="loadTable('okr_jaroslaw',this)">Okr. Jarosław</button>
+                <button class="sub-tab" onclick="loadTable('okr_krosno',this)">Okr. Krosno</button>
+                <button class="sub-tab" onclick="loadTable('okr_rzeszow',this)">Okr. Rzeszów</button>
+                <button class="sub-tab" onclick="loadTable('okr_debica',this)">Okr. Dębica</button>
+                <button class="sub-tab" onclick="loadTable('okr_stalowa',this)">Okr. Stalowa Wola</button>
+            </div>
+            <div class="table-wrap anim d1">
+                <table><thead><tr><th>#</th><th>Drużyna</th><th>M</th><th>Pkt</th><th>Bilans</th></tr></thead><tbody id="tb"></tbody></table>
+            </div>
+        </section>
+
+        <!-- ==================== TRANSFERY ==================== -->
+        <section id="transfers" class="section">
+            <h2 style="margin-bottom:2.2rem;text-transform:uppercase;letter-spacing:1.2px;font-size:0.85rem;color:var(--muted);" class="anim">Rynek Transferowy</h2>
+            <div id="transfers-grid" class="grid anim d1"></div>
+        </section>
+
+        <!-- ==================== TRANSMISJE (WIP) ==================== -->
+        <section id="streams" class="section">
+            <div class="wip-container anim">
+                <div class="wip-icon"><i class="fa-solid fa-tower-broadcast"></i></div>
+                <h2 class="wip-title">Transmisje</h2>
+                <p class="wip-text">Pracujemy nad tym, abyś mógł oglądać najlepsze spotkania z Podkarpacia bezpośrednio na naszej stronie.</p>
+                <div class="wip-badge"><i class="fa-solid fa-wrench"></i> Sekcja w trakcie prac</div>
+            </div>
+        </section>
+
+        <!-- ==================== KONTAKT ==================== -->
+        <section id="contact" class="section">
+            <div class="hero anim" style="padding:3rem 0 2rem;">
+                <h1 style="font-size:2.4rem;">Kontakt</h1>
+                <p>Masz pytania, propozycje lub chcesz zgłosić błąd? Napisz do nas.</p>
+            </div>
+
+            <div class="contact-grid anim d1">
+                <div class="card">
+                    <h3 style="font-size:1rem; text-transform:uppercase; letter-spacing:1px; margin-bottom:1.5rem; color:var(--green);">Wyślij wiadomość</h3>
+                    <input type="text" id="c-name" placeholder="Imię i nazwisko">
+                    <input type="email" id="c-email" placeholder="Adres email">
+                    <input type="text" id="c-subject" placeholder="Temat">
+                    <textarea id="c-msg" placeholder="Treść wiadomości..."></textarea>
+                    <button class="btn" onclick="sendContact()">Wyślij wiadomość</button>
+                    <p id="c-status" style="margin-top:1rem; font-size:0.85rem; text-align:center;"></p>
+                </div>
+
+                <div class="contact-info">
+                    <div class="card contact-item">
+                        <i class="fa-solid fa-envelope"></i>
+                        <div>
+                            <h4>Email</h4>
+                            <p>kontakt@strefagola.pl</p>
+                        </div>
+                    </div>
+                    <div class="card contact-item">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <div>
+                            <h4>Region</h4>
+                            <p>Województwo Podkarpackie<br>Jarosław, Krosno, Rzeszów, Dębica, Stalowa Wola</p>
+                        </div>
+                    </div>
+                    <div class="card contact-item">
+                        <i class="fa-solid fa-clock"></i>
+                        <div>
+                            <h4>Aktualizacje</h4>
+                            <p>Wyniki aktualizowane niezwłocznie po zakończeniu spotkań.<br>Tabele weryfikowane codziennie.</p>
+                        </div>
+                    </div>
+                    <div class="card" style="padding:0; overflow:hidden; height:200px; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.2);">
+                        <div style="text-align:center; color:var(--muted);">
+                            <i class="fa-solid fa-map" style="font-size:2rem; margin-bottom:0.5rem; display:block;"></i>
+                            <span style="font-size:0.8rem;">Mapa Podkarpacia</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== ADMIN (UKRYTY - Ctrl+M) ==================== -->
+        <section id="admin" class="section">
+            <div class="admin-box anim">
+                <div id="login-panel" class="card" style="text-align:center;">
+                    <i class="fa-solid fa-lock" style="font-size:2.2rem;color:var(--green);margin-bottom:1.2rem;"></i>
+                    <h2 style="margin-bottom:0.4rem;">Panel Redakcji</h2>
+                    <p style="color:var(--muted);margin-bottom:2.2rem;font-size:0.85rem;">Autoryzowany dostęp</p>
+                    <input type="email" id="l-email" placeholder="Email" value="admin@b.pl">
+                    <input type="password" id="l-pass" placeholder="Hasło">
+                    <button class="btn" onclick="login()">Autoryzacja</button>
+                    <p id="l-msg" style="margin-top:1.2rem;font-size:0.78rem;color:#ff6b6b;"></p>
+                </div>
+
+                <div id="dash" style="display:none;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2.2rem;">
+                        <h2 style="text-transform:uppercase;letter-spacing:1.2px;font-size:0.95rem;">Zarządzanie</h2>
+                        <div style="display:flex;gap:8px;">
+                            <button class="btn-sm" onclick="showAT('ma')" id="at-ma" style="background:var(--green-glow);color:var(--green);">Mecze</button>
+                            <button class="btn-sm" onclick="showAT('ta')" id="at-ta">Tabela</button>
+                            <button class="btn-sm" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- ADMIN: MECZE -->
+                    <div id="ma">
+                        <div class="card" style="margin-bottom:2.2rem;">
+                            <h3 style="font-size:0.78rem;color:var(--green);margin-bottom:1.3rem;text-transform:uppercase;letter-spacing:1.2px;">Dodaj / Edytuj Spotkanie</h3>
+                            <input type="hidden" id="m-id">
+                            <div class="form-grid">
+                                <input type="text" id="m-home" placeholder="Gospodarz (nazwa exact z tabeli)">
+                                <input type="text" id="m-away" placeholder="Gość (nazwa exact z tabeli)">
+                            </div>
+                            <div class="form-grid-3">
+                                <input type="number" id="m-sh" placeholder="Bramki G">
+                                <input type="number" id="m-sa" placeholder="Bramki H">
+                                <select id="m-league">
+                                    <option value="iv_liga">IV Liga</option>
+                                    <option value="okr_jaroslaw">Okr. Jarosław</option>
+                                    <option value="okr_krosno">Okr. Krosno</option>
+                                    <option value="okr_rzeszow">Okr. Rzeszów</option>
+                                    <option value="okr_debica">Okr. Dębica</option>
+                                    <option value="okr_stalowa">Okr. Stalowa Wola</option>
+                                </select>
+                            </div>
+                            <button class="btn" onclick="saveMatch()">Zapisz spotkanie</button>
+                            <button class="btn-sm" onclick="clearMF()" style="width:100%;margin-top:10px;border:1px solid var(--border);text-align:center;">Wyczyść</button>
+                        </div>
+                        <h3 style="font-size:0.78rem;color:var(--muted);margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:1.2px;">Baza Spotkań</h3>
+                        <div id="admin-mlist" class="grid"></div>
+                    </div>
+
+                    <!-- ADMIN: TABELA -->
+                    <div id="ta" style="display:none;">
+                        <div class="card" style="margin-bottom:2.2rem;">
+                            <h3 style="font-size:0.78rem;color:var(--green);margin-bottom:1.3rem;text-transform:uppercase;letter-spacing:1.2px;">Dodaj / Edytuj Drużynę</h3>
+                            <input type="hidden" id="t-id">
+                            <div class="form-grid">
+                                <input type="text" id="t-team" placeholder="Nazwa drużyny">
+                                <select id="t-league">
+                                    <option value="iv_liga">IV Liga</option>
+                                    <option value="okr_jaroslaw">Okr. Jarosław</option>
+                                    <option value="okr_krosno">Okr. Krosno</option>
+                                    <option value="okr_rzeszow">Okr. Rzeszów</option>
+                                    <option value="okr_debica">Okr. Dębica</option>
+                                    <option value="okr_stalowa">Okr. Stalowa Wola</option>
+                                </select>
+                            </div>
+                            <input type="text" id="t-crest" placeholder="URL herbu (np. https://.../herb.png)">
+                            <div class="form-grid-3">
+                                <input type="number" id="t-m" placeholder="Mecze">
+                                <input type="number" id="t-pts" placeholder="Punkty">
+                                <input type="text" id="t-diff" placeholder="Bilans (+12)">
+                            </div>
+                            <button class="btn" onclick="saveTeam()">Zapisz drużynę</button>
+                            <button class="btn-sm" onclick="clearTF()" style="width:100%;margin-top:10px;border:1px solid var(--border);text-align:center;">Wyczyść</button>
+                        </div>
+                        <h3 style="font-size:0.78rem;color:var(--muted);margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:1.2px;">Drużyny w bazie</h3>
+                        <div id="admin-tlist" class="grid"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-col">
+                <div class="logo-wrap" style="margin-bottom:1rem;">
+                    <img src="logo.png" alt="Logo" style="height:40px;" onerror="this.style.display='none'">
+                    <div>
+                        <div class="logo-text" style="font-size:1rem;">Strefa<span>Gola</span></div>
+                        <div class="logo-sub" style="font-size:0.55rem;">Podkarpacie</div>
+                    </div>
+                </div>
+                <p style="color:var(--muted); font-size:0.85rem; max-width:280px;">Kompleksowe źródło informacji o piłce nożnej na Podkarpaciu. Sezon 2026/2027.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Nawigacja</h4>
+                <a href="#" onclick="go('home')">Strona główna</a>
+                <a href="#" onclick="go('matches')">Rozgrywki</a>
+                <a href="#" onclick="go('table')">Tabela</a>
+                <a href="#" onclick="go('transfers')">Transfery</a>
+                <a href="#" onclick="go('streams')">Transmisje</a>
+            </div>
+            <div class="footer-col">
+                <h4>Ligi</h4>
+                <a href="#" onclick="go('table'); setTimeout(()=>loadTable('iv_liga'),100)">IV Liga</a>
+                <a href="#" onclick="go('table'); setTimeout(()=>loadTable('okr_rzeszow'),100)">Okr. Rzeszów</a>
+                <a href="#" onclick="go('table'); setTimeout(()=>loadTable('okr_krosno'),100)">Okr. Krosno</a>
+                <a href="#" onclick="go('table'); setTimeout(()=>loadTable('okr_jaroslaw'),100)">Okr. Jarosław</a>
+            </div>
+            <div class="footer-col">
+                <h4>Kontakt</h4>
+                <a href="#" onclick="go('contact')">Napisz do nas</a>
+                <a href="mailto:kontakt@strefagola.pl">kontakt@strefagola.pl</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            © 2026 Strefa Gola - Podkarpacie. Wszelkie prawa zastrzeżone.
+        </div>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <script>
+        // ⚠️ WKLEJ SWOJE DANE Z FIREBASE CONSOLE
+        const firebaseConfig = {
+  apiKey: "AIzaSyD5rE81B9PNgYh-Ut8gQUpUbHWrv4MUZHg",
+  authDomain: "flutter-ai-playground-d7796.firebaseapp.com",
+  databaseURL: "https://flutter-ai-playground-d7796-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "flutter-ai-playground-d7796",
+  storageBucket: "flutter-ai-playground-d7796.firebasestorage.app",
+  messagingSenderId: "56640861835",
+  appId: "1:56640861835:web:f645e0c15ab2027e00068e"
+        };
+
+        let db, auth;
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+            auth = firebase.auth();
+        } catch(e) {
+            document.body.innerHTML = `<div style="padding:3rem;text-align:center;color:#8b9bb4;">❌ Błąd konfiguracji Firebase.</div>`;
+        }
+
+        const L = {
+            iv_liga:'IV Liga Podkarpacka',
+            okr_jaroslaw:'Klasa Okręgowa Jarosław',
+            okr_krosno:'Klasa Okręgowa Krosno',
+            okr_rzeszow:'Klasa Okręgowa Rzeszów',
+            okr_debica:'Klasa Okręgowa Dębica',
+            okr_stalowa:'Klasa Okręgowa Stalowa Wola'
+        };
+
+        // UKRYTE LOGOWANIE CTRL+M
+        document.addEventListener('keydown', e => {
+            if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'm') { e.preventDefault(); go('admin'); }
+        });
+
+        function go(id) {
+            document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            const map=['home','matches','table','transfers','streams','contact','admin'];
+            const idx=map.indexOf(id);
+            if(idx>=0&&idx<6) document.querySelectorAll('.tab')[idx].classList.add('active');
+            const sec=document.getElementById(id);
+            sec.querySelectorAll('.anim').forEach(el=>{el.style.animation='none';el.offsetHeight;el.style.animation=null;});
+            window.scrollTo({top:0, behavior:'smooth'});
+            
+            if(id==='home') { loadMatches('home-grid',6); loadHomeTable(); }
+            if(id==='matches') loadMatches('matches-grid');
+            if(id==='table') loadTable('iv_liga');
+            if(id==='transfers') loadTransfers();
+        }
+
+        // === CACHE HERBÓW ===
+        let crestsCache = {};
+        async function loadCrests() {
+            crestsCache = {};
+            for(const league of Object.keys(L)) {
+                try {
+                    const doc = await db.collection('standings').doc(league).get();
+                    if(doc.exists && doc.data().teams) {
+                        doc.data().teams.forEach(t => {
+                            if(t.name && t.crest) crestsCache[t.name.trim()] = t.crest;
+                        });
+                    }
+                } catch(e) {}
+            }
+        }
+
+        function getCrest(teamName) {
+            return crestsCache[teamName?.trim()] || null;
+        }
+
+        // === MECZE ===
+        let mc=[];
+        async function loadMatches(cid,limit=null){
+            const c=document.getElementById(cid);
+            c.innerHTML='<p style="color:var(--muted);padding:2rem;text-align:center;">Pobieranie...</p>';
+            try{
+                await loadCrests();
+                let q=db.collection('matches').orderBy('date','desc');
+                if(limit)q=q.limit(limit);
+                const s=await q.get();
+                mc=s.docs.map(d=>({id:d.id,...d.data()}));
+                renderM(mc,cid);
+            }catch(e){c.innerHTML='<p style="color:#ff6b6b;text-align:center;padding:2rem;">Błąd bazy.</p>';}
+        }
+        function renderM(data,cid){
+            const c=document.getElementById(cid);
+            if(!data.length){c.innerHTML='<p style="color:var(--muted);text-align:center;padding:2rem;">Brak spotkań.</p>';return;}
+            c.innerHTML=data.map(m=>{
+                const homeCrest = getCrest(m.homeTeam);
+                const awayCrest = getCrest(m.awayTeam);
+                return `
+                <div class="card" data-l="${m.league}">
+                    <div class="league-label"><i class="fa-solid fa-circle"></i>${L[m.league]||m.league}</div>
+                    <div class="match-row">
+                        <div class="team-wrap">
+                            ${homeCrest ? `<img src="${homeCrest}" class="team-crest" alt="">` : '<div class="team-crest" style="display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:var(--muted);"><i class="fa-solid fa-shield"></i></div>'}
+                            <span class="team-name">${m.homeTeam||'?'}</span>
+                        </div>
+                        <div class="score-box">${m.scoreHome??'-'}:${m.scoreAway??'-'}</div>
+                        <div class="team-wrap away">
+                            <span class="team-name">${m.awayTeam||'?'}</span>
+                            ${awayCrest ? `<img src="${awayCrest}" class="team-crest" alt="">` : '<div class="team-crest" style="display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:var(--muted);"><i class="fa-solid fa-shield"></i></div>'}
+                        </div>
+                    </div>
+                    <div class="match-date">${m.date?new Date(m.date.seconds*1000).toLocaleDateString('pl-PL',{day:'numeric',month:'long',year:'numeric'}):''}</div>
+                </div>`;
+            }).join('');
+        }
+        function filterM(league,btn){
+            document.querySelectorAll('#matches-sub .sub-tab').forEach(b=>b.classList.remove('active'));
+            btn.classList.add('active');
+            renderM(league==='all'?mc:mc.filter(m=>m.league===league),'matches-grid');
+        }
+
+        // === TABELA ===
+        async function loadTable(league,btn){
+            if(btn){document.querySelectorAll('#table-sub .sub-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+            const tb=document.getElementById('tb');
+            tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:2rem;">Ładowanie...</td></tr>';
+            try{
+                const doc=await db.collection('standings').doc(league).get();
+                if(!doc.exists||!doc.data().teams||!doc.data().teams.length){
+                    tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:2rem;">Brak danych. Dodaj drużyny przez Ctrl+M.</td></tr>';return;
+                }
+                const teams=doc.data().teams.sort((a,b)=>b.pts-a.pts||parseInt(b.diff)-parseInt(a.diff));
+                tb.innerHTML=teams.map((t,i)=>`
+                    <tr>
+                        <td class="${i<3?'top-pos':''}">${i+1}</td>
+                        <td>
+                            <div class="team-cell">
+                                ${t.crest ? `<img src="${t.crest}" class="table-crest" alt="">` : '<div class="table-crest" style="display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:var(--muted);"><i class="fa-solid fa-shield"></i></div>'}
+                                <span style="font-weight:600;">${t.name}</span>
+                            </div>
+                        </td>
+                        <td style="color:var(--muted)">${t.m}</td>
+                        <td style="font-weight:800;color:var(--green);">${t.pts}</td>
+                        <td style="color:var(--muted);font-size:0.83rem;">${t.diff}</td>
+                    </tr>`).join('');
+            }catch(e){tb.innerHTML=`<tr><td colspan="5" style="text-align:center;color:#ff6b6b;padding:2rem;">Błąd: ${e.message}</td></tr>`;}
+        }
+
+        async function loadHomeTable(){
+            const tb=document.getElementById('home-tb');
+            try{
+                const doc=await db.collection('standings').doc('iv_liga').get();
+                if(!doc.exists||!doc.data().teams){tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:1.5rem;">Brak danych</td></tr>';return;}
+                const teams=doc.data().teams.sort((a,b)=>b.pts-a.pts).slice(0,5);
+                tb.innerHTML=teams.map((t,i)=>`
+                    <tr>
+                        <td class="${i<3?'top-pos':''}">${i+1}</td>
+                        <td>
+                            <div class="team-cell">
+                                ${t.crest ? `<img src="${t.crest}" class="table-crest" alt="">` : '<div class="table-crest" style="display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:var(--muted);"><i class="fa-solid fa-shield"></i></div>'}
+                                <span style="font-weight:600;">${t.name}</span>
+                            </div>
+                        </td>
+                        <td style="color:var(--muted)">${t.m}</td>
+                        <td style="font-weight:800;color:var(--green);">${t.pts}</td>
+                        <td style="color:var(--muted);font-size:0.83rem;">${t.diff}</td>
+                    </tr>`).join('');
+            }catch(e){tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:1.5rem;">Błąd</td></tr>';}
+        }
+
+        async function loadTransfers(){
+            const c=document.getElementById('transfers-grid');
+            try{
+                const s=await db.collection('transfers').orderBy('date','desc').limit(12).get();
+                if(s.empty){c.innerHTML='<p style="color:var(--muted);padding:2rem;">Brak transferów.</p>';return;}
+                c.innerHTML=s.docs.map(d=>{const t=d.data();return `<div class="card">
+                    <div class="league-label"><i class="fa-solid fa-circle"></i>${L[t.league]||'Transfer'}</div>
+                    <h3 style="font-size:1.08rem;margin-bottom:0.5rem;">${t.player}</h3>
+                    <div style="color:var(--muted);font-size:0.9rem;">${t.from} ➡️ ${t.to}</div>
+                    <div style="color:var(--gold);font-weight:700;margin-top:0.5rem;font-size:0.9rem;">${t.fee||'Bez odstępnego'}</div>
+                </div>`;}).join('');
+            }catch(e){}
+        }
+
+        // CONTACT
+        async function sendContact(){
+            const name=document.getElementById('c-name').value;
+            const email=document.getElementById('c-email').value;
+            const subject=document.getElementById('c-subject').value;
+            const msg=document.getElementById('c-msg').value;
+            const status=document.getElementById('c-status');
+            if(!name||!email||!msg){status.style.color='#ff6b6b';status.innerText='Wypełnij wymagane pola.';return;}
+            try{
+                await db.collection('messages').add({name,email,subject,message:msg,date:firebase.firestore.FieldValue.serverTimestamp(),read:false});
+                status.style.color='var(--green)';status.innerText='✅ Wiadomość wysłana! Dziękujemy.';
+                document.getElementById('c-name').value='';document.getElementById('c-email').value='';
+                document.getElementById('c-subject').value='';document.getElementById('c-msg').value='';
+            }catch(e){status.style.color='#ff6b6b';status.innerText='Błąd wysyłania: '+e.message;}
+        }
+
+        // ADMIN
+        let user=null;
+        auth.onAuthStateChanged(u=>{
+            if(u&&u.email==='admin@b.pl'){
+                user=u;
+                document.getElementById('login-panel').style.display='none';
+                document.getElementById('dash').style.display='block';
+                loadAdminM();loadAdminT();
+            }else{
+                user=null;
+                document.getElementById('login-panel').style.display='block';
+                document.getElementById('dash').style.display='none';
+            }
+        });
+        async function login(){
+            try{await auth.signInWithEmailAndPassword(document.getElementById('l-email').value,document.getElementById('l-pass').value);}
+            catch(e){document.getElementById('l-msg').innerText='Błędne dane';}
+        }
+        function logout(){auth.signOut();go('home');}
+
+        function showAT(tab){
+            document.getElementById('ma').style.display=tab==='ma'?'block':'none';
+            document.getElementById('ta').style.display=tab==='ta'?'block':'none';
+            document.getElementById('at-ma').style.background=tab==='ma'?'var(--green-glow)':'transparent';
+            document.getElementById('at-ma').style.color=tab==='ma'?'var(--green)':'var(--muted)';
+            document.getElementById('at-ta').style.background=tab==='ta'?'var(--green-glow)':'transparent';
+            document.getElementById('at-ta').style.color=tab==='ta'?'var(--green)':'var(--muted)';
+        }
+
+        async function saveMatch(){
+            if(!user)return;
+            const id=document.getElementById('m-id').value;
+            const data={
+                homeTeam:document.getElementById('m-home').value,
+                awayTeam:document.getElementById('m-away').value,
+                scoreHome:parseInt(document.getElementById('m-sh').value)||0,
+                scoreAway:parseInt(document.getElementById('m-sa').value)||0,
+                league:document.getElementById('m-league').value,
+                date:firebase.firestore.FieldValue.serverTimestamp()
+            };
+            try{
+                if(id)await db.collection('matches').doc(id).update(data);
+                else await db.collection('matches').add(data);
+                clearMF();loadAdminM();
+            }catch(e){alert('Błąd: '+e.message);}
+        }
+        async function loadAdminM(){
+            const s=await db.collection('matches').orderBy('date','desc').limit(30).get();
+            document.getElementById('admin-mlist').innerHTML=s.docs.map(d=>{const m=d.data();return `<div class="card" style="padding:1.3rem;display:flex;justify-content:space-between;align-items:center;">
+                <div><div style="font-weight:600;font-size:0.95rem;">${m.homeTeam} vs ${m.awayTeam}</div>
+                <div style="font-size:0.75rem;color:var(--muted);">${L[m.league]} • ${m.scoreHome}:${m.scoreAway}</div></div>
+                <div style="display:flex;gap:5px;">
+                    <button class="btn-sm" onclick='editM("${d.id}",${JSON.stringify(m).replace(/'/g,"&#39;")})'><i class="fa-solid fa-pen"></i></button>
+                    <button class="btn-sm btn-del" onclick="delM('${d.id}')"><i class="fa-solid fa-trash"></i></button>
+                </div></div>`;}).join('');
+        }
+        function editM(id,d){document.getElementById('m-id').value=id;document.getElementById('m-home').value=d.homeTeam;document.getElementById('m-away').value=d.awayTeam;document.getElementById('m-sh').value=d.scoreHome;document.getElementById('m-sa').value=d.scoreAway;document.getElementById('m-league').value=d.league;window.scrollTo({top:0,behavior:'smooth'});}
+        async function delM(id){if(confirm('Usunąć?')){await db.collection('matches').doc(id).delete();loadAdminM();}}
+        function clearMF(){document.getElementById('m-id').value='';['m-home','m-away','m-sh','m-sa'].forEach(i=>document.getElementById(i).value='');}
+
+        async function saveTeam(){
+            if(!user)return;
+            const league=document.getElementById('t-league').value;
+            const teamData={
+                name:document.getElementById('t-team').value,
+                crest:document.getElementById('t-crest').value||'',
+                m:parseInt(document.getElementById('t-m').value)||0,
+                pts:parseInt(document.getElementById('t-pts').value)||0,
+                diff:document.getElementById('t-diff').value||'0'
+            };
+            const editId=document.getElementById('t-id').value;
+            try{
+                const ref=db.collection('standings').doc(league);
+                const doc=await ref.get();
+                let teams=doc.exists&&doc.data().teams?[...doc.data().teams]:[];
+                if(editId){const idx=parseInt(editId);if(idx>=0&&idx<teams.length)teams[idx]=teamData;}
+                else{teams.push(teamData);}
+                await ref.set({teams,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+                clearTF();loadAdminT();
+            }catch(e){alert('Błąd: '+e.message);}
+        }
+        async function loadAdminT(){
+            const leagues=Object.keys(L);let html='';
+            for(const league of leagues){
+                const doc=await db.collection('standings').doc(league).get();
+                if(!doc.exists||!doc.data().teams)continue;
+                const teams=doc.data().teams;
+                html+=`<div style="margin-bottom:1.6rem;"><div class="league-label" style="margin-bottom:0.9rem;"><i class="fa-solid fa-circle"></i>${L[league]}</div>`;
+                html+=teams.map((t,i)=>`<div class="card" style="padding:1.1rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem;">
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        ${t.crest?`<img src="${t.crest}" style="width:24px;height:24px;border-radius:50%;object-fit:contain;background:rgba(255,255,255,0.1);">`:''}
+                        <span style="font-weight:600;">${t.name}</span>
+                        <span style="color:var(--muted);font-size:0.8rem;">• ${t.pts} pkt</span>
+                    </div>
+                    <div style="display:flex;gap:5px;">
+                        <button class="btn-sm" onclick="editT('${league}',${i})"><i class="fa-solid fa-pen"></i></button>
+                        <button class="btn-sm btn-del" onclick="delT('${league}',${i})"><i class="fa-solid fa-trash"></i></button>
+                    </div></div>`).join('');
+                html+='</div>';
+            }
+            document.getElementById('admin-tlist').innerHTML=html||'<p style="color:var(--muted);">Brak drużyn w bazie.</p>';
+        }
+        async function editT(league,idx){
+            const doc=await db.collection('standings').doc(league).get();
+            if(!doc.exists)return;
+            const t=doc.data().teams[idx];
+            document.getElementById('t-id').value=idx;
+            document.getElementById('t-team').value=t.name;
+            document.getElementById('t-crest').value=t.crest||'';
+            document.getElementById('t-league').value=league;
+            document.getElementById('t-m').value=t.m;
+            document.getElementById('t-pts').value=t.pts;
+            document.getElementById('t-diff').value=t.diff;
+            showAT('ta');window.scrollTo({top:0,behavior:'smooth'});
+        }
+        async function delT(league,idx){
+            if(!confirm('Usunąć tę drużynę?'))return;
+            const ref=db.collection('standings').doc(league);
+            const doc=await ref.get();if(!doc.exists)return;
+            const teams=[...doc.data().teams];teams.splice(idx,1);
+            await ref.set({teams,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+            loadAdminT();
+        }
+        function clearTF(){document.getElementById('t-id').value='';['t-team','t-crest','t-m','t-pts','t-diff'].forEach(i=>document.getElementById(i).value='');}
+
+        // Init
+        loadMatches('home-grid',6);
+        loadHomeTable();
+    </script>
+</body>
+</html>

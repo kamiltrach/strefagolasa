@@ -30,7 +30,6 @@
         button{cursor:pointer;border:none;background:none;font-family:inherit;color:inherit;}
         input,select,textarea{font-family:inherit;}
         
-        /* Płynniejsze animacje dzięki akceleracji sprzętowej */
         @keyframes fadeUp{from{opacity:0;transform:translate3d(0, 24px, 0)}to{opacity:1;transform:translate3d(0, 0, 0)}}
         .anim{animation:fadeUp .7s var(--ease) forwards;opacity:0;will-change:transform, opacity;}
         .d1{animation-delay:.08s}.d2{animation-delay:.16s}.d3{animation-delay:.24s}.d4{animation-delay:.32s}
@@ -81,7 +80,6 @@
         .group-title:first-of-type{margin-top:0;}
         .group-title i{color:var(--green);margin-right:8px;}
 
-        /* Płynne tabele */
         .table-container{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:var(--radius);scroll-behavior:smooth;}
         .table-wrap{background:var(--glass);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;min-width:580px;}
         table{width:100%;border-collapse:collapse;}
@@ -165,7 +163,7 @@
         .footer-col a{display:block;color:var(--muted);font-size:0.88rem;margin-bottom:0.6rem;transition:color .2s;}
         .footer-col a:hover{color:var(--white);}
         .footer-bottom{max-width:1160px;margin:2rem auto 0;padding-top:1.5rem;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.8rem;}
-        .secret-trigger{position:fixed;bottom:0;right:0;width:60px;height:60px;z-index:999;cursor:default;}
+        .secret-trigger{position:fixed;bottom:0;right:0;width:70px;height:70px;z-index:999;cursor:default;}
 
         @media(max-width:900px){.tabs{max-width:70%;}}
         @media(max-width:768px){
@@ -222,7 +220,8 @@
         </div>
     </nav>
 
-    <div class="secret-trigger"></div>
+    <!-- Ukryty skrót na telefony (kliknij 5 razy) -->
+    <div class="secret-trigger" id="mobile-admin-trigger"></div>
 
     <main>
         <!-- START -->
@@ -236,7 +235,7 @@
             <div class="stats-row anim d1">
                 <div class="stat-item"><span class="stat-num">6</span><span class="stat-label">Lig</span></div>
                 <div class="stat-item"><span class="stat-num">96+</span><span class="stat-label">Drużyn</span></div>
-                <div class="stat-item"><span class="stat-num">Na bieżąco</span><span class="stat-label">Aktualizacje</span></div>
+                <div class="stat-item"><span class="stat-num">Bieżąco</span><span class="stat-label">Aktualizacje</span></div>
                 <div class="stat-item"><span class="stat-num">Podkarpacie</span><span class="stat-label">Okręg</span></div>
             </div>
 
@@ -245,7 +244,7 @@
                 <div class="features-grid">
                     <div class="card feature-card"><div class="feature-icon"><i class="fa-solid fa-bolt"></i></div><h3>Błyskawiczne wyniki</h3><p>Aktualizujemy rezultaty spotkań w czasie rzeczywistym. Żadnych opóźnień.</p></div>
                     <div class="card feature-card"><div class="feature-icon"><i class="fa-solid fa-table"></i></div><h3>Pełne tabele z herbami</h3><p>Szczegółowe zestawienia dla każdej ligi z wizualną identyfikacją klubów.</p></div>
-                    <div class="card feature-card"><div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div><h3>Wiarygodne dane</h3><p>Informacje weryfikowane przez naszą redakcję. Zero plotek, tylko fakty.</p></div>
+                    <div class="card feature-card"><div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div><h3>Wiarygodne dane</h3><p>Informacje weryfikowane przez redakcję. Zero plotek, tylko fakty.</p></div>
                 </div>
             </div>
 
@@ -330,14 +329,7 @@
                 <h1 style="font-size:2.4rem;">Aktualności i <span>Posty</span></h1>
                 <p>Najważniejsze komunikaty, ogłoszenia i informacje od redakcji.</p>
             </div>
-            <div id="posts-grid" class="grid anim d1">
-                <div class="card">
-                    <div class="league-label"><i class="fa-solid fa-bullhorn"></i> Komunikat</div>
-                    <h3 style="font-size:1.1rem;margin-bottom:0.6rem;">Witaj w Strefie Gola!</h3>
-                    <p style="color:var(--muted);font-size:0.9rem;">To jest nowa sekcja z postami, w której będziemy informować Was o najważniejszych wydarzeniach, aktualizacjach tabel oraz nowościach z podkarpackich boisk.</p>
-                    <div class="match-date" style="text-align:left;margin-top:1.2rem;"><i class="fa-regular fa-clock"></i> Dodano: Dzisiaj</div>
-                </div>
-            </div>
+            <div id="posts-grid" class="grid anim d1"></div>
         </section>
 
         <!-- KONTAKT -->
@@ -364,7 +356,7 @@
             </div>
         </section>
 
-        <!-- ADMIN (Ctrl+M) -->
+        <!-- ADMIN -->
         <section id="admin" class="section">
             <div class="admin-box anim">
                 <div id="login-panel" class="card" style="text-align:center;">
@@ -380,10 +372,12 @@
                 <div id="dash" style="display:none;">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2.2rem;flex-wrap:wrap;gap:10px;">
                         <h2 style="text-transform:uppercase;letter-spacing:1.2px;font-size:0.95rem;">Zarządzanie</h2>
-                        <div style="display:flex;gap:8px;">
+                        <div style="display:flex;gap:4px;flex-wrap:wrap;">
                             <button class="btn-sm" onclick="showAT('ma')" id="at-ma" style="background:var(--green-glow);color:var(--green);">Mecze</button>
                             <button class="btn-sm" onclick="showAT('ta')" id="at-ta">Tabela</button>
                             <button class="btn-sm" onclick="showAT('za')" id="at-za">Strefy</button>
+                            <button class="btn-sm" onclick="showAT('po')" id="at-po">Posty</button>
+                            <button class="btn-sm" onclick="showAT('tr')" id="at-tr">Transfery</button>
                             <button class="btn-sm" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i></button>
                         </div>
                     </div>
@@ -412,9 +406,8 @@
                                 <input type="number" id="m-sh" placeholder="Bramki G (puste = nadchodzący)">
                                 <input type="number" id="m-sa" placeholder="Bramki H (puste = nadchodzący)">
                             </div>
-                            <p class="hint"><i class="fa-solid fa-circle-info"></i> Zostaw wynik pusty → mecz będzie „Nadchodzący". Wpisz wynik → mecz przejdzie do „Wyników".</p>
                             <button class="btn" onclick="saveMatch()">Zapisz spotkanie</button>
-                            <button class="btn-sm" onclick="clearMF()" style="width:100%;margin-top:10px;border:1px solid var(--border);text-align:center;">Wyczyść</button>
+                            <button class="btn-sm" onclick="clearMF()" style="width:100%;margin-top:10px;border:1px solid var(--border);">Wyczyść</button>
                         </div>
                         <h3 style="font-size:0.78rem;color:var(--muted);margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:1.2px;">Baza Spotkań</h3>
                         <div id="admin-mlist" class="grid"></div>
@@ -443,7 +436,7 @@
                                 <input type="text" id="t-diff" placeholder="Bilans (+12)">
                             </div>
                             <button class="btn" onclick="saveTeam()">Zapisz drużynę</button>
-                            <button class="btn-sm" onclick="clearTF()" style="width:100%;margin-top:10px;border:1px solid var(--border);text-align:center;">Wyczyść</button>
+                            <button class="btn-sm" onclick="clearTF()" style="width:100%;margin-top:10px;border:1px solid var(--border);">Wyczyść</button>
                         </div>
                         <h3 style="font-size:0.78rem;color:var(--muted);margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:1.2px;">Drużyny w bazie</h3>
                         <div id="admin-tlist" class="grid"></div>
@@ -452,7 +445,7 @@
                     <!-- STREFY -->
                     <div id="za" style="display:none;">
                         <div class="card" style="margin-bottom:2.2rem;">
-                            <h3 style="font-size:0.78rem;color:var(--green);margin-bottom:1.3rem;text-transform:uppercase;letter-spacing:1.2px;">Strefy awansów / baraży / spadków</h3>
+                            <h3 style="font-size:0.78rem;color:var(--green);margin-bottom:1.3rem;text-transform:uppercase;letter-spacing:1.2px;">Strefy lig</h3>
                             <select id="z-league">
                                 <option value="iv_liga">IV Liga</option>
                                 <option value="okr_jaroslaw">Okr. Jarosław</option>
@@ -466,12 +459,62 @@
                                 <input type="text" id="z-barage" placeholder="Baraże (np. 2)">
                                 <input type="text" id="z-releg" placeholder="Spadek (np. 14,15,16)">
                             </div>
-                            <p class="hint"><i class="fa-solid fa-circle-info"></i> Numery miejsc po przecinku, np. <b>14,15,16</b> oznacza, że miejsca 14–16 spadają.</p>
                             <button class="btn" onclick="saveZones()">Zapisz strefy</button>
                         </div>
                         <h3 style="font-size:0.78rem;color:var(--muted);margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:1.2px;">Ustawienia stref</h3>
                         <div id="admin-zlist" class="grid"></div>
                     </div>
+
+                    <!-- POSTY -->
+                    <div id="po" style="display:none;">
+                        <div class="card" style="margin-bottom:2.2rem;">
+                            <h3 style="font-size:0.78rem;color:var(--green);margin-bottom:1.3rem;text-transform:uppercase;letter-spacing:1.2px;">Dodaj / Edytuj Post</h3>
+                            <input type="hidden" id="p-id">
+                            <div class="form-grid">
+                                <input type="text" id="p-title" placeholder="Tytuł posta">
+                                <select id="p-label">
+                                    <option value="Komunikat">Komunikat</option>
+                                    <option value="Artykuł">Artykuł</option>
+                                    <option value="Wywiad">Wywiad</option>
+                                    <option value="Relacja">Relacja</option>
+                                </select>
+                            </div>
+                            <textarea id="p-content" placeholder="Treść wpisu..."></textarea>
+                            <button class="btn" onclick="savePost()">Zapisz wpis</button>
+                            <button class="btn-sm" onclick="clearPF()" style="width:100%;margin-top:10px;border:1px solid var(--border);">Wyczyść</button>
+                        </div>
+                        <h3 style="font-size:0.78rem;color:var(--muted);margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:1.2px;">Zarządzanie wpisami</h3>
+                        <div id="admin-plist" class="grid"></div>
+                    </div>
+
+                    <!-- TRANSFERY CRUD -->
+                    <div id="tr" style="display:none;">
+                        <div class="card" style="margin-bottom:2.2rem;">
+                            <h3 style="font-size:0.78rem;color:var(--green);margin-bottom:1.3rem;text-transform:uppercase;letter-spacing:1.2px;">Dodaj / Edytuj Transfer</h3>
+                            <input type="hidden" id="tr-id">
+                            <div class="form-grid">
+                                <input type="text" id="tr-player" placeholder="Imię i nazwisko zawodnika">
+                                <select id="tr-league">
+                                    <option value="iv_liga">IV Liga</option>
+                                    <option value="okr_jaroslaw">Okr. Jarosław</option>
+                                    <option value="okr_krosno">Okr. Krosno</option>
+                                    <option value="okr_rzeszow">Okr. Rzeszów</option>
+                                    <option value="okr_debica">Okr. Dębica</option>
+                                    <option value="okr_stalowa">Okr. Stalowa Wola</option>
+                                </select>
+                            </div>
+                            <div class="form-grid-3">
+                                <input type="text" id="tr-from" placeholder="Klub oddający">
+                                <input type="text" id="tr-to" placeholder="Klub pozyskujący">
+                                <input type="text" id="tr-fee" placeholder="Kwota / Opis (Opcjonalnie)">
+                            </div>
+                            <button class="btn" onclick="saveTransfer()">Zapisz transfer</button>
+                            <button class="btn-sm" onclick="clearTrF()" style="width:100%;margin-top:10px;border:1px solid var(--border);">Wyczyść</button>
+                        </div>
+                        <h3 style="font-size:0.78rem;color:var(--muted);margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:1.2px;">Historia transferów</h3>
+                        <div id="admin-trlist" class="grid"></div>
+                    </div>
+
                 </div>
             </div>
         </section>
@@ -484,7 +527,7 @@
                     <img src="logo.png" alt="Logo" style="height:40px;" onerror="this.style.display='none'">
                     <div><div class="logo-text" style="font-size:1rem;">Strefa<span>Gola</span></div><div class="logo-sub" style="font-size:0.55rem;">Podkarpacie</div></div>
                 </div>
-                <p style="color:var(--muted);font-size:0.85rem;max-width:280px;">Kompleksowe źródło informacji o piłce nożnej na Podkarpaciu. Sezon 2026/2027.</p>
+                <p style="color:var(--muted);font-size:0.85rem;max-width:280px;">Kompleksowe źródło informacji o piłce nożnej na Podkarpaciu.</p>
             </div>
             <div class="footer-col">
                 <h4>Nawigacja</h4>
@@ -492,15 +535,12 @@
                 <a href="#" onclick="go('matches')">Rozgrywki</a>
                 <a href="#" onclick="go('table')">Tabela</a>
                 <a href="#" onclick="go('transfers')">Transfery</a>
-                <a href="#" onclick="go('streams')">Transmisje</a>
-                <a href="#" onclick="go('posts')">Posty</a>
             </div>
             <div class="footer-col">
                 <h4>Ligi</h4>
                 <a href="#" onclick="go('table');setTimeout(()=>loadTable('iv_liga'),100)">IV Liga</a>
                 <a href="#" onclick="go('table');setTimeout(()=>loadTable('okr_rzeszow'),100)">Okr. Rzeszów</a>
                 <a href="#" onclick="go('table');setTimeout(()=>loadTable('okr_krosno'),100)">Okr. Krosno</a>
-                <a href="#" onclick="go('table');setTimeout(()=>loadTable('okr_jaroslaw'),100)">Okr. Jarosław</a>
             </div>
             <div class="footer-col">
                 <h4>Kontakt</h4>
@@ -511,29 +551,21 @@
         <div class="footer-bottom">© 2026 Strefa Gola - Podkarpacie. Wszelkie prawa zastrzeżone.</div>
     </footer>
 
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    
+    <!-- Zewnętrzna konfiguracja Firebase (ukrywa config przed wzrokiem) -->
+    <script src="firebase-config.js"></script>
 
     <script>
-        // ⚠️ WKLEJ SWOJE DANE Z FIREBASE CONSOLE
-        const firebaseConfig = {
-  apiKey: "AIzaSyD5rE81B9PNgYh-Ut8gQUpUbHWrv4MUZHg",
-  authDomain: "flutter-ai-playground-d7796.firebaseapp.com",
-  databaseURL: "https://flutter-ai-playground-d7796-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "flutter-ai-playground-d7796",
-  storageBucket: "flutter-ai-playground-d7796.firebasestorage.app",
-  messagingSenderId: "56640861835",
-  appId: "1:56640861835:web:f645e0c15ab2027e00068e"
-        };
+        // Upewniamy się, że obiekty db i auth zostały wczytane z firebase-config.js
+        const db = window.db;
+        const auth = window.auth;
 
-        let db, auth;
-        try {
-            firebase.initializeApp(firebaseConfig);
-            db = firebase.firestore();
-            auth = firebase.auth();
-        } catch(e) {
-            document.body.innerHTML = `<div style="padding:3rem;text-align:center;color:#8b9bb4;">❌ Błąd konfiguracji Firebase.</div>`;
+        if(!db || !auth) {
+            console.error("Firebase nie załadowało się poprawnie z pliku firebase-config.js");
         }
 
         const L = {
@@ -544,8 +576,23 @@
 
         const DEFAULT_ZONES = { promo:[1], barage:[2], releg:[14,15,16] };
 
+        // === SKRÓTY DO PANELU ADMINA ===
+        // 1. Skrót klawiszowy dla PC (Ctrl+M)
         document.addEventListener('keydown', e => {
             if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='m'){ e.preventDefault(); go('admin'); }
+        });
+
+        // 2. Skrót mobilny (5 szybkich kliknięć w prawy dolny róg)
+        let tapCount = 0;
+        let tapTimer;
+        document.getElementById('mobile-admin-trigger').addEventListener('click', () => {
+            tapCount++;
+            clearTimeout(tapTimer);
+            if(tapCount >= 5) {
+                tapCount = 0;
+                go('admin');
+            }
+            tapTimer = setTimeout(() => { tapCount = 0; }, 1500);
         });
 
         function go(id){
@@ -558,10 +605,12 @@
             const sec=document.getElementById(id);
             sec.querySelectorAll('.anim').forEach(el=>{el.style.animation='none';el.offsetHeight;el.style.animation=null;});
             window.scrollTo({top:0,behavior:'smooth'});
+            
             if(id==='home'){ refreshMatches(); loadHomeTable(); }
             if(id==='matches') refreshMatches();
             if(id==='table') loadTable('iv_liga');
             if(id==='transfers') loadTransfers();
+            if(id==='posts') loadPosts();
         }
 
         // === HERBY ===
@@ -595,9 +644,7 @@
             }
         }
         function getZones(league){ return zonesCache[league] || DEFAULT_ZONES; }
-        function parsePositions(str){
-            return (str||'').split(',').map(s=>parseInt(s.trim())).filter(n=>!isNaN(n)&&n>0);
-        }
+        function parsePositions(str){ return (str||'').split(',').map(s=>parseInt(s.trim())).filter(n=>!isNaN(n)&&n>0); }
         function getRowClass(pos,league){
             const z=getZones(league);
             if((z.promo||[]).includes(pos)) return 'row-promo';
@@ -609,27 +656,22 @@
             const z=getZones(league);
             const el=document.getElementById(cid);
             let html='';
-            if((z.promo||[]).length) html+=`<div class="legend-item"><div class="legend-dot dot-promo"></div> Awans do wyższej ligi (miejsca: ${z.promo.join(', ')})</div>`;
+            if((z.promo||[]).length) html+=`<div class="legend-item"><div class="legend-dot dot-promo"></div> Awans (miejsca: ${z.promo.join(', ')})</div>`;
             if((z.barage||[]).length) html+=`<div class="legend-item"><div class="legend-dot dot-barage"></div> Baraże (miejsca: ${z.barage.join(', ')})</div>`;
-            if((z.releg||[]).length) html+=`<div class="legend-item"><div class="legend-dot dot-releg"></div> Spadek do niższej ligi (miejsca: ${z.releg.join(', ')})</div>`;
+            if((z.releg||[]).length) html+=`<div class="legend-item"><div class="legend-dot dot-releg"></div> Spadek (miejsca: ${z.releg.join(', ')})</div>`;
             el.innerHTML=html||'<div class="legend-item">Brak zdefiniowanych stref</div>';
         }
 
         // === MECZE (NADCHODZĄCE + WYNIKI) ===
         let mc=[], curFilter='all';
-        function matchIsUpcoming(m){
-            if(m.status==='upcoming') return true;
-            if(m.status==='finished') return false;
-            return (m.scoreHome==null||m.scoreAway==null);
-        }
+        function matchIsUpcoming(m){ return (m.status==='upcoming' || (m.scoreHome==null||m.scoreAway==null)) && m.status!=='finished'; }
         function upcomingList(list){ return list.filter(matchIsUpcoming).sort((a,b)=>(a.date?.seconds||0)-(b.date?.seconds||0)); }
         function finishedList(list){ return list.filter(m=>!matchIsUpcoming(m)).sort((a,b)=>(b.date?.seconds||0)-(a.date?.seconds||0)); }
 
         const DAYS=['niedziela','poniedziałek','wtorek','środa','czwartek','piątek','sobota'];
         function fmtUpcoming(ts){
             if(!ts) return 'Termin wkrótce';
-            const d=new Date(ts.seconds*1000);
-            const pad=n=>String(n).padStart(2,'0');
+            const d=new Date(ts.seconds*1000), pad=n=>String(n).padStart(2,'0');
             return `<i class="fa-regular fa-clock"></i> ${DAYS[d.getDay()]}, ${pad(d.getDate())}.${pad(d.getMonth()+1)} • ${pad(d.getHours())}:${pad(d.getMinutes())}`;
         }
         function fmtFinished(ts){
@@ -638,14 +680,13 @@
         }
         function toLocalInput(ts){
             if(!ts) return '';
-            const d=new Date(ts.seconds*1000);
-            const pad=n=>String(n).padStart(2,'0');
+            const d=new Date(ts.seconds*1000), pad=n=>String(n).padStart(2,'0');
             return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
         }
 
         async function refreshMatches(){
             const c1=document.getElementById('home-upcoming');
-            c1.innerHTML='<p style="color:var(--muted);padding:1rem;text-align:center;">Pobieranie...</p>';
+            if(!c1) return;
             try{
                 await loadCrests();
                 const s=await db.collection('matches').orderBy('date','asc').limit(200).get();
@@ -653,15 +694,12 @@
                 renderGrid(upcomingList(mc).slice(0,6),'home-upcoming');
                 renderGrid(finishedList(mc).slice(0,6),'home-grid');
                 applyFilter();
-            }catch(e){
-                c1.innerHTML='<p style="color:#ff6b6b;text-align:center;padding:2rem;">Błąd bazy.</p>';
-            }
+            }catch(e){ c1.innerHTML='<p style="color:#ff6b6b;">Błąd bazy.</p>'; }
         }
 
         function matchCard(m){
             const up=matchIsUpcoming(m);
-            return `
-            <div class="card">
+            return `<div class="card">
                 <div class="league-label"><i class="fa-solid fa-circle"></i>${L[m.league]||m.league}${up?'<span class="badge-up">Nadchodzący</span>':''}</div>
                 <div class="match-row">
                     <div class="team-wrap">${crestImg(m.homeTeam)}<span class="team-name">${m.homeTeam||'?'}</span></div>
@@ -674,8 +712,7 @@
 
         function renderGrid(data,cid){
             const c=document.getElementById(cid);
-            if(!c) return;
-            c.innerHTML = data.length ? data.map(matchCard).join('') : '<p style="color:var(--muted);text-align:center;padding:1.5rem;">Brak spotkań.</p>';
+            if(c) c.innerHTML = data.length ? data.map(matchCard).join('') : '<p style="color:var(--muted);text-align:center;padding:1.5rem;">Brak danych.</p>';
         }
 
         function applyFilter(){
@@ -699,7 +736,7 @@
                 await loadZones();
                 const doc=await db.collection('standings').doc(league).get();
                 if(!doc.exists||!doc.data().teams||!doc.data().teams.length){
-                    tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:2rem;">Brak danych. Dodaj drużyny przez Ctrl+M.</td></tr>';
+                    tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:2rem;">Brak danych w lidze.</td></tr>';
                     renderLegend(league,'table-legend'); return;
                 }
                 const teams=doc.data().teams.sort((a,b)=>b.pts-a.pts||parseInt(b.diff)-parseInt(a.diff));
@@ -712,7 +749,7 @@
                         <td style="color:var(--muted);font-size:0.83rem;">${t.diff}</td>
                     </tr>`).join('');
                 renderLegend(league,'table-legend');
-            }catch(e){tb.innerHTML=`<tr><td colspan="5" style="text-align:center;color:#ff6b6b;padding:2rem;">Błąd: ${e.message}</td></tr>`;}
+            }catch(e){tb.innerHTML=`<tr><td colspan="5" style="text-align:center;color:#ff6b6b;padding:2rem;">Błąd bazy</td></tr>`;}
         }
 
         async function loadHomeTable(){
@@ -720,7 +757,7 @@
             try{
                 await loadZones();
                 const doc=await db.collection('standings').doc('iv_liga').get();
-                if(!doc.exists||!doc.data().teams){tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:1.5rem;">Brak danych</td></tr>';renderLegend('iv_liga','home-legend');return;}
+                if(!doc.exists||!doc.data().teams) return;
                 const all=doc.data().teams.sort((a,b)=>b.pts-a.pts);
                 tb.innerHTML=all.slice(0,5).map((t,i)=>`
                     <tr class="${getRowClass(i+1,'iv_liga')}">
@@ -731,23 +768,46 @@
                         <td style="color:var(--muted);font-size:0.83rem;">${t.diff}</td>
                     </tr>`).join('');
                 renderLegend('iv_liga','home-legend');
-            }catch(e){tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:1.5rem;">Błąd</td></tr>';}
-        }
-
-        async function loadTransfers(){
-            const c=document.getElementById('transfers-grid');
-            try{
-                const s=await db.collection('transfers').orderBy('date','desc').limit(12).get();
-                if(s.empty){c.innerHTML='<p style="color:var(--muted);padding:2rem;">Brak transferów.</p>';return;}
-                c.innerHTML=s.docs.map(d=>{const t=d.data();return `<div class="card">
-                    <div class="league-label"><i class="fa-solid fa-circle"></i>${L[t.league]||'Transfer'}</div>
-                    <h3 style="font-size:1.08rem;margin-bottom:0.5rem;">${t.player}</h3>
-                    <div style="color:var(--muted);font-size:0.9rem;">${t.from} ➡️ ${t.to}</div>
-                    <div style="color:var(--gold);font-weight:700;margin-top:0.5rem;font-size:0.9rem;">${t.fee||'Bez odstępnego'}</div>
-                </div>`;}).join('');
             }catch(e){}
         }
 
+        // === PUBLICZNE TRANSFERY ===
+        async function loadTransfers(){
+            const c=document.getElementById('transfers-grid');
+            try{
+                const s=await db.collection('transfers').orderBy('date','desc').limit(20).get();
+                if(s.empty){c.innerHTML='<p style="color:var(--muted);padding:2rem;">Brak transferów.</p>';return;}
+                c.innerHTML=s.docs.map(d=>{
+                    const t=d.data();
+                    return `<div class="card">
+                        <div class="league-label"><i class="fa-solid fa-circle"></i>${L[t.league]||'Transfer'}</div>
+                        <h3 style="font-size:1.08rem;margin-bottom:0.5rem;">${t.player}</h3>
+                        <div style="color:var(--muted);font-size:0.9rem;">${t.from} ➡️ <span style="color:var(--white);font-weight:600;">${t.to}</span></div>
+                        <div style="color:var(--gold);font-weight:700;margin-top:0.8rem;font-size:0.85rem;">${t.fee||'Kwota nieujawniona / Bez odstępnego'}</div>
+                    </div>`;
+                }).join('');
+            }catch(e){ c.innerHTML='<p style="color:#ff6b6b;padding:2rem;">Błąd ładowania.</p>'; }
+        }
+
+        // === PUBLICZNE POSTY ===
+        async function loadPosts(){
+            const c=document.getElementById('posts-grid');
+            try{
+                const s=await db.collection('posts').orderBy('date','desc').limit(20).get();
+                if(s.empty){c.innerHTML='<p style="color:var(--muted);padding:2rem;">Brak postów.</p>';return;}
+                c.innerHTML=s.docs.map(d=>{
+                    const p=d.data();
+                    return `<div class="card">
+                        <div class="league-label"><i class="fa-solid fa-bullhorn"></i> ${p.label||'Informacja'}</div>
+                        <h3 style="font-size:1.1rem;margin-bottom:0.6rem;">${p.title}</h3>
+                        <p style="color:var(--muted);font-size:0.9rem;white-space:pre-wrap;">${p.content}</p>
+                        <div class="match-date" style="text-align:left;margin-top:1.2rem;"><i class="fa-regular fa-clock"></i> Dodano: ${fmtFinished(p.date)}</div>
+                    </div>`;
+                }).join('');
+            }catch(e){ c.innerHTML='<p style="color:#ff6b6b;padding:2rem;">Błąd ładowania.</p>'; }
+        }
+
+        // === KONTAKT ===
         async function sendContact(){
             const name=document.getElementById('c-name').value, email=document.getElementById('c-email').value;
             const subject=document.getElementById('c-subject').value, msg=document.getElementById('c-msg').value;
@@ -757,18 +817,18 @@
                 await db.collection('messages').add({name,email,subject,message:msg,date:firebase.firestore.FieldValue.serverTimestamp(),read:false});
                 status.style.color='var(--green)';status.innerText='✅ Wiadomość wysłana! Dziękujemy.';
                 ['c-name','c-email','c-subject','c-msg'].forEach(i=>document.getElementById(i).value='');
-            }catch(e){status.style.color='#ff6b6b';status.innerText='Błąd wysyłania: '+e.message;}
+            }catch(e){status.style.color='#ff6b6b';status.innerText='Błąd wysyłania.';}
         }
 
-        // === ADMIN ===
+        // === ADMIN LOGIC ===
         let user=null;
         auth.onAuthStateChanged(async u=>{
-            if(u&&u.email==='admin@b.pl'){
+            if(u){
                 user=u;
                 document.getElementById('login-panel').style.display='none';
                 document.getElementById('dash').style.display='block';
                 await loadZones();
-                loadAdminM(); loadAdminT(); loadAdminZ();
+                loadAdminM(); loadAdminT(); loadAdminZ(); loadAdminP(); loadAdminTr();
             }else{
                 user=null;
                 document.getElementById('login-panel').style.display='block';
@@ -777,12 +837,12 @@
         });
         async function login(){
             try{await auth.signInWithEmailAndPassword(document.getElementById('l-email').value,document.getElementById('l-pass').value);}
-            catch(e){document.getElementById('l-msg').innerText='Błędne dane';}
+            catch(e){document.getElementById('l-msg').innerText='Błędne dane logowania';}
         }
         function logout(){auth.signOut();go('home');}
 
         function showAT(tab){
-            ['ma','ta','za'].forEach(t=>{
+            ['ma','ta','za','po','tr'].forEach(t=>{
                 document.getElementById(t).style.display=(t===tab)?'block':'none';
                 const b=document.getElementById('at-'+t);
                 b.style.background=(t===tab)?'var(--green-glow)':'transparent';
@@ -790,7 +850,7 @@
             });
         }
 
-        // MECZE CRUD
+        // CRUD MECZE
         async function saveMatch(){
             if(!user)return;
             const id=document.getElementById('m-id').value;
@@ -807,55 +867,43 @@
                 date:dateVal?firebase.firestore.Timestamp.fromDate(new Date(dateVal)):firebase.firestore.FieldValue.serverTimestamp()
             };
             try{
-                if(id)await db.collection('matches').doc(id).update(data);
-                else await db.collection('matches').add(data);
+                if(id)await db.collection('matches').doc(id).update(data); else await db.collection('matches').add(data);
                 clearMF();loadAdminM();
-            }catch(e){alert('Błąd: '+e.message);}
+            }catch(e){alert('Błąd');}
         }
         async function loadAdminM(){
             const s=await db.collection('matches').orderBy('date','asc').limit(100).get();
             const all=s.docs.map(d=>({id:d.id,...d.data()}));
             const sorted=[...upcomingList(all),...finishedList(all)];
             document.getElementById('admin-mlist').innerHTML=sorted.map(m=>`
-                <div class="card" style="padding:1.3rem;display:flex;justify-content:space-between;align-items:center;">
-                    <div>
-                        <div style="font-weight:600;font-size:0.95rem;">${m.homeTeam} vs ${m.awayTeam}</div>
-                        <div style="font-size:0.75rem;color:var(--muted);">${L[m.league]} • ${matchIsUpcoming(m)?'Nadchodzący':`Wynik ${m.scoreHome}:${m.scoreAway}`}</div>
-                    </div>
-                    <div style="display:flex;gap:5px;">
-                        <button class="btn-sm" onclick='editM("${m.id}",${JSON.stringify(m).replace(/'/g,"&#39;")})'><i class="fa-solid fa-pen"></i></button>
-                        <button class="btn-sm btn-del" onclick="delM('${m.id}')"><i class="fa-solid fa-trash"></i></button>
-                    </div>
+                <div class="card" style="padding:1rem;display:flex;justify-content:space-between;align-items:center;">
+                    <div><div style="font-weight:600;font-size:0.95rem;">${m.homeTeam} vs ${m.awayTeam}</div>
+                    <div style="font-size:0.75rem;color:var(--muted);">${L[m.league]} • ${matchIsUpcoming(m)?'Nadchodzący':`Wynik ${m.scoreHome}:${m.scoreAway}`}</div></div>
+                    <div style="display:flex;gap:5px;"><button class="btn-sm" onclick='editM("${m.id}",${JSON.stringify(m).replace(/'/g,"&#39;")})'><i class="fa-solid fa-pen"></i></button><button class="btn-sm btn-del" onclick="delM('${m.id}')"><i class="fa-solid fa-trash"></i></button></div>
                 </div>`).join('')||'<p style="color:var(--muted);">Brak spotkań.</p>';
         }
         function editM(id,d){
-            document.getElementById('m-id').value=id;
-            document.getElementById('m-home').value=d.homeTeam;
-            document.getElementById('m-away').value=d.awayTeam;
-            document.getElementById('m-sh').value=d.scoreHome??'';
-            document.getElementById('m-sa').value=d.scoreAway??'';
-            document.getElementById('m-league').value=d.league;
-            document.getElementById('m-date').value=toLocalInput(d.date);
-            window.scrollTo({top:0,behavior:'smooth'});
+            document.getElementById('m-id').value=id; document.getElementById('m-home').value=d.homeTeam;
+            document.getElementById('m-away').value=d.awayTeam; document.getElementById('m-sh').value=d.scoreHome??'';
+            document.getElementById('m-sa').value=d.scoreAway??''; document.getElementById('m-league').value=d.league;
+            document.getElementById('m-date').value=toLocalInput(d.date); window.scrollTo({top:0,behavior:'smooth'});
         }
         async function delM(id){if(confirm('Usunąć?')){await db.collection('matches').doc(id).delete();loadAdminM();}}
         function clearMF(){document.getElementById('m-id').value='';['m-home','m-away','m-sh','m-sa','m-date'].forEach(i=>document.getElementById(i).value='');}
 
-        // TABELA CRUD
+        // CRUD TABELA
         async function saveTeam(){
             if(!user)return;
             const league=document.getElementById('t-league').value;
             const teamData={name:document.getElementById('t-team').value,crest:document.getElementById('t-crest').value||'',m:parseInt(document.getElementById('t-m').value)||0,pts:parseInt(document.getElementById('t-pts').value)||0,diff:document.getElementById('t-diff').value||'0'};
             const editId=document.getElementById('t-id').value;
             try{
-                const ref=db.collection('standings').doc(league);
-                const doc=await ref.get();
+                const ref=db.collection('standings').doc(league); const doc=await ref.get();
                 let teams=doc.exists&&doc.data().teams?[...doc.data().teams]:[];
-                if(editId){const idx=parseInt(editId);if(idx>=0&&idx<teams.length)teams[idx]=teamData;}
-                else teams.push(teamData);
+                if(editId){const idx=parseInt(editId);if(idx>=0&&idx<teams.length)teams[idx]=teamData;} else teams.push(teamData);
                 await ref.set({teams,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
                 clearTF();loadAdminT();
-            }catch(e){alert('Błąd: '+e.message);}
+            }catch(e){alert('Błąd');}
         }
         async function loadAdminT(){
             let html='';
@@ -863,69 +911,43 @@
                 const doc=await db.collection('standings').doc(league).get();
                 if(!doc.exists||!doc.data().teams)continue;
                 html+=`<div style="margin-bottom:1.6rem;"><div class="league-label" style="margin-bottom:0.9rem;"><i class="fa-solid fa-circle"></i>${L[league]}</div>`;
-                html+=doc.data().teams.map((t,i)=>`<div class="card" style="padding:1.1rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem;">
-                    <div style="display:flex;align-items:center;gap:10px;">
-                        ${t.crest?`<img src="${t.crest}" style="width:24px;height:24px;border-radius:50%;object-fit:contain;background:rgba(255,255,255,0.1);">`:''}
-                        <span style="font-weight:600;">${t.name}</span>
-                        <span style="color:var(--muted);font-size:0.8rem;">• ${t.pts} pkt</span>
-                    </div>
-                    <div style="display:flex;gap:5px;">
-                        <button class="btn-sm" onclick="editT('${league}',${i})"><i class="fa-solid fa-pen"></i></button>
-                        <button class="btn-sm btn-del" onclick="delT('${league}',${i})"><i class="fa-solid fa-trash"></i></button>
-                    </div></div>`).join('');
+                html+=doc.data().teams.map((t,i)=>`<div class="card" style="padding:0.9rem 1.1rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem;">
+                    <div style="display:flex;align-items:center;gap:10px;">${t.crest?`<img src="${t.crest}" style="width:20px;height:20px;border-radius:50%;object-fit:contain;">`:''}<span style="font-weight:600;font-size:0.9rem;">${t.name}</span><span style="color:var(--muted);font-size:0.8rem;">• ${t.pts} pkt</span></div>
+                    <div style="display:flex;gap:5px;"><button class="btn-sm" onclick="editT('${league}',${i})"><i class="fa-solid fa-pen"></i></button><button class="btn-sm btn-del" onclick="delT('${league}',${i})"><i class="fa-solid fa-trash"></i></button></div></div>`).join('');
                 html+='</div>';
             }
-            document.getElementById('admin-tlist').innerHTML=html||'<p style="color:var(--muted);">Brak drużyn w bazie.</p>';
+            document.getElementById('admin-tlist').innerHTML=html||'<p style="color:var(--muted);">Brak drużyn.</p>';
         }
         async function editT(league,idx){
-            const doc=await db.collection('standings').doc(league).get();
-            if(!doc.exists)return;
+            const doc=await db.collection('standings').doc(league).get(); if(!doc.exists)return;
             const t=doc.data().teams[idx];
-            document.getElementById('t-id').value=idx;
-            document.getElementById('t-team').value=t.name;
-            document.getElementById('t-crest').value=t.crest||'';
-            document.getElementById('t-league').value=league;
-            document.getElementById('t-m').value=t.m;
-            document.getElementById('t-pts').value=t.pts;
-            document.getElementById('t-diff').value=t.diff;
+            document.getElementById('t-id').value=idx; document.getElementById('t-team').value=t.name;
+            document.getElementById('t-crest').value=t.crest||''; document.getElementById('t-league').value=league;
+            document.getElementById('t-m').value=t.m; document.getElementById('t-pts').value=t.pts; document.getElementById('t-diff').value=t.diff;
             showAT('ta');window.scrollTo({top:0,behavior:'smooth'});
         }
         async function delT(league,idx){
-            if(!confirm('Usunąć tę drużynę?'))return;
-            const ref=db.collection('standings').doc(league);
-            const doc=await ref.get();if(!doc.exists)return;
+            if(!confirm('Usunąć?'))return;
+            const ref=db.collection('standings').doc(league); const doc=await ref.get();if(!doc.exists)return;
             const teams=[...doc.data().teams];teams.splice(idx,1);
             await ref.set({teams,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
             loadAdminT();
         }
         function clearTF(){document.getElementById('t-id').value='';['t-team','t-crest','t-m','t-pts','t-diff'].forEach(i=>document.getElementById(i).value='');}
 
-        // STREFY CRUD
+        // CRUD STREFY
         async function saveZones(){
             if(!user)return;
             const league=document.getElementById('z-league').value;
-            const data={
-                promo:parsePositions(document.getElementById('z-promo').value),
-                barage:parsePositions(document.getElementById('z-barage').value),
-                releg:parsePositions(document.getElementById('z-releg').value),
-                updatedAt:firebase.firestore.FieldValue.serverTimestamp()
-            };
-            try{
-                await db.collection('zones').doc(league).set(data,{merge:true});
-                await loadZones();
-                loadAdminZ();
-                alert('✅ Strefy zapisane!');
-            }catch(e){alert('Błąd: '+e.message);}
+            const data={promo:parsePositions(document.getElementById('z-promo').value),barage:parsePositions(document.getElementById('z-barage').value),releg:parsePositions(document.getElementById('z-releg').value),updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
+            try{ await db.collection('zones').doc(league).set(data,{merge:true}); await loadZones(); loadAdminZ(); alert('Zapisano!'); }catch(e){alert('Błąd');}
         }
         async function loadAdminZ(){
             let html='';
             for(const league of Object.keys(L)){
                 const z=getZones(league);
-                html+=`<div class="card" style="padding:1.2rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem;">
-                    <div>
-                        <div style="font-weight:600;">${L[league]}</div>
-                        <div style="font-size:0.75rem;color:var(--muted);">Awans: ${(z.promo||[]).join(', ')||'—'} • Baraże: ${(z.barage||[]).join(', ')||'—'} • Spadek: ${(z.releg||[]).join(', ')||'—'}</div>
-                    </div>
+                html+=`<div class="card" style="padding:1rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem;">
+                    <div><div style="font-weight:600;font-size:0.9rem;">${L[league]}</div><div style="font-size:0.75rem;color:var(--muted);">Awans: ${(z.promo||[]).join(', ')||'—'} • Baraże: ${(z.barage||[]).join(', ')||'—'} • Spadek: ${(z.releg||[]).join(', ')||'—'}</div></div>
                     <button class="btn-sm" onclick="editZ('${league}')"><i class="fa-solid fa-pen"></i></button>
                 </div>`;
             }
@@ -933,12 +955,81 @@
         }
         function editZ(league){
             const z=getZones(league);
-            document.getElementById('z-league').value=league;
-            document.getElementById('z-promo').value=(z.promo||[]).join(',');
-            document.getElementById('z-barage').value=(z.barage||[]).join(',');
-            document.getElementById('z-releg').value=(z.releg||[]).join(',');
+            document.getElementById('z-league').value=league; document.getElementById('z-promo').value=(z.promo||[]).join(',');
+            document.getElementById('z-barage').value=(z.barage||[]).join(','); document.getElementById('z-releg').value=(z.releg||[]).join(',');
             window.scrollTo({top:0,behavior:'smooth'});
         }
+
+        // CRUD POSTY
+        async function savePost(){
+            if(!user)return;
+            const id=document.getElementById('p-id').value;
+            const data={
+                title:document.getElementById('p-title').value,
+                label:document.getElementById('p-label').value,
+                content:document.getElementById('p-content').value,
+                date:firebase.firestore.FieldValue.serverTimestamp() // Aktualizujemy datę przy edycji/dodawaniu
+            };
+            if(!data.title || !data.content) { alert('Wypełnij tytuł i treść'); return; }
+            try{
+                if(id) await db.collection('posts').doc(id).update(data); else await db.collection('posts').add(data);
+                clearPF(); loadAdminP();
+            }catch(e){alert('Błąd');}
+        }
+        async function loadAdminP(){
+            const s=await db.collection('posts').orderBy('date','desc').limit(20).get();
+            document.getElementById('admin-plist').innerHTML=s.docs.map(d=>{
+                const p=d.data();
+                return `<div class="card" style="padding:1rem;display:flex;justify-content:space-between;align-items:center;">
+                    <div><div style="font-weight:600;font-size:0.95rem;">${p.title}</div><div style="font-size:0.75rem;color:var(--muted);">${p.label}</div></div>
+                    <div style="display:flex;gap:5px;"><button class="btn-sm" onclick='editP("${d.id}",${JSON.stringify(p).replace(/'/g,"&#39;")})'><i class="fa-solid fa-pen"></i></button><button class="btn-sm btn-del" onclick="delP('${d.id}')"><i class="fa-solid fa-trash"></i></button></div>
+                </div>`;
+            }).join('')||'<p style="color:var(--muted);">Brak postów.</p>';
+        }
+        function editP(id,p){
+            document.getElementById('p-id').value=id; document.getElementById('p-title').value=p.title;
+            document.getElementById('p-label').value=p.label; document.getElementById('p-content').value=p.content;
+            window.scrollTo({top:0,behavior:'smooth'});
+        }
+        async function delP(id){if(confirm('Usunąć post?')){await db.collection('posts').doc(id).delete();loadAdminP();}}
+        function clearPF(){document.getElementById('p-id').value='';['p-title','p-content'].forEach(i=>document.getElementById(i).value='');}
+
+        // CRUD TRANSFERY
+        async function saveTransfer(){
+            if(!user)return;
+            const id=document.getElementById('tr-id').value;
+            const data={
+                player:document.getElementById('tr-player').value,
+                league:document.getElementById('tr-league').value,
+                from:document.getElementById('tr-from').value,
+                to:document.getElementById('tr-to').value,
+                fee:document.getElementById('tr-fee').value,
+                date:firebase.firestore.FieldValue.serverTimestamp()
+            };
+            if(!data.player || !data.from || !data.to) { alert('Wypełnij podstawowe dane zawodnika i klubów'); return; }
+            try{
+                if(id) await db.collection('transfers').doc(id).update(data); else await db.collection('transfers').add(data);
+                clearTrF(); loadAdminTr();
+            }catch(e){alert('Błąd');}
+        }
+        async function loadAdminTr(){
+            const s=await db.collection('transfers').orderBy('date','desc').limit(20).get();
+            document.getElementById('admin-trlist').innerHTML=s.docs.map(d=>{
+                const t=d.data();
+                return `<div class="card" style="padding:1rem;display:flex;justify-content:space-between;align-items:center;">
+                    <div><div style="font-weight:600;font-size:0.95rem;">${t.player}</div><div style="font-size:0.75rem;color:var(--muted);">${t.from} ➡️ ${t.to}</div></div>
+                    <div style="display:flex;gap:5px;"><button class="btn-sm" onclick='editTr("${d.id}",${JSON.stringify(t).replace(/'/g,"&#39;")})'><i class="fa-solid fa-pen"></i></button><button class="btn-sm btn-del" onclick="delTr('${d.id}')"><i class="fa-solid fa-trash"></i></button></div>
+                </div>`;
+            }).join('')||'<p style="color:var(--muted);">Brak transferów.</p>';
+        }
+        function editTr(id,t){
+            document.getElementById('tr-id').value=id; document.getElementById('tr-player').value=t.player;
+            document.getElementById('tr-league').value=t.league; document.getElementById('tr-from').value=t.from;
+            document.getElementById('tr-to').value=t.to; document.getElementById('tr-fee').value=t.fee||'';
+            window.scrollTo({top:0,behavior:'smooth'});
+        }
+        async function delTr(id){if(confirm('Usunąć transfer?')){await db.collection('transfers').doc(id).delete();loadAdminTr();}}
+        function clearTrF(){document.getElementById('tr-id').value='';['tr-player','tr-from','tr-to','tr-fee'].forEach(i=>document.getElementById(i).value='');}
 
         // Init
         refreshMatches();

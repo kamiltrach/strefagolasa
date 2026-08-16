@@ -29,8 +29,10 @@
         h1,h2,h3,.logo-text{font-family:'Outfit',sans-serif;letter-spacing:-0.02em;}
         button{cursor:pointer;border:none;background:none;font-family:inherit;color:inherit;}
         input,select,textarea{font-family:inherit;}
-        @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
-        .anim{animation:fadeUp .7s var(--ease) forwards;opacity:0;}
+        
+        /* Płynniejsze animacje dzięki akceleracji sprzętowej */
+        @keyframes fadeUp{from{opacity:0;transform:translate3d(0, 24px, 0)}to{opacity:1;transform:translate3d(0, 0, 0)}}
+        .anim{animation:fadeUp .7s var(--ease) forwards;opacity:0;will-change:transform, opacity;}
         .d1{animation-delay:.08s}.d2{animation-delay:.16s}.d3{animation-delay:.24s}.d4{animation-delay:.32s}
 
         nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(11,22,44,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);height:78px;display:flex;align-items:center;justify-content:space-between;padding:0 5%;}
@@ -39,7 +41,7 @@
         .logo-text{font-size:1.15rem;font-weight:800;text-transform:uppercase;white-space:nowrap;}
         .logo-text span{color:var(--green);}
         .logo-sub{font-size:0.62rem;color:var(--muted);font-weight:600;letter-spacing:2.5px;text-transform:uppercase;display:block;margin-top:-3px;}
-        .tabs{display:flex;gap:0.3rem;overflow-x:auto;scrollbar-width:none;max-width:60%;justify-content:flex-end;}
+        .tabs{display:flex;gap:0.3rem;overflow-x:auto;scrollbar-width:none;max-width:65%;justify-content:flex-end;}
         .tabs::-webkit-scrollbar{display:none;}
         .tab{padding:0.65rem 1.1rem;border-radius:12px;font-size:0.8rem;font-weight:600;color:var(--muted);transition:all .3s var(--ease);white-space:nowrap;flex-shrink:0;}
         .tab:hover{color:var(--white);background:rgba(255,255,255,0.05);}
@@ -79,21 +81,27 @@
         .group-title:first-of-type{margin-top:0;}
         .group-title i{color:var(--green);margin-right:8px;}
 
-        .table-container{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:var(--radius);}
+        /* Płynne tabele */
+        .table-container{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:var(--radius);scroll-behavior:smooth;}
         .table-wrap{background:var(--glass);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;min-width:580px;}
         table{width:100%;border-collapse:collapse;}
         th{padding:1.2rem;text-align:left;font-size:0.65rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);background:rgba(0,0,0,0.25);border-bottom:1px solid var(--border);}
-        td{padding:1rem;font-size:0.9rem;border-bottom:1px solid var(--border);vertical-align:middle;}
+        tr{transition:background-color 0.3s var(--ease), transform 0.2s var(--ease);}
+        tr:hover td{background-color:rgba(255,255,255,0.03);}
+        td{padding:1rem;font-size:0.9rem;border-bottom:1px solid var(--border);vertical-align:middle;transition:background-color 0.3s var(--ease);}
         tr:last-child td{border-bottom:none;}
         td:first-child{font-weight:800;color:var(--muted);width:50px;text-align:center;font-family:'Outfit';font-size:1.1rem;}
         .top-pos{color:var(--gold)!important;text-shadow:0 0 16px rgba(245,166,35,0.5);}
         .team-cell{display:flex;align-items:center;gap:12px;}
         .table-crest{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.1);object-fit:contain;border:1px solid var(--border);flex-shrink:0;}
         tr.row-promo td{background:var(--promo);}
+        tr.row-promo:hover td{background:rgba(126,211,33,0.18);}
         tr.row-promo td:first-child{border-left:3px solid var(--promo-border);color:var(--promo-border);}
         tr.row-barage td{background:var(--barage);}
+        tr.row-barage:hover td{background:rgba(245,166,35,0.18);}
         tr.row-barage td:first-child{border-left:3px solid var(--barage-border);color:var(--barage-border);}
         tr.row-releg td{background:var(--releg);}
+        tr.row-releg:hover td{background:rgba(239,68,68,0.18);}
         tr.row-releg td:first-child{border-left:3px solid var(--releg-border);color:var(--releg-border);}
 
         .legend{display:flex;flex-wrap:wrap;gap:1.2rem;margin-top:1.5rem;padding:1.2rem 1.5rem;background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);}
@@ -159,7 +167,7 @@
         .footer-bottom{max-width:1160px;margin:2rem auto 0;padding-top:1.5rem;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.8rem;}
         .secret-trigger{position:fixed;bottom:0;right:0;width:60px;height:60px;z-index:999;cursor:default;}
 
-        @media(max-width:900px){.tabs{max-width:65%;}}
+        @media(max-width:900px){.tabs{max-width:70%;}}
         @media(max-width:768px){
             nav{height:auto;min-height:72px;flex-direction:column;gap:12px;padding:14px 1rem;}
             .logo-wrap{width:100%;justify-content:center;}
@@ -209,6 +217,7 @@
             <button class="tab" onclick="go('table')">Tabela</button>
             <button class="tab" onclick="go('transfers')">Transfery</button>
             <button class="tab" onclick="go('streams')">Transmisje</button>
+            <button class="tab" onclick="go('posts')">Posty</button>
             <button class="tab" onclick="go('contact')">Kontakt</button>
         </div>
     </nav>
@@ -312,6 +321,22 @@
                 <h2 class="wip-title">Transmisje</h2>
                 <p class="wip-text">Pracujemy nad tym, abyś mógł oglądać najlepsze spotkania z Podkarpacia bezpośrednio na naszej stronie.</p>
                 <div class="wip-badge"><i class="fa-solid fa-wrench"></i> Sekcja w trakcie prac</div>
+            </div>
+        </section>
+        
+        <!-- POSTY -->
+        <section id="posts" class="section">
+            <div class="hero anim" style="padding:3rem 0 2rem;">
+                <h1 style="font-size:2.4rem;">Aktualności i <span>Posty</span></h1>
+                <p>Najważniejsze komunikaty, ogłoszenia i informacje od redakcji.</p>
+            </div>
+            <div id="posts-grid" class="grid anim d1">
+                <div class="card">
+                    <div class="league-label"><i class="fa-solid fa-bullhorn"></i> Komunikat</div>
+                    <h3 style="font-size:1.1rem;margin-bottom:0.6rem;">Witaj w Strefie Gola!</h3>
+                    <p style="color:var(--muted);font-size:0.9rem;">To jest nowa sekcja z postami, w której będziemy informować Was o najważniejszych wydarzeniach, aktualizacjach tabel oraz nowościach z podkarpackich boisk.</p>
+                    <div class="match-date" style="text-align:left;margin-top:1.2rem;"><i class="fa-regular fa-clock"></i> Dodano: Dzisiaj</div>
+                </div>
             </div>
         </section>
 
@@ -468,6 +493,7 @@
                 <a href="#" onclick="go('table')">Tabela</a>
                 <a href="#" onclick="go('transfers')">Transfery</a>
                 <a href="#" onclick="go('streams')">Transmisje</a>
+                <a href="#" onclick="go('posts')">Posty</a>
             </div>
             <div class="footer-col">
                 <h4>Ligi</h4>
@@ -526,9 +552,9 @@
             document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
             document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            const map=['home','matches','table','transfers','streams','contact','admin'];
+            const map=['home','matches','table','transfers','streams','posts','contact','admin'];
             const idx=map.indexOf(id);
-            if(idx>=0&&idx<6) document.querySelectorAll('.tab')[idx].classList.add('active');
+            if(idx>=0&&idx<7) document.querySelectorAll('.tab')[idx].classList.add('active');
             const sec=document.getElementById(id);
             sec.querySelectorAll('.anim').forEach(el=>{el.style.animation='none';el.offsetHeight;el.style.animation=null;});
             window.scrollTo({top:0,behavior:'smooth'});

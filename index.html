@@ -17,7 +17,7 @@
             --releg:rgba(239,68,68,0.12); --releg-border:#ef4444;
             --barage:rgba(245,166,35,0.12); --barage-border:#f5a623;
         }
-        *{margin:0;padding:0;box-sizing:border-box;}
+        *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
         body{
             background-color:var(--navy);
             background-image:
@@ -30,68 +30,68 @@
         button{cursor:pointer;border:none;background:none;font-family:inherit;color:inherit;}
         input,select,textarea{font-family:inherit;}
         
-        @keyframes fadeUp{from{opacity:0;transform:translate3d(0, 24px, 0)}to{opacity:1;transform:translate3d(0, 0, 0)}}
-        .anim{animation:fadeUp .7s var(--ease) forwards;opacity:0;will-change:transform, opacity;}
-        .d1{animation-delay:.08s}.d2{animation-delay:.16s}.d3{animation-delay:.24s}.d4{animation-delay:.32s}
+        @keyframes fadeUp{from{opacity:0;transform:translate3d(0, 20px, 0)}to{opacity:1;transform:translate3d(0, 0, 0)}}
+        .anim{animation:fadeUp .6s var(--ease) forwards;opacity:0;will-change:transform, opacity;}
+        .d1{animation-delay:.06s}.d2{animation-delay:.12s}.d3{animation-delay:.18s}.d4{animation-delay:.24s}
 
-        nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(11,22,44,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);height:78px;display:flex;align-items:center;justify-content:space-between;padding:0 5%;}
-        .logo-wrap{display:flex;align-items:center;gap:14px;flex-shrink:0;}
-        .logo-img{height:52px;width:auto;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4));}
-        .logo-text{font-size:1.15rem;font-weight:800;text-transform:uppercase;white-space:nowrap;}
+        nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(11,22,44,0.94);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);height:76px;display:flex;align-items:center;justify-content:space-between;padding:0 4%;}
+        .logo-wrap{display:flex;align-items:center;gap:12px;flex-shrink:0;}
+        .logo-img{height:46px;width:auto;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4));}
+        .logo-text{font-size:1.1rem;font-weight:800;text-transform:uppercase;white-space:nowrap;}
         .logo-text span{color:var(--green);}
-        .logo-sub{font-size:0.62rem;color:var(--muted);font-weight:600;letter-spacing:2.5px;text-transform:uppercase;display:block;margin-top:-3px;}
-        .tabs{display:flex;gap:0.3rem;overflow-x:auto;scrollbar-width:none;max-width:65%;justify-content:flex-end;}
+        .logo-sub{font-size:0.58rem;color:var(--muted);font-weight:600;letter-spacing:2px;text-transform:uppercase;display:block;margin-top:-3px;}
+        .tabs{display:flex;gap:0.25rem;overflow-x:auto;scrollbar-width:none;max-width:68%;justify-content:flex-end;padding:4px 0;}
         .tabs::-webkit-scrollbar{display:none;}
-        .tab{padding:0.65rem 1.1rem;border-radius:12px;font-size:0.8rem;font-weight:600;color:var(--muted);transition:all .3s var(--ease);white-space:nowrap;flex-shrink:0;}
+        .tab{padding:0.55rem 1rem;border-radius:10px;font-size:0.78rem;font-weight:600;color:var(--muted);transition:all .25s var(--ease);white-space:nowrap;flex-shrink:0;}
         .tab:hover{color:var(--white);background:rgba(255,255,255,0.05);}
-        .tab.active{color:var(--navy);background:var(--green);box-shadow:0 0 24px var(--green-glow);}
+        .tab.active{color:var(--navy);background:var(--green);box-shadow:0 0 20px var(--green-glow);}
 
-        main{max-width:1160px;margin:115px auto 0;padding:0 2rem;min-height:80vh;}
+        main{max-width:1160px;margin:105px auto 0;padding:0 1.5rem 3rem;min-height:80vh;}
         .section{display:none;}.section.active{display:block;}
 
-        .sub-nav{display:flex;margin-bottom:2.8rem;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;}
+        .sub-nav{display:flex;margin-bottom:2.2rem;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;padding-bottom:2px;}
         .sub-nav::-webkit-scrollbar{display:none;}
-        .sub-tab{padding:1.1rem 1.8rem;font-size:0.82rem;font-weight:600;color:var(--muted);position:relative;white-space:nowrap;flex-shrink:0;}
-        .sub-tab::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:3px;background:var(--green);transform:scaleX(0);transition:transform .4s var(--ease);box-shadow:0 0 16px var(--green-glow);}
+        .sub-tab{padding:0.9rem 1.4rem;font-size:0.8rem;font-weight:600;color:var(--muted);position:relative;white-space:nowrap;flex-shrink:0;}
+        .sub-tab::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:3px;background:var(--green);transform:scaleX(0);transition:transform .3s var(--ease);box-shadow:0 0 14px var(--green-glow);}
         .sub-tab:hover{color:var(--white);}
         .sub-tab.active{color:var(--green);}
         .sub-tab.active::after{transform:scaleX(1);}
 
-        .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.6rem;}
-        .card{background:var(--glass);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;transition:all .4s var(--ease);position:relative;overflow:hidden;}
-        .card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--green),var(--gold));opacity:0;transition:opacity .4s;}
-        .card:hover{border-color:rgba(126,211,33,0.35);transform:translateY(-5px);box-shadow:0 16px 48px rgba(0,0,0,0.35);}
+        .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.4rem;}
+        .card{background:var(--glass);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius);padding:1.8rem;transition:all .35s var(--ease);position:relative;overflow:hidden;}
+        .card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--green),var(--gold));opacity:0;transition:opacity .35s;}
+        .card:hover{border-color:rgba(126,211,33,0.35);transform:translateY(-3px);box-shadow:0 14px 40px rgba(0,0,0,0.3);}
         .card:hover::before{opacity:1;}
-        .league-label{font-size:0.6rem;text-transform:uppercase;letter-spacing:2px;font-weight:700;color:var(--green);margin-bottom:1.4rem;display:flex;align-items:center;gap:8px;}
-        .league-label i{font-size:0.45rem;}
-        .badge-up{margin-left:auto;color:var(--gold);letter-spacing:1px;}
+        .league-label{font-size:0.58rem;text-transform:uppercase;letter-spacing:1.8px;font-weight:700;color:var(--green);margin-bottom:1.2rem;display:flex;align-items:center;gap:8px;}
+        .league-label i{font-size:0.42rem;}
+        .badge-up{margin-left:auto;color:var(--gold);letter-spacing:0.8px;}
 
-        .match-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.7rem;}
-        .team-wrap{display:flex;align-items:center;gap:10px;width:40%;min-width:0;}
+        .match-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.6rem;}
+        .team-wrap{display:flex;align-items:center;gap:10px;width:39%;min-width:0;}
         .team-wrap.away{flex-direction:row-reverse;text-align:right;}
-        .team-crest{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.1);object-fit:contain;border:1px solid var(--border);flex-shrink:0;}
-        .team-name{font-weight:600;font-size:1rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-        .score-box{width:20%;text-align:center;font-family:'Outfit';font-size:1.4rem;font-weight:800;background:rgba(0,0,0,0.35);border-radius:12px;padding:10px 0;border:1px solid var(--border);flex-shrink:0;}
-        .score-box.vs{font-size:0.9rem;color:var(--muted);font-weight:600;}
-        .match-date{text-align:center;font-size:0.7rem;color:var(--muted);margin-top:1.3rem;font-weight:500;letter-spacing:0.5px;}
+        .team-crest{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.08);object-fit:contain;border:1px solid var(--border);flex-shrink:0;}
+        .team-name{font-weight:600;font-size:0.95rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+        .score-box{width:22%;text-align:center;font-family:'Outfit';font-size:1.3rem;font-weight:800;background:rgba(0,0,0,0.35);border-radius:10px;padding:8px 0;border:1px solid var(--border);flex-shrink:0;}
+        .score-box.vs{font-size:0.85rem;color:var(--muted);font-weight:600;}
+        .match-date{text-align:center;font-size:0.68rem;color:var(--muted);margin-top:1.1rem;font-weight:500;letter-spacing:0.4px;}
         .match-date.up{color:var(--green);}
 
-        .group-title{font-size:1.1rem;text-transform:uppercase;letter-spacing:1.5px;margin:2.5rem 0 1.5rem;color:var(--white);}
+        .group-title{font-size:1.05rem;text-transform:uppercase;letter-spacing:1.2px;margin:2.2rem 0 1.2rem;color:var(--white);}
         .group-title:first-of-type{margin-top:0;}
         .group-title i{color:var(--green);margin-right:8px;}
 
-        .table-container{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:var(--radius);scroll-behavior:smooth;}
-        .table-wrap{background:var(--glass);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;min-width:580px;}
+        .table-container{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:var(--radius);}
+        .table-wrap{background:var(--glass);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;min-width:540px;}
         table{width:100%;border-collapse:collapse;}
-        th{padding:1.2rem;text-align:left;font-size:0.65rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);background:rgba(0,0,0,0.25);border-bottom:1px solid var(--border);}
-        tr{transition:background-color 0.3s var(--ease), transform 0.2s var(--ease);}
+        th{padding:1.1rem;text-align:left;font-size:0.62rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);background:rgba(0,0,0,0.25);border-bottom:1px solid var(--border);}
+        tr{transition:background-color 0.25s var(--ease);}
         tr:hover td{background-color:rgba(255,255,255,0.03);}
-        td{padding:1rem;font-size:0.9rem;border-bottom:1px solid var(--border);vertical-align:middle;transition:background-color 0.3s var(--ease);}
+        td{padding:0.95rem 1rem;font-size:0.88rem;border-bottom:1px solid var(--border);vertical-align:middle;}
         tr:last-child td{border-bottom:none;}
-        td:first-child{font-weight:800;color:var(--muted);width:50px;text-align:center;font-family:'Outfit';font-size:1.1rem;}
-        .top-pos{color:var(--gold)!important;text-shadow:0 0 16px rgba(245,166,35,0.5);}
-        .team-cell{display:flex;align-items:center;gap:12px;}
-        .table-crest{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.1);object-fit:contain;border:1px solid var(--border);flex-shrink:0;}
+        td:first-child{font-weight:800;color:var(--muted);width:45px;text-align:center;font-family:'Outfit';font-size:1.05rem;}
+        .top-pos{color:var(--gold)!important;text-shadow:0 0 14px rgba(245,166,35,0.4);}
+        .team-cell{display:flex;align-items:center;gap:10px;}
+        .table-crest{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,0.08);object-fit:contain;border:1px solid var(--border);flex-shrink:0;}
         tr.row-promo td{background:var(--promo);}
         tr.row-promo:hover td{background:rgba(126,211,33,0.18);}
         tr.row-promo td:first-child{border-left:3px solid var(--promo-border);color:var(--promo-border);}
@@ -102,100 +102,103 @@
         tr.row-releg:hover td{background:rgba(239,68,68,0.18);}
         tr.row-releg td:first-child{border-left:3px solid var(--releg-border);color:var(--releg-border);}
 
-        .legend{display:flex;flex-wrap:wrap;gap:1.2rem;margin-top:1.5rem;padding:1.2rem 1.5rem;background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);}
-        .legend-item{display:flex;align-items:center;gap:8px;font-size:0.82rem;color:var(--muted);}
-        .legend-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0;}
-        .dot-promo{background:var(--promo-border);box-shadow:0 0 8px var(--promo-border);}
-        .dot-barage{background:var(--barage-border);box-shadow:0 0 8px var(--barage-border);}
-        .dot-releg{background:var(--releg-border);box-shadow:0 0 8px var(--releg-border);}
+        .legend{display:flex;flex-wrap:wrap;gap:1rem;margin-top:1.2rem;padding:1.1rem 1.4rem;background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);}
+        .legend-item{display:flex;align-items:center;gap:8px;font-size:0.78rem;color:var(--muted);}
+        .legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0;}
+        .dot-promo{background:var(--promo-border);box-shadow:0 0 6px var(--promo-border);}
+        .dot-barage{background:var(--barage-border);box-shadow:0 0 6px var(--barage-border);}
+        .dot-releg{background:var(--releg-border);box-shadow:0 0 6px var(--releg-border);}
 
         .admin-box{max-width:720px;margin:0 auto;}
-        input,select,textarea{width:100%;padding:15px 18px;margin-bottom:12px;border:1px solid var(--border);border-radius:14px;background:rgba(0,0,0,0.35);color:var(--white);font-size:0.9rem;transition:all .3s var(--ease);}
+        input,select,textarea{width:100%;padding:14px 16px;margin-bottom:12px;border:1px solid var(--border);border-radius:12px;background:rgba(0,0,0,0.35);color:var(--white);font-size:0.9rem;transition:all .3s var(--ease);}
         input:focus,select:focus,textarea:focus{outline:none;border-color:var(--green);background:rgba(0,0,0,0.5);box-shadow:0 0 0 4px var(--green-glow);}
         input::placeholder,textarea::placeholder{color:var(--muted);}
         input[type="datetime-local"]{color-scheme:dark;}
         textarea{resize:vertical;min-height:100px;}
-        .btn{width:100%;padding:17px;background:var(--green);color:var(--navy);border-radius:14px;font-weight:700;margin-top:0.5rem;transition:all .3s var(--ease);font-size:0.9rem;text-transform:uppercase;letter-spacing:0.8px;}
-        .btn:hover{background:#8fe635;transform:translateY(-2px);box-shadow:0 10px 28px var(--green-glow);}
-        .btn-sm{padding:9px 16px;border-radius:10px;font-size:0.78rem;color:var(--muted);transition:all .2s;font-weight:600;}
+        .btn{width:100%;padding:16px;background:var(--green);color:var(--navy);border-radius:12px;font-weight:700;margin-top:0.4rem;transition:all .3s var(--ease);font-size:0.88rem;text-transform:uppercase;letter-spacing:0.8px;}
+        .btn:hover{background:#8fe635;transform:translateY(-2px);box-shadow:0 10px 24px var(--green-glow);}
+        .btn-sm{padding:9px 14px;border-radius:9px;font-size:0.76rem;color:var(--muted);transition:all .2s;font-weight:600;}
         .btn-sm:hover{background:rgba(255,255,255,0.08);color:var(--green);}
         .btn-del:hover{color:#ff6b6b;background:rgba(255,107,107,0.12);}
-        .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-        .form-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
-        .hint{font-size:0.75rem;color:var(--muted);margin:-4px 0 12px;}
+        .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+        .form-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
 
-        .hero{text-align:center;padding:5.5rem 0 3.5rem;}
-        .hero-logo{width:150px;height:150px;margin:0 auto 2.2rem;filter:drop-shadow(0 12px 40px rgba(126,211,33,0.25));}
-        .hero h1{font-size:3.2rem;margin-bottom:0.7rem;text-transform:uppercase;letter-spacing:1.5px;}
+        .hero{text-align:center;padding:4.5rem 0 3rem;}
+        .hero-logo{width:130px;height:130px;margin:0 auto 1.8rem;filter:drop-shadow(0 10px 30px rgba(126,211,33,0.22));}
+        .hero h1{font-size:2.8rem;margin-bottom:0.6rem;text-transform:uppercase;letter-spacing:1.2px;}
         .hero h1 span{color:var(--green);}
-        .hero p{color:var(--muted);max-width:500px;margin:0 auto;font-size:1.08rem;}
+        .hero p{color:var(--muted);max-width:480px;margin:0 auto;font-size:1.02rem;}
 
-        .home-section{margin-bottom:4rem;}
-        .home-section h2{font-size:1.4rem;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:1.8rem;}
+        .home-section{margin-bottom:3.5rem;}
+        .home-section h2{font-size:1.3rem;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:1.5rem;}
         .home-section h2 span{color:var(--green);}
-        .features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;}
-        .feature-card{text-align:center;padding:2.5rem 1.5rem;}
-        .feature-icon{font-size:2.5rem;color:var(--green);margin-bottom:1.2rem;}
-        .feature-card h3{font-size:1.1rem;margin-bottom:0.6rem;}
-        .feature-card p{color:var(--muted);font-size:0.9rem;}
-        .stats-row{display:flex;justify-content:center;gap:3rem;flex-wrap:wrap;margin:3rem 0;}
+        .features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.4rem;}
+        .feature-card{text-align:center;padding:2.2rem 1.4rem;}
+        .feature-icon{font-size:2.2rem;color:var(--green);margin-bottom:1rem;}
+        .feature-card h3{font-size:1.05rem;margin-bottom:0.5rem;}
+        .feature-card p{color:var(--muted);font-size:0.88rem;}
+        .stats-row{display:flex;justify-content:center;gap:2.5rem;flex-wrap:wrap;margin:2.5rem 0;}
         .stat-item{text-align:center;}
-        .stat-num{font-family:'Outfit';font-size:2.8rem;font-weight:800;color:var(--green);display:block;}
-        .stat-label{font-size:0.75rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);}
+        .stat-num{font-family:'Outfit';font-size:2.5rem;font-weight:800;color:var(--green);display:block;}
+        .stat-label{font-size:0.7rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);}
 
-        .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;}
-        .contact-info{display:flex;flex-direction:column;gap:1.5rem;}
-        .contact-item{display:flex;align-items:flex-start;gap:1rem;}
-        .contact-item i{color:var(--green);font-size:1.2rem;margin-top:4px;flex-shrink:0;}
-        .contact-item h4{font-size:0.95rem;margin-bottom:0.3rem;}
-        .contact-item p{color:var(--muted);font-size:0.9rem;}
+        .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.8rem;}
+        .contact-info{display:flex;flex-direction:column;gap:1.4rem;}
+        .contact-item{display:flex;align-items:flex-start;gap:0.9rem;}
+        .contact-item i{color:var(--green);font-size:1.1rem;margin-top:3px;flex-shrink:0;}
+        .contact-item h4{font-size:0.92rem;margin-bottom:0.2rem;}
+        .contact-item p{color:var(--muted);font-size:0.86rem;}
 
-        .wip-container{text-align:center;padding:6rem 2rem;}
-        .wip-icon{font-size:4rem;color:var(--gold);margin-bottom:1.5rem;animation:pulse 2s infinite;}
-        @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.7;transform:scale(1.05)}}
-        .wip-title{font-size:1.8rem;margin-bottom:0.8rem;text-transform:uppercase;letter-spacing:1.5px;}
-        .wip-text{color:var(--muted);max-width:500px;margin:0 auto;font-size:1.05rem;}
-        .wip-badge{display:inline-block;margin-top:2rem;padding:8px 20px;background:rgba(245,166,35,0.15);border:1px solid var(--gold);border-radius:20px;color:var(--gold);font-size:0.8rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;}
+        .wip-container{text-align:center;padding:5rem 1.5rem;}
+        .wip-icon{font-size:3.5rem;color:var(--gold);margin-bottom:1.2rem;animation:pulse 2s infinite;}
+        @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.7;transform:scale(1.04)}}
+        .wip-title{font-size:1.6rem;margin-bottom:0.6rem;text-transform:uppercase;letter-spacing:1.2px;}
+        .wip-text{color:var(--muted);max-width:460px;margin:0 auto;font-size:1rem;}
+        .wip-badge{display:inline-block;margin-top:1.8rem;padding:7px 18px;background:rgba(245,166,35,0.12);border:1px solid var(--gold);border-radius:18px;color:var(--gold);font-size:0.76rem;font-weight:600;letter-spacing:0.8px;text-transform:uppercase;}
 
-        footer{background:rgba(11,22,44,0.95);border-top:1px solid var(--border);padding:3rem 5% 2rem;margin-top:4rem;}
-        .footer-content{max-width:1160px;margin:0 auto;display:flex;justify-content:space-between;flex-wrap:wrap;gap:2rem;}
-        .footer-col h4{font-size:0.85rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--green);margin-bottom:1rem;}
-        .footer-col a{display:block;color:var(--muted);font-size:0.88rem;margin-bottom:0.6rem;transition:color .2s;}
+        footer{background:rgba(11,22,44,0.95);border-top:1px solid var(--border);padding:2.5rem 4% 1.8rem;margin-top:3.5rem;}
+        .footer-content{max-width:1160px;margin:0 auto;display:flex;justify-content:space-between;flex-wrap:wrap;gap:1.8rem;}
+        .footer-col h4{font-size:0.8rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--green);margin-bottom:0.9rem;}
+        .footer-col a{display:block;color:var(--muted);font-size:0.85rem;margin-bottom:0.5rem;transition:color .2s;}
         .footer-col a:hover{color:var(--white);}
-        .footer-bottom{max-width:1160px;margin:2rem auto 0;padding-top:1.5rem;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.8rem;}
+        .footer-bottom{max-width:1160px;margin:1.8rem auto 0;padding-top:1.2rem;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.76rem;}
         .secret-trigger{position:fixed;bottom:0;right:0;width:70px;height:70px;z-index:999;cursor:default;}
 
-        @media(max-width:900px){.tabs{max-width:70%;}}
-        @media(max-width:768px){
-            nav{height:auto;min-height:72px;flex-direction:column;gap:12px;padding:14px 1rem;}
+        /* ULEPSZONA RESPONSYWNOŚĆ MOBILNA */
+        @media(max-width:960px){
+            nav{height:auto;min-height:70px;flex-direction:column;gap:10px;padding:12px 16px;}
             .logo-wrap{width:100%;justify-content:center;}
-            .tabs{max-width:100%;width:100%;justify-content:flex-start;padding-bottom:4px;}
-            .tab{padding:0.55rem 0.9rem;font-size:0.75rem;}
-            main{margin-top:150px;padding:0 1rem;}
-            .hero{padding:3.5rem 0 2.5rem;}
-            .hero h1{font-size:2.2rem;}
-            .hero-logo{width:120px;height:120px;}
-            .grid{grid-template-columns:1fr;gap:1.2rem;}
-            .card{padding:1.5rem;}
-            .sub-tab{padding:0.85rem 1.2rem;font-size:0.78rem;}
-            .form-grid,.form-grid-3{grid-template-columns:1fr;}
-            .logo-img{height:42px;}
+            .tabs{max-width:100%;width:100%;justify-content:flex-start;padding-bottom:6px;-webkit-overflow-scrolling:touch;}
+            .tab{padding:0.5rem 0.85rem;font-size:0.72rem;}
+            main{margin-top:140px;padding:0 12px 2.5rem;}
+            .hero{padding:2.8rem 0 2rem;}
+            .hero h1{font-size:2.05rem;}
+            .hero-logo{width:105px;height:105px;margin-bottom:1.4rem;}
+            .grid{grid-template-columns:1fr;gap:1.1rem;}
+            .card{padding:1.35rem;border-radius:16px;}
+            .sub-nav{margin-bottom:1.6rem;}
+            .sub-tab{padding:0.75rem 1.1rem;font-size:0.75rem;}
+            .form-grid,.form-grid-3{grid-template-columns:1fr;gap:8px;}
+            .logo-img{height:38px;}
             .contact-grid{grid-template-columns:1fr;}
-            .stats-row{gap:1.5rem;}
-            .stat-num{font-size:2.2rem;}
-            .footer-content{flex-direction:column;gap:1.5rem;}
-            .table-container{margin:0 -1rem;padding:0 1rem;}
-            .team-name{font-size:0.88rem;}
+            .stats-row{gap:1.2rem;margin:2rem 0;}
+            .stat-num{font-size:2rem;}
+            .footer-content{flex-direction:column;gap:1.4rem;}
+            .table-container{margin:0 -12px;padding:0 12px;border-radius:0;}
+            .table-wrap{border-radius:14px;}
+            .team-name{font-size:0.86rem;}
             .team-crest{width:26px;height:26px;}
-            .score-box{font-size:1.2rem;padding:8px 0;}
-            .legend{gap:0.8rem;padding:1rem;}
-            .legend-item{font-size:0.75rem;}
+            .score-box{font-size:1.15rem;padding:7px 0;width:24%;}
+            .legend{gap:0.7rem;padding:0.9rem 1.1rem;}
+            .legend-item{font-size:0.72rem;}
+            input,select,textarea{padding:13px 14px;font-size:0.88rem;border-radius:10px;}
+            .btn{padding:14px;border-radius:10px;}
         }
         @media(max-width:380px){
-            .tab{padding:0.5rem 0.7rem;font-size:0.7rem;}
-            .team-name{font-size:0.82rem;}
-            .score-box{font-size:1.1rem;width:22%;}
-            .team-wrap{width:38%;gap:6px;}
+            .tab{padding:0.45rem 0.65rem;font-size:0.68rem;}
+            .team-name{font-size:0.8rem;}
+            .score-box{font-size:1.05rem;width:25%;}
+            .team-wrap{width:37.5%;gap:5px;}
         }
     </style>
 </head>
@@ -220,14 +223,12 @@
         </div>
     </nav>
 
-    <!-- Ukryty skrót na telefony (kliknij 5 razy) -->
     <div class="secret-trigger" id="mobile-admin-trigger"></div>
 
     <main>
-        <!-- START -->
         <section id="home" class="section active">
             <div class="hero anim">
-                <img src="logo.png" alt="Logo" class="hero-logo" onerror="this.outerHTML='<div style=\'width:130px;height:130px;margin:0 auto 2rem;border-radius:50%;border:2px solid var(--green);display:flex;align-items:center;justify-content:center;font-size:3.2rem;color:var(--green);\'><i class=\'fa-solid fa-futbol\'></i></div>'">
+                <img src="logo.png" alt="Logo" class="hero-logo" onerror="this.outerHTML='<div style=\'width:110px;height:110px;margin:0 auto 1.5rem;border-radius:50%;border:2px solid var(--green);display:flex;align-items:center;justify-content:center;font-size:2.8rem;color:var(--green);\'><i class=\'fa-solid fa-futbol\'></i></div>'">
                 <h1>Strefa<span>Gola</span></h1>
                 <p>IV Liga, Klasa Okręgowa Jarosław, Krosno, Rzeszów, Dębica, Stalowa Wola.<br>Dane. Statystyki. Profesjonalizm.</p>
             </div>
@@ -266,13 +267,12 @@
                     </div>
                 </div>
                 <div class="legend" id="home-legend"></div>
-                <div style="text-align:center;margin-top:1.5rem;">
-                    <button class="btn-sm" onclick="go('table')" style="border:1px solid var(--border);padding:12px 24px;">Zobacz pełną tabelę →</button>
+                <div style="text-align:center;margin-top:1.4rem;">
+                    <button class="btn-sm" onclick="go('table')" style="border:1px solid var(--border);padding:11px 22px;">Zobacz pełną tabelę →</button>
                 </div>
             </div>
         </section>
 
-        <!-- ROZGRYWKI -->
         <section id="matches" class="section">
             <div class="sub-nav anim" id="matches-sub">
                 <button class="sub-tab active" onclick="filterM('all',this)">Wszystkie</button>
@@ -285,11 +285,10 @@
             </div>
             <h3 class="group-title anim d1"><i class="fa-regular fa-clock"></i>Nadchodzące mecze</h3>
             <div id="upcoming-grid" class="grid anim d1"></div>
-            <h3 class="group-title anim d2" style="margin-top:3.5rem;"><i class="fa-solid fa-flag-checkered"></i>Wyniki</h3>
+            <h3 class="group-title anim d2" style="margin-top:3.2rem;"><i class="fa-solid fa-flag-checkered"></i>Wyniki</h3>
             <div id="results-grid" class="grid anim d2"></div>
         </section>
 
-        <!-- TABELA -->
         <section id="table" class="section">
             <div class="sub-nav anim" id="table-sub">
                 <button class="sub-tab active" onclick="loadTable('iv_liga',this)">IV Liga</button>
@@ -307,13 +306,11 @@
             <div class="legend anim d2" id="table-legend"></div>
         </section>
 
-        <!-- TRANSFERY -->
         <section id="transfers" class="section">
-            <h2 style="margin-bottom:2.2rem;text-transform:uppercase;letter-spacing:1.2px;font-size:0.85rem;color:var(--muted);" class="anim">Rynek Transferowy</h2>
+            <h2 style="margin-bottom:2rem;text-transform:uppercase;letter-spacing:1.2px;font-size:0.82rem;color:var(--muted);" class="anim">Rynek Transferowy</h2>
             <div id="transfers-grid" class="grid anim d1"></div>
         </section>
 
-        <!-- TRANSMISJE -->
         <section id="streams" class="section">
             <div class="wip-container anim">
                 <div class="wip-icon"><i class="fa-solid fa-tower-broadcast"></i></div>
@@ -323,24 +320,22 @@
             </div>
         </section>
         
-        <!-- POSTY -->
         <section id="posts" class="section">
-            <div class="hero anim" style="padding:3rem 0 2rem;">
-                <h1 style="font-size:2.4rem;">Aktualności i <span>Posty</span></h1>
+            <div class="hero anim" style="padding:2.5rem 0 1.8rem;">
+                <h1 style="font-size:2.2rem;">Aktualności i <span>Posty</span></h1>
                 <p>Najważniejsze komunikaty, ogłoszenia i informacje od redakcji.</p>
             </div>
             <div id="posts-grid" class="grid anim d1"></div>
         </section>
 
-        <!-- KONTAKT -->
         <section id="contact" class="section">
-            <div class="hero anim" style="padding:3rem 0 2rem;">
-                <h1 style="font-size:2.4rem;">Kontakt</h1>
+            <div class="hero anim" style="padding:2.5rem 0 1.8rem;">
+                <h1 style="font-size:2.2rem;">Kontakt</h1>
                 <p>Masz pytania, propozycje lub chcesz zgłosić błąd? Napisz do nas.</p>
             </div>
             <div class="contact-grid anim d1">
                 <div class="card">
-                    <h3 style="font-size:1rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:1.5rem;color:var(--green);">Wyślij wiadomość</h3>
+                    <h3 style="font-size:0.95rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:1.4rem;color:var(--green);">Wyślij wiadomość</h3>
                     <input type="text" id="c-name" placeholder="Imię i nazwisko">
                     <input type="email" id="c-email" placeholder="Adres email">
                     <input type="text" id="c-subject" placeholder="Temat">
@@ -356,22 +351,21 @@
             </div>
         </section>
 
-        <!-- ADMIN -->
         <section id="admin" class="section">
             <div class="admin-box anim">
                 <div id="login-panel" class="card" style="text-align:center;">
-                    <i class="fa-solid fa-lock" style="font-size:2.2rem;color:var(--green);margin-bottom:1.2rem;"></i>
+                    <i class="fa-solid fa-lock" style="font-size:2rem;color:var(--green);margin-bottom:1rem;"></i>
                     <h2 style="margin-bottom:0.4rem;">Panel Redakcji</h2>
-                    <p style="color:var(--muted);margin-bottom:2.2rem;font-size:0.85rem;">Autoryzowany dostęp</p>
+                    <p style="color:var(--muted);margin-bottom:2rem;font-size:0.82rem;">Autoryzowany dostęp</p>
                     <input type="email" id="l-email" placeholder="Email" value="admin@b.pl">
                     <input type="password" id="l-pass" placeholder="Hasło">
                     <button class="btn" onclick="login()">Autoryzacja</button>
-                    <p id="l-msg" style="margin-top:1.2rem;font-size:0.78rem;color:#ff6b6b;"></p>
+                    <p id="l-msg" style="margin-top:1.1rem;font-size:0.76rem;color:#ff6b6b;"></p>
                 </div>
 
                 <div id="dash" style="display:none;">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2.2rem;flex-wrap:wrap;gap:10px;">
-                        <h2 style="text-transform:uppercase;letter-spacing:1.2px;font-size:0.95rem;">Zarządzanie</h2>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;flex-wrap:wrap;gap:10px;">
+                        <h2 style="text-transform:uppercase;letter-spacing:1.2px;font-size:0.9rem;">Zarządzanie</h2>
                         <div style="display:flex;gap:4px;flex-wrap:wrap;">
                             <button class="btn-sm" onclick="showAT('ma')" id="at-ma" style="background:var(--green-glow);color:var(--green);">Mecze</button>
                             <button class="btn-sm" onclick="showAT('ta')" id="at-ta">Tabela</button>
@@ -382,10 +376,9 @@
                         </div>
                     </div>
 
-                    <!-- MECZE -->
                     <div id="ma">
-                        <div class="card" style="margin-bottom:2.2rem;">
-                            <h3 style="font-size:0.78rem;color:var(--green);margin-bottom:1.3rem;text-transform:uppercase;letter-spacing:1.2px;">Dodaj / Edytuj Spotkanie</h3>
+                        <div class="card" style="margin-bottom:2rem;">
+                            <h3 style="font-size:0.75rem;color:var(--green);margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:1.2px;">Dodaj / Edytuj Spotkanie</h3>
                             <input type="hidden" id="m-id">
                             <div class="form-grid">
                                 <input type="text" id="m-home" placeholder="Gospodarz">
@@ -409,14 +402,13 @@
                             <button class="btn" onclick="saveMatch()">Zapisz spotkanie</button>
                             <button class="btn-sm" onclick="clearMF()" style="width:100%;margin-top:10px;border:1px solid var(--border);">Wyczyść</button>
                         </div>
-                        <h3 style="font-size:0.78rem;color:var(--muted);margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:1.2px;">Baza Spotkań</h3>
+                        <h3 style="font-size:0.75rem;color:var(--muted);margin-bottom:1.1rem;text-transform:uppercase;letter-spacing:1.2px;">Baza Spotkań</h3>
                         <div id="admin-mlist" class="grid"></div>
                     </div>
 
-                    <!-- TABELA -->
                     <div id="ta" style="display:none;">
-                        <div class="card" style="margin-bottom:2.2rem;">
-                            <h3 style="font-size:0.78rem;color:var(--green);margin-bottom:1.3rem;text-transform:uppercase;letter-spacing:1.2px;">Dodaj / Edytuj Drużynę</h3>
+                        <div class="card" style="margin-bottom:2rem;">
+                            <h3 style="font-size:0.75rem;color:var(--green);margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:1.2px;">Dodaj / Edytuj Drużynę</h3>
                             <input type="hidden" id="t-id">
                             <div class="form-grid">
                                 <input type="text" id="t-team" placeholder="Nazwa drużyny">
@@ -438,14 +430,13 @@
                             <button class="btn" onclick="saveTeam()">Zapisz drużynę</button>
                             <button class="btn-sm" onclick="clearTF()" style="width:100%;margin-top:10px;border:1px solid var(--border);">Wyczyść</button>
                         </div>
-                        <h3 style="font-size:0.78rem;color:var(--muted);margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:1.2px;">Drużyny w bazie</h3>
+                        <h3 style="font-size:0.75rem;color:var(--muted);margin-bottom:1.1rem;text-transform:uppercase;letter-spacing:1.2px;">Drużyny w bazie</h3>
                         <div id="admin-tlist" class="grid"></div>
                     </div>
 
-                    <!-- STREFY -->
                     <div id="za" style="display:none;">
-                        <div class="card" style="margin-bottom:2.2rem;">
-                            <h3 style="font-size:0.78rem;color:var(--green);margin-bottom:1.3rem;text-transform:uppercase;letter-spacing:1.2px;">Strefy lig</h3>
+                        <div class="card" style="margin-bottom:2rem;">
+                            <h3 style="font-size:0.75rem;color:var(--green);margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:1.2px;">Strefy lig</h3>
                             <select id="z-league">
                                 <option value="iv_liga">IV Liga</option>
                                 <option value="okr_jaroslaw">Okr. Jarosław</option>
@@ -461,14 +452,13 @@
                             </div>
                             <button class="btn" onclick="saveZones()">Zapisz strefy</button>
                         </div>
-                        <h3 style="font-size:0.78rem;color:var(--muted);margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:1.2px;">Ustawienia stref</h3>
+                        <h3 style="font-size:0.75rem;color:var(--muted);margin-bottom:1.1rem;text-transform:uppercase;letter-spacing:1.2px;">Ustawienia stref</h3>
                         <div id="admin-zlist" class="grid"></div>
                     </div>
 
-                    <!-- POSTY -->
                     <div id="po" style="display:none;">
-                        <div class="card" style="margin-bottom:2.2rem;">
-                            <h3 style="font-size:0.78rem;color:var(--green);margin-bottom:1.3rem;text-transform:uppercase;letter-spacing:1.2px;">Dodaj / Edytuj Post</h3>
+                        <div class="card" style="margin-bottom:2rem;">
+                            <h3 style="font-size:0.75rem;color:var(--green);margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:1.2px;">Dodaj / Edytuj Post</h3>
                             <input type="hidden" id="p-id">
                             <div class="form-grid">
                                 <input type="text" id="p-title" placeholder="Tytuł posta">
@@ -483,14 +473,13 @@
                             <button class="btn" onclick="savePost()">Zapisz wpis</button>
                             <button class="btn-sm" onclick="clearPF()" style="width:100%;margin-top:10px;border:1px solid var(--border);">Wyczyść</button>
                         </div>
-                        <h3 style="font-size:0.78rem;color:var(--muted);margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:1.2px;">Zarządzanie wpisami</h3>
+                        <h3 style="font-size:0.75rem;color:var(--muted);margin-bottom:1.1rem;text-transform:uppercase;letter-spacing:1.2px;">Zarządzanie wpisami</h3>
                         <div id="admin-plist" class="grid"></div>
                     </div>
 
-                    <!-- TRANSFERY CRUD -->
                     <div id="tr" style="display:none;">
-                        <div class="card" style="margin-bottom:2.2rem;">
-                            <h3 style="font-size:0.78rem;color:var(--green);margin-bottom:1.3rem;text-transform:uppercase;letter-spacing:1.2px;">Dodaj / Edytuj Transfer</h3>
+                        <div class="card" style="margin-bottom:2rem;">
+                            <h3 style="font-size:0.75rem;color:var(--green);margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:1.2px;">Dodaj / Edytuj Transfer</h3>
                             <input type="hidden" id="tr-id">
                             <div class="form-grid">
                                 <input type="text" id="tr-player" placeholder="Imię i nazwisko zawodnika">
@@ -511,7 +500,7 @@
                             <button class="btn" onclick="saveTransfer()">Zapisz transfer</button>
                             <button class="btn-sm" onclick="clearTrF()" style="width:100%;margin-top:10px;border:1px solid var(--border);">Wyczyść</button>
                         </div>
-                        <h3 style="font-size:0.78rem;color:var(--muted);margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:1.2px;">Historia transferów</h3>
+                        <h3 style="font-size:0.75rem;color:var(--muted);margin-bottom:1.1rem;text-transform:uppercase;letter-spacing:1.2px;">Historia transferów</h3>
                         <div id="admin-trlist" class="grid"></div>
                     </div>
 
@@ -523,11 +512,11 @@
     <footer>
         <div class="footer-content">
             <div class="footer-col">
-                <div class="logo-wrap" style="margin-bottom:1rem;">
-                    <img src="logo.png" alt="Logo" style="height:40px;" onerror="this.style.display='none'">
-                    <div><div class="logo-text" style="font-size:1rem;">Strefa<span>Gola</span></div><div class="logo-sub" style="font-size:0.55rem;">Podkarpacie</div></div>
+                <div class="logo-wrap" style="margin-bottom:0.9rem;">
+                    <img src="logo.png" alt="Logo" style="height:36px;" onerror="this.style.display='none'">
+                    <div><div class="logo-text" style="font-size:0.95rem;">Strefa<span>Gola</span></div><div class="logo-sub" style="font-size:0.52rem;">Podkarpacie</div></div>
                 </div>
-                <p style="color:var(--muted);font-size:0.85rem;max-width:280px;">Kompleksowe źródło informacji o piłce nożnej na Podkarpaciu.</p>
+                <p style="color:var(--muted);font-size:0.82rem;max-width:260px;">Kompleksowe źródło informacji o piłce nożnej na Podkarpaciu.</p>
             </div>
             <div class="footer-col">
                 <h4>Nawigacja</h4>
@@ -551,16 +540,12 @@
         <div class="footer-bottom">© 2026 Strefa Gola - Podkarpacie. Wszelkie prawa zastrzeżone.</div>
     </footer>
 
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-    
-    <!-- Zewnętrzna konfiguracja Firebase (ukrywa config przed wzrokiem) -->
     <script src="firebase-config.js"></script>
 
     <script>
-        // Upewniamy się, że obiekty db i auth zostały wczytane z firebase-config.js
         const db = window.db;
         const auth = window.auth;
 
@@ -576,13 +561,10 @@
 
         const DEFAULT_ZONES = { promo:[1], barage:[2], releg:[14,15,16] };
 
-        // === SKRÓTY DO PANELU ADMINA ===
-        // 1. Skrót klawiszowy dla PC (Ctrl+M)
         document.addEventListener('keydown', e => {
             if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='m'){ e.preventDefault(); go('admin'); }
         });
 
-        // 2. Skrót mobilny (5 szybkich kliknięć w prawy dolny róg)
         let tapCount = 0;
         let tapTimer;
         document.getElementById('mobile-admin-trigger').addEventListener('click', () => {
@@ -613,7 +595,6 @@
             if(id==='posts') loadPosts();
         }
 
-        // === HERBY ===
         let crestsCache={};
         async function loadCrests(){
             crestsCache={};
@@ -626,13 +607,12 @@
         }
         function crestImg(name){
             const c=crestsCache[(name||'').trim()];
-            return c ? `<img src="${c}" class="team-crest" alt="">` : '<div class="team-crest" style="display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:var(--muted);"><i class="fa-solid fa-shield"></i></div>';
+            return c ? `<img src="${c}" class="team-crest" alt="">` : '<div class="team-crest" style="display:flex;align-items:center;justify-content:center;font-size:0.65rem;color:var(--muted);"><i class="fa-solid fa-shield"></i></div>';
         }
         function crestImgSmall(t){
-            return t.crest ? `<img src="${t.crest}" class="table-crest" alt="">` : '<div class="table-crest" style="display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:var(--muted);"><i class="fa-solid fa-shield"></i></div>';
+            return t.crest ? `<img src="${t.crest}" class="table-crest" alt="">` : '<div class="table-crest" style="display:flex;align-items:center;justify-content:center;font-size:0.55rem;color:var(--muted);"><i class="fa-solid fa-shield"></i></div>';
         }
 
-        // === STREFY ===
         let zonesCache={};
         async function loadZones(){
             zonesCache={};
@@ -656,13 +636,12 @@
             const z=getZones(league);
             const el=document.getElementById(cid);
             let html='';
-            if((z.promo||[]).length) html+=`<div class="legend-item"><div class="legend-dot dot-promo"></div> Awans (miejsca: ${z.promo.join(', ')})</div>`;
-            if((z.barage||[]).length) html+=`<div class="legend-item"><div class="legend-dot dot-barage"></div> Baraże (miejsca: ${z.barage.join(', ')})</div>`;
-            if((z.releg||[]).length) html+=`<div class="legend-item"><div class="legend-dot dot-releg"></div> Spadek (miejsca: ${z.releg.join(', ')})</div>`;
-            el.innerHTML=html||'<div class="legend-item">Brak zdefiniowanych stref</div>';
+            if((z.promo||[]).length) html+=`<div class="legend-item"><div class="legend-dot dot-promo"></div> Awans (${z.promo.join(', ')})</div>`;
+            if((z.barage||[]).length) html+=`<div class="legend-item"><div class="legend-dot dot-barage"></div> Baraże (${z.barage.join(', ')})</div>`;
+            if((z.releg||[]).length) html+=`<div class="legend-item"><div class="legend-dot dot-releg"></div> Spadek (${z.releg.join(', ')})</div>`;
+            el.innerHTML=html||'<div class="legend-item">Brak stref</div>';
         }
 
-        // === MECZE (NADCHODZĄCE + WYNIKI) ===
         let mc=[], curFilter='all';
         function matchIsUpcoming(m){ return (m.status==='upcoming' || (m.scoreHome==null||m.scoreAway==null)) && m.status!=='finished'; }
         function upcomingList(list){ return list.filter(matchIsUpcoming).sort((a,b)=>(a.date?.seconds||0)-(b.date?.seconds||0)); }
@@ -727,7 +706,6 @@
             applyFilter();
         }
 
-        // === TABELA ===
         async function loadTable(league,btn){
             if(btn){document.querySelectorAll('#table-sub .sub-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
             const tb=document.getElementById('tb');
@@ -746,7 +724,7 @@
                         <td><div class="team-cell">${crestImgSmall(t)}<span style="font-weight:600;">${t.name}</span></div></td>
                         <td style="color:var(--muted)">${t.m}</td>
                         <td style="font-weight:800;color:var(--green);">${t.pts}</td>
-                        <td style="color:var(--muted);font-size:0.83rem;">${t.diff}</td>
+                        <td style="color:var(--muted);font-size:0.8rem;">${t.diff}</td>
                     </tr>`).join('');
                 renderLegend(league,'table-legend');
             }catch(e){tb.innerHTML=`<tr><td colspan="5" style="text-align:center;color:#ff6b6b;padding:2rem;">Błąd bazy</td></tr>`;}
@@ -765,13 +743,12 @@
                         <td><div class="team-cell">${crestImgSmall(t)}<span style="font-weight:600;">${t.name}</span></div></td>
                         <td style="color:var(--muted)">${t.m}</td>
                         <td style="font-weight:800;color:var(--green);">${t.pts}</td>
-                        <td style="color:var(--muted);font-size:0.83rem;">${t.diff}</td>
+                        <td style="color:var(--muted);font-size:0.8rem;">${t.diff}</td>
                     </tr>`).join('');
                 renderLegend('iv_liga','home-legend');
             }catch(e){}
         }
 
-        // === PUBLICZNE TRANSFERY ===
         async function loadTransfers(){
             const c=document.getElementById('transfers-grid');
             try{
@@ -781,15 +758,14 @@
                     const t=d.data();
                     return `<div class="card">
                         <div class="league-label"><i class="fa-solid fa-circle"></i>${L[t.league]||'Transfer'}</div>
-                        <h3 style="font-size:1.08rem;margin-bottom:0.5rem;">${t.player}</h3>
-                        <div style="color:var(--muted);font-size:0.9rem;">${t.from} ➡️ <span style="color:var(--white);font-weight:600;">${t.to}</span></div>
-                        <div style="color:var(--gold);font-weight:700;margin-top:0.8rem;font-size:0.85rem;">${t.fee||'Kwota nieujawniona / Bez odstępnego'}</div>
+                        <h3 style="font-size:1.02rem;margin-bottom:0.4rem;">${t.player}</h3>
+                        <div style="color:var(--muted);font-size:0.86rem;">${t.from} ➡️ <span style="color:var(--white);font-weight:600;">${t.to}</span></div>
+                        <div style="color:var(--gold);font-weight:700;margin-top:0.7rem;font-size:0.82rem;">${t.fee||'Kwota nieujawniona'}</div>
                     </div>`;
                 }).join('');
             }catch(e){ c.innerHTML='<p style="color:#ff6b6b;padding:2rem;">Błąd ładowania.</p>'; }
         }
 
-        // === PUBLICZNE POSTY ===
         async function loadPosts(){
             const c=document.getElementById('posts-grid');
             try{
@@ -799,15 +775,14 @@
                     const p=d.data();
                     return `<div class="card">
                         <div class="league-label"><i class="fa-solid fa-bullhorn"></i> ${p.label||'Informacja'}</div>
-                        <h3 style="font-size:1.1rem;margin-bottom:0.6rem;">${p.title}</h3>
-                        <p style="color:var(--muted);font-size:0.9rem;white-space:pre-wrap;">${p.content}</p>
-                        <div class="match-date" style="text-align:left;margin-top:1.2rem;"><i class="fa-regular fa-clock"></i> Dodano: ${fmtFinished(p.date)}</div>
+                        <h3 style="font-size:1.05rem;margin-bottom:0.5rem;">${p.title}</h3>
+                        <p style="color:var(--muted);font-size:0.88rem;white-space:pre-wrap;">${p.content}</p>
+                        <div class="match-date" style="text-align:left;margin-top:1.1rem;"><i class="fa-regular fa-clock"></i> Dodano: ${fmtFinished(p.date)}</div>
                     </div>`;
                 }).join('');
             }catch(e){ c.innerHTML='<p style="color:#ff6b6b;padding:2rem;">Błąd ładowania.</p>'; }
         }
 
-        // === KONTAKT ===
         async function sendContact(){
             const name=document.getElementById('c-name').value, email=document.getElementById('c-email').value;
             const subject=document.getElementById('c-subject').value, msg=document.getElementById('c-msg').value;
@@ -820,7 +795,6 @@
             }catch(e){status.style.color='#ff6b6b';status.innerText='Błąd wysyłania.';}
         }
 
-        // === ADMIN LOGIC ===
         let user=null;
         auth.onAuthStateChanged(async u=>{
             if(u){
@@ -850,7 +824,6 @@
             });
         }
 
-        // CRUD MECZE
         async function saveMatch(){
             if(!user)return;
             const id=document.getElementById('m-id').value;
@@ -876,10 +849,10 @@
             const all=s.docs.map(d=>({id:d.id,...d.data()}));
             const sorted=[...upcomingList(all),...finishedList(all)];
             document.getElementById('admin-mlist').innerHTML=sorted.map(m=>`
-                <div class="card" style="padding:1rem;display:flex;justify-content:space-between;align-items:center;">
-                    <div><div style="font-weight:600;font-size:0.95rem;">${m.homeTeam} vs ${m.awayTeam}</div>
-                    <div style="font-size:0.75rem;color:var(--muted);">${L[m.league]} • ${matchIsUpcoming(m)?'Nadchodzący':`Wynik ${m.scoreHome}:${m.scoreAway}`}</div></div>
-                    <div style="display:flex;gap:5px;"><button class="btn-sm" onclick='editM("${m.id}",${JSON.stringify(m).replace(/'/g,"&#39;")})'><i class="fa-solid fa-pen"></i></button><button class="btn-sm btn-del" onclick="delM('${m.id}')"><i class="fa-solid fa-trash"></i></button></div>
+                <div class="card" style="padding:0.9rem;display:flex;justify-content:space-between;align-items:center;">
+                    <div><div style="font-weight:600;font-size:0.9rem;">${m.homeTeam} vs ${m.awayTeam}</div>
+                    <div style="font-size:0.72rem;color:var(--muted);">${L[m.league]} • ${matchIsUpcoming(m)?'Nadchodzący':`Wynik ${m.scoreHome}:${m.scoreAway}`}</div></div>
+                    <div style="display:flex;gap:4px;"><button class="btn-sm" onclick='editM("${m.id}",${JSON.stringify(m).replace(/'/g,"&#39;")})'><i class="fa-solid fa-pen"></i></button><button class="btn-sm btn-del" onclick="delM('${m.id}')"><i class="fa-solid fa-trash"></i></button></div>
                 </div>`).join('')||'<p style="color:var(--muted);">Brak spotkań.</p>';
         }
         function editM(id,d){
@@ -891,7 +864,6 @@
         async function delM(id){if(confirm('Usunąć?')){await db.collection('matches').doc(id).delete();loadAdminM();}}
         function clearMF(){document.getElementById('m-id').value='';['m-home','m-away','m-sh','m-sa','m-date'].forEach(i=>document.getElementById(i).value='');}
 
-        // CRUD TABELA
         async function saveTeam(){
             if(!user)return;
             const league=document.getElementById('t-league').value;
@@ -910,10 +882,10 @@
             for(const league of Object.keys(L)){
                 const doc=await db.collection('standings').doc(league).get();
                 if(!doc.exists||!doc.data().teams)continue;
-                html+=`<div style="margin-bottom:1.6rem;"><div class="league-label" style="margin-bottom:0.9rem;"><i class="fa-solid fa-circle"></i>${L[league]}</div>`;
-                html+=doc.data().teams.map((t,i)=>`<div class="card" style="padding:0.9rem 1.1rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem;">
-                    <div style="display:flex;align-items:center;gap:10px;">${t.crest?`<img src="${t.crest}" style="width:20px;height:20px;border-radius:50%;object-fit:contain;">`:''}<span style="font-weight:600;font-size:0.9rem;">${t.name}</span><span style="color:var(--muted);font-size:0.8rem;">• ${t.pts} pkt</span></div>
-                    <div style="display:flex;gap:5px;"><button class="btn-sm" onclick="editT('${league}',${i})"><i class="fa-solid fa-pen"></i></button><button class="btn-sm btn-del" onclick="delT('${league}',${i})"><i class="fa-solid fa-trash"></i></button></div></div>`).join('');
+                html+=`<div style="margin-bottom:1.4rem;"><div class="league-label" style="margin-bottom:0.8rem;"><i class="fa-solid fa-circle"></i>${L[league]}</div>`;
+                html+=doc.data().teams.map((t,i)=>`<div class="card" style="padding:0.8rem 1rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+                    <div style="display:flex;align-items:center;gap:8px;">${t.crest?`<img src="${t.crest}" style="width:18px;height:18px;border-radius:50%;object-fit:contain;">`:''}<span style="font-weight:600;font-size:0.86rem;">${t.name}</span><span style="color:var(--muted);font-size:0.76rem;">• ${t.pts} pkt</span></div>
+                    <div style="display:flex;gap:4px;"><button class="btn-sm" onclick="editT('${league}',${i})"><i class="fa-solid fa-pen"></i></button><button class="btn-sm btn-del" onclick="delT('${league}',${i})"><i class="fa-solid fa-trash"></i></button></div></div>`).join('');
                 html+='</div>';
             }
             document.getElementById('admin-tlist').innerHTML=html||'<p style="color:var(--muted);">Brak drużyn.</p>';
@@ -935,7 +907,6 @@
         }
         function clearTF(){document.getElementById('t-id').value='';['t-team','t-crest','t-m','t-pts','t-diff'].forEach(i=>document.getElementById(i).value='');}
 
-        // CRUD STREFY
         async function saveZones(){
             if(!user)return;
             const league=document.getElementById('z-league').value;
@@ -946,8 +917,8 @@
             let html='';
             for(const league of Object.keys(L)){
                 const z=getZones(league);
-                html+=`<div class="card" style="padding:1rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem;">
-                    <div><div style="font-weight:600;font-size:0.9rem;">${L[league]}</div><div style="font-size:0.75rem;color:var(--muted);">Awans: ${(z.promo||[]).join(', ')||'—'} • Baraże: ${(z.barage||[]).join(', ')||'—'} • Spadek: ${(z.releg||[]).join(', ')||'—'}</div></div>
+                html+=`<div class="card" style="padding:0.9rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+                    <div><div style="font-weight:600;font-size:0.86rem;">${L[league]}</div><div style="font-size:0.72rem;color:var(--muted);">Awans: ${(z.promo||[]).join(', ')||'—'} • Baraże: ${(z.barage||[]).join(', ')||'—'} • Spadek: ${(z.releg||[]).join(', ')||'—'}</div></div>
                     <button class="btn-sm" onclick="editZ('${league}')"><i class="fa-solid fa-pen"></i></button>
                 </div>`;
             }
@@ -960,7 +931,6 @@
             window.scrollTo({top:0,behavior:'smooth'});
         }
 
-        // CRUD POSTY
         async function savePost(){
             if(!user)return;
             const id=document.getElementById('p-id').value;
@@ -968,7 +938,7 @@
                 title:document.getElementById('p-title').value,
                 label:document.getElementById('p-label').value,
                 content:document.getElementById('p-content').value,
-                date:firebase.firestore.FieldValue.serverTimestamp() // Aktualizujemy datę przy edycji/dodawaniu
+                date:firebase.firestore.FieldValue.serverTimestamp()
             };
             if(!data.title || !data.content) { alert('Wypełnij tytuł i treść'); return; }
             try{
@@ -980,9 +950,9 @@
             const s=await db.collection('posts').orderBy('date','desc').limit(20).get();
             document.getElementById('admin-plist').innerHTML=s.docs.map(d=>{
                 const p=d.data();
-                return `<div class="card" style="padding:1rem;display:flex;justify-content:space-between;align-items:center;">
-                    <div><div style="font-weight:600;font-size:0.95rem;">${p.title}</div><div style="font-size:0.75rem;color:var(--muted);">${p.label}</div></div>
-                    <div style="display:flex;gap:5px;"><button class="btn-sm" onclick='editP("${d.id}",${JSON.stringify(p).replace(/'/g,"&#39;")})'><i class="fa-solid fa-pen"></i></button><button class="btn-sm btn-del" onclick="delP('${d.id}')"><i class="fa-solid fa-trash"></i></button></div>
+                return `<div class="card" style="padding:0.9rem;display:flex;justify-content:space-between;align-items:center;">
+                    <div><div style="font-weight:600;font-size:0.9rem;">${p.title}</div><div style="font-size:0.72rem;color:var(--muted);">${p.label}</div></div>
+                    <div style="display:flex;gap:4px;"><button class="btn-sm" onclick='editP("${d.id}",${JSON.stringify(p).replace(/'/g,"&#39;")})'><i class="fa-solid fa-pen"></i></button><button class="btn-sm btn-del" onclick="delP('${d.id}')"><i class="fa-solid fa-trash"></i></button></div>
                 </div>`;
             }).join('')||'<p style="color:var(--muted);">Brak postów.</p>';
         }
@@ -994,7 +964,6 @@
         async function delP(id){if(confirm('Usunąć post?')){await db.collection('posts').doc(id).delete();loadAdminP();}}
         function clearPF(){document.getElementById('p-id').value='';['p-title','p-content'].forEach(i=>document.getElementById(i).value='');}
 
-        // CRUD TRANSFERY
         async function saveTransfer(){
             if(!user)return;
             const id=document.getElementById('tr-id').value;
@@ -1016,9 +985,9 @@
             const s=await db.collection('transfers').orderBy('date','desc').limit(20).get();
             document.getElementById('admin-trlist').innerHTML=s.docs.map(d=>{
                 const t=d.data();
-                return `<div class="card" style="padding:1rem;display:flex;justify-content:space-between;align-items:center;">
-                    <div><div style="font-weight:600;font-size:0.95rem;">${t.player}</div><div style="font-size:0.75rem;color:var(--muted);">${t.from} ➡️ ${t.to}</div></div>
-                    <div style="display:flex;gap:5px;"><button class="btn-sm" onclick='editTr("${d.id}",${JSON.stringify(t).replace(/'/g,"&#39;")})'><i class="fa-solid fa-pen"></i></button><button class="btn-sm btn-del" onclick="delTr('${d.id}')"><i class="fa-solid fa-trash"></i></button></div>
+                return `<div class="card" style="padding:0.9rem;display:flex;justify-content:space-between;align-items:center;">
+                    <div><div style="font-weight:600;font-size:0.9rem;">${t.player}</div><div style="font-size:0.72rem;color:var(--muted);">${t.from} ➡️ ${t.to}</div></div>
+                    <div style="display:flex;gap:4px;"><button class="btn-sm" onclick='editTr("${d.id}",${JSON.stringify(t).replace(/'/g,"&#39;")})'><i class="fa-solid fa-pen"></i></button><button class="btn-sm btn-del" onclick="delTr('${d.id}')"><i class="fa-solid fa-trash"></i></button></div>
                 </div>`;
             }).join('')||'<p style="color:var(--muted);">Brak transferów.</p>';
         }
@@ -1031,7 +1000,6 @@
         async function delTr(id){if(confirm('Usunąć transfer?')){await db.collection('transfers').doc(id).delete();loadAdminTr();}}
         function clearTrF(){document.getElementById('tr-id').value='';['tr-player','tr-from','tr-to','tr-fee'].forEach(i=>document.getElementById(i).value='');}
 
-        // Init
         refreshMatches();
         loadHomeTable();
     </script>

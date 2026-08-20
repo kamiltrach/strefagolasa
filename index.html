@@ -40,9 +40,9 @@
         .logo-text{font-size:1.1rem;font-weight:800;text-transform:uppercase;white-space:nowrap;}
         .logo-text span{color:var(--green);}
         .logo-sub{font-size:0.58rem;color:var(--muted);font-weight:600;letter-spacing:2px;text-transform:uppercase;display:block;margin-top:-3px;}
-        .tabs{display:flex;gap:0.25rem;overflow-x:auto;scrollbar-width:none;max-width:68%;justify-content:flex-end;padding:4px 0;}
+        .tabs{display:flex;gap:0.25rem;overflow-x:auto;scrollbar-width:none;max-width:75%;justify-content:flex-end;padding:4px 0;}
         .tabs::-webkit-scrollbar{display:none;}
-        .tab{padding:0.55rem 1rem;border-radius:10px;font-size:0.78rem;font-weight:600;color:var(--muted);transition:all .25s var(--ease);white-space:nowrap;flex-shrink:0;}
+        .tab{padding:0.55rem 0.8rem;border-radius:10px;font-size:0.75rem;font-weight:600;color:var(--muted);transition:all .25s var(--ease);white-space:nowrap;flex-shrink:0;}
         .tab:hover{color:var(--white);background:rgba(255,255,255,0.05);}
         .tab.active{color:var(--navy);background:var(--green);box-shadow:0 0 20px var(--green-glow);}
 
@@ -70,7 +70,8 @@
         .team-wrap{display:flex;align-items:center;gap:10px;width:39%;min-width:0;}
         .team-wrap.away{flex-direction:row-reverse;text-align:right;}
         .team-crest{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.08);object-fit:contain;border:1px solid var(--border);flex-shrink:0;}
-        .team-name{font-weight:600;font-size:0.95rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+        .team-name{font-weight:600;font-size:0.95rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; cursor:pointer; transition:color .2s;}
+        .team-name:hover{color:var(--green);}
         .score-box{width:22%;text-align:center;font-family:'Outfit';font-size:1.3rem;font-weight:800;background:rgba(0,0,0,0.35);border-radius:10px;padding:8px 0;border:1px solid var(--border);flex-shrink:0;}
         .score-box.vs{font-size:0.85rem;color:var(--muted);font-weight:600;}
         .match-date{text-align:center;font-size:0.68rem;color:var(--muted);margin-top:1.1rem;font-weight:500;letter-spacing:0.4px;}
@@ -108,6 +109,18 @@
         .dot-promo{background:var(--promo-border);box-shadow:0 0 6px var(--promo-border);}
         .dot-barage{background:var(--barage-border);box-shadow:0 0 6px var(--barage-border);}
         .dot-releg{background:var(--releg-border);box-shadow:0 0 6px var(--releg-border);}
+
+        /* MODAL KLUBU */
+        .modal-overlay {display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(5px); z-index:999; align-items:center; justify-content:center; padding:15px;}
+        .modal-overlay.active {display:flex;}
+        .modal-content {background:var(--navy); border:1px solid var(--green); box-shadow:0 0 30px var(--green-glow); border-radius:var(--radius); width:100%; max-width:650px; max-height:90vh; overflow-y:auto; position:relative; padding:2rem;}
+        .modal-close {position:absolute; top:15px; right:15px; font-size:1.5rem; color:var(--muted); transition:color .2s;}
+        .modal-close:hover {color:var(--white);}
+        .modal-header {display:flex; align-items:center; gap:15px; margin-bottom:1.5rem; border-bottom:1px solid var(--border); padding-bottom:1.5rem;}
+        .modal-crest {width:70px; height:70px; border-radius:50%; border:2px solid var(--border); object-fit:contain;}
+        .modal-title {font-family:'Outfit'; font-size:1.8rem; font-weight:800; color:var(--white);}
+        .modal-history {font-size:0.9rem; color:var(--muted); line-height:1.7; margin-bottom:2rem; background:rgba(255,255,255,0.03); padding:15px; border-radius:12px; border-left:3px solid var(--green);}
+        .modal-matches-title {font-size:1rem; text-transform:uppercase; letter-spacing:1px; color:var(--green); margin-bottom:1rem; font-weight:600;}
 
         .admin-box{max-width:720px;margin:0 auto;}
         input,select,textarea{width:100%;padding:14px 16px;margin-bottom:12px;border:1px solid var(--border);border-radius:12px;background:rgba(0,0,0,0.35);color:var(--white);font-size:0.9rem;transition:all .3s var(--ease);}
@@ -164,12 +177,11 @@
         .footer-bottom{max-width:1160px;margin:1.8rem auto 0;padding-top:1.2rem;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.76rem;}
         .secret-trigger{position:fixed;bottom:0;right:0;width:70px;height:70px;z-index:999;cursor:default;}
 
-        /* ULEPSZONA RESPONSYWNOŚĆ MOBILNA Z WIDOCZNYMI ZAKŁADKAMI */
         @media(max-width:960px){
             nav{height:auto;min-height:70px;flex-direction:column;gap:10px;padding:12px 16px;}
             .logo-wrap{width:100%;justify-content:center;}
             .tabs{max-width:100%;width:100%;justify-content:center;flex-wrap:wrap;gap:4px;overflow:visible;padding-bottom:6px;}
-            .tab{padding:0.45rem 0.75rem;font-size:0.72rem;}
+            .tab{padding:0.45rem 0.6rem;font-size:0.72rem;}
             main{margin-top:150px;padding:0 12px 2.5rem;}
             .hero{padding:2.8rem 0 2rem;}
             .hero h1{font-size:2.05rem;}
@@ -195,7 +207,7 @@
             .btn{padding:14px;border-radius:10px;}
         }
         @media(max-width:380px){
-            .tab{padding:0.35rem 0.55rem;font-size:0.65rem;}
+            .tab{padding:0.35rem 0.45rem;font-size:0.65rem;}
             .team-name{font-size:0.8rem;}
             .score-box{font-size:1.05rem;width:25%;}
             .team-wrap{width:37.5%;gap:5px;}
@@ -216,6 +228,7 @@
             <button class="tab active" onclick="go('home')">Start</button>
             <button class="tab" onclick="go('matches')">Rozgrywki</button>
             <button class="tab" onclick="go('table')">Tabela</button>
+            <button class="tab" onclick="go('stats')">Statystyki</button>
             <button class="tab" onclick="go('transfers')">Transfery</button>
             <button class="tab" onclick="go('streams')">Transmisje</button>
             <button class="tab" onclick="go('posts')">Posty</button>
@@ -224,6 +237,25 @@
     </nav>
 
     <div class="secret-trigger" id="mobile-admin-trigger"></div>
+
+    <!-- MODAL PROFILU KLUBU -->
+    <div id="club-modal" class="modal-overlay" onclick="if(event.target===this) closeClubProfile()">
+        <div class="modal-content anim">
+            <button class="modal-close" onclick="closeClubProfile()"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-header">
+                <div id="modal-crest-container"></div>
+                <h2 class="modal-title" id="modal-team-name">Nazwa Klubu</h2>
+            </div>
+            <div class="modal-history" id="modal-team-history">
+                Krótka historia klubu...
+            </div>
+            <h3 class="modal-matches-title"><i class="fa-solid fa-calendar-days"></i> Nadchodzące mecze</h3>
+            <div id="modal-upcoming" class="grid" style="grid-template-columns:1fr; gap:0.8rem; margin-bottom:1.5rem;"></div>
+            
+            <h3 class="modal-matches-title"><i class="fa-solid fa-flag-checkered"></i> Ostatnie wyniki</h3>
+            <div id="modal-results" class="grid" style="grid-template-columns:1fr; gap:0.8rem;"></div>
+        </div>
+    </div>
 
     <main>
         <section id="home" class="section active">
@@ -241,15 +273,6 @@
             </div>
 
             <div class="home-section anim d2">
-                <h2>Dlaczego <span>Strefa Gola</span>?</h2>
-                <div class="features-grid">
-                    <div class="card feature-card"><div class="feature-icon"><i class="fa-solid fa-bolt"></i></div><h3>Błyskawiczne wyniki</h3><p>Aktualizujemy rezultaty spotkań w czasie rzeczywistym. Żadnych opóźnień.</p></div>
-                    <div class="card feature-card"><div class="feature-icon"><i class="fa-solid fa-table"></i></div><h3>Pełne tabele z herbami</h3><p>Szczegółowe zestawienia dla każdej ligi z wizualną identyfikacją klubów.</p></div>
-                    <div class="card feature-card"><div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div><h3>Wiarygodne dane</h3><p>Informacje weryfikowane przez redakcję. Zero plotek, tylko fakty.</p></div>
-                </div>
-            </div>
-
-            <div class="home-section anim d3">
                 <h2>Nadchodzące <span>mecze</span></h2>
                 <div id="home-upcoming" class="grid"></div>
             </div>
@@ -306,7 +329,37 @@
             <div class="legend anim d2" id="table-legend"></div>
         </section>
 
+        <!-- NOWA SEKCJA STATYSTYK -->
+        <section id="stats" class="section">
+            <div class="sub-nav anim" id="stats-sub">
+                <button class="sub-tab active" onclick="loadStats('iv_liga',this)">IV Liga</button>
+                <button class="sub-tab" onclick="loadStats('okr_jaroslaw',this)">Okr. Jarosław</button>
+                <button class="sub-tab" onclick="loadStats('okr_krosno',this)">Okr. Krosno</button>
+                <button class="sub-tab" onclick="loadStats('okr_rzeszow',this)">Okr. Rzeszów</button>
+                <button class="sub-tab" onclick="loadStats('okr_debica',this)">Okr. Dębica</button>
+                <button class="sub-tab" onclick="loadStats('okr_stalowa',this)">Okr. Stalowa Wola</button>
+            </div>
+            <h3 class="group-title anim d1"><i class="fa-solid fa-futbol"></i> Najlepsi Strzelcy i Asystenci</h3>
+            <div class="table-container anim d2">
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>#</th><th>Zawodnik</th><th>Klub</th><th><i class="fa-solid fa-futbol" style="color:var(--green)"></i> Gole</th><th><i class="fa-solid fa-shoe-prints" style="color:var(--gold)"></i> Asysty</th></tr></thead>
+                        <tbody id="stats-tb"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
         <section id="transfers" class="section">
+            <div class="sub-nav anim" id="transfers-sub">
+                <button class="sub-tab active" onclick="filterTransfers('all',this)">Wszystkie</button>
+                <button class="sub-tab" onclick="filterTransfers('iv_liga',this)">IV Liga</button>
+                <button class="sub-tab" onclick="filterTransfers('okr_jaroslaw',this)">Okr. Jarosław</button>
+                <button class="sub-tab" onclick="filterTransfers('okr_krosno',this)">Okr. Krosno</button>
+                <button class="sub-tab" onclick="filterTransfers('okr_rzeszow',this)">Okr. Rzeszów</button>
+                <button class="sub-tab" onclick="filterTransfers('okr_debica',this)">Okr. Dębica</button>
+                <button class="sub-tab" onclick="filterTransfers('okr_stalowa',this)">Okr. Stalowa Wola</button>
+            </div>
             <h2 style="margin-bottom:2rem;text-transform:uppercase;letter-spacing:1.2px;font-size:0.82rem;color:var(--muted);" class="anim">Rynek Transferowy</h2>
             <div id="transfers-grid" class="grid anim d1"></div>
         </section>
@@ -369,9 +422,10 @@
                         <div style="display:flex;gap:4px;flex-wrap:wrap;">
                             <button class="btn-sm" onclick="showAT('ma')" id="at-ma" style="background:var(--green-glow);color:var(--green);">Mecze</button>
                             <button class="btn-sm" onclick="showAT('ta')" id="at-ta">Tabela</button>
+                            <button class="btn-sm" onclick="showAT('st')" id="at-st">Statystyki</button>
+                            <button class="btn-sm" onclick="showAT('tr')" id="at-tr">Transfery</button>
                             <button class="btn-sm" onclick="showAT('za')" id="at-za">Strefy</button>
                             <button class="btn-sm" onclick="showAT('po')" id="at-po">Posty</button>
-                            <button class="btn-sm" onclick="showAT('tr')" id="at-tr">Transfery</button>
                             <button class="btn-sm" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i></button>
                         </div>
                     </div>
@@ -425,13 +479,70 @@
                             <div class="form-grid-3">
                                 <input type="number" id="t-m" placeholder="Mecze">
                                 <input type="number" id="t-pts" placeholder="Punkty">
-                                <input type="text" id="t-diff" placeholder="Bilans (+12)">
+                                <input type="text" id="t-diff" placeholder="Bilans (+12 lub strz-str)">
                             </div>
                             <button class="btn" onclick="saveTeam()">Zapisz drużynę</button>
                             <button class="btn-sm" onclick="clearTF()" style="width:100%;margin-top:10px;border:1px solid var(--border);">Wyczyść</button>
                         </div>
                         <h3 style="font-size:0.75rem;color:var(--muted);margin-bottom:1.1rem;text-transform:uppercase;letter-spacing:1.2px;">Drużyny w bazie</h3>
                         <div id="admin-tlist" class="grid"></div>
+                    </div>
+
+                    <!-- ADMIN STATYSTYKI -->
+                    <div id="st" style="display:none;">
+                        <div class="card" style="margin-bottom:2rem;">
+                            <h3 style="font-size:0.75rem;color:var(--green);margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:1.2px;">Dodaj / Edytuj Statystyki Zawodnika</h3>
+                            <input type="hidden" id="s-id">
+                            <div class="form-grid">
+                                <input type="text" id="s-player" placeholder="Imię i nazwisko">
+                                <input type="text" id="s-team" placeholder="Nazwa drużyny">
+                            </div>
+                            <div class="form-grid">
+                                <select id="s-league">
+                                    <option value="iv_liga">IV Liga</option>
+                                    <option value="okr_jaroslaw">Okr. Jarosław</option>
+                                    <option value="okr_krosno">Okr. Krosno</option>
+                                    <option value="okr_rzeszow">Okr. Rzeszów</option>
+                                    <option value="okr_debica">Okr. Dębica</option>
+                                    <option value="okr_stalowa">Okr. Stalowa Wola</option>
+                                </select>
+                            </div>
+                            <div class="form-grid">
+                                <input type="number" id="s-goals" placeholder="Gole (np. 12)" value="0">
+                                <input type="number" id="s-assists" placeholder="Asysty (np. 5)" value="0">
+                            </div>
+                            <button class="btn" onclick="saveStat()">Zapisz statystyki</button>
+                            <button class="btn-sm" onclick="clearSF()" style="width:100%;margin-top:10px;border:1px solid var(--border);">Wyczyść</button>
+                        </div>
+                        <h3 style="font-size:0.75rem;color:var(--muted);margin-bottom:1.1rem;text-transform:uppercase;letter-spacing:1.2px;">Zawodnicy w bazie statystyk</h3>
+                        <div id="admin-slist" class="grid"></div>
+                    </div>
+
+                    <div id="tr" style="display:none;">
+                        <div class="card" style="margin-bottom:2rem;">
+                            <h3 style="font-size:0.75rem;color:var(--green);margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:1.2px;">Dodaj / Edytuj Transfer</h3>
+                            <input type="hidden" id="tr-id">
+                            <div class="form-grid">
+                                <input type="text" id="tr-player" placeholder="Imię i nazwisko zawodnika">
+                                <select id="tr-league">
+                                    <option value="iv_liga">IV Liga</option>
+                                    <option value="okr_jaroslaw">Okr. Jarosław</option>
+                                    <option value="okr_krosno">Okr. Krosno</option>
+                                    <option value="okr_rzeszow">Okr. Rzeszów</option>
+                                    <option value="okr_debica">Okr. Dębica</option>
+                                    <option value="okr_stalowa">Okr. Stalowa Wola</option>
+                                </select>
+                            </div>
+                            <div class="form-grid-3">
+                                <input type="text" id="tr-from" placeholder="Klub oddający">
+                                <input type="text" id="tr-to" placeholder="Klub pozyskujący">
+                                <input type="text" id="tr-fee" placeholder="Kwota / Opis (Opcjonalnie)">
+                            </div>
+                            <button class="btn" onclick="saveTransfer()">Zapisz transfer</button>
+                            <button class="btn-sm" onclick="clearTrF()" style="width:100%;margin-top:10px;border:1px solid var(--border);">Wyczyść</button>
+                        </div>
+                        <h3 style="font-size:0.75rem;color:var(--muted);margin-bottom:1.1rem;text-transform:uppercase;letter-spacing:1.2px;">Historia transferów</h3>
+                        <div id="admin-trlist" class="grid"></div>
                     </div>
 
                     <div id="za" style="display:none;">
@@ -475,33 +586,6 @@
                         </div>
                         <h3 style="font-size:0.75rem;color:var(--muted);margin-bottom:1.1rem;text-transform:uppercase;letter-spacing:1.2px;">Zarządzanie wpisami</h3>
                         <div id="admin-plist" class="grid"></div>
-                    </div>
-
-                    <div id="tr" style="display:none;">
-                        <div class="card" style="margin-bottom:2rem;">
-                            <h3 style="font-size:0.75rem;color:var(--green);margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:1.2px;">Dodaj / Edytuj Transfer</h3>
-                            <input type="hidden" id="tr-id">
-                            <div class="form-grid">
-                                <input type="text" id="tr-player" placeholder="Imię i nazwisko zawodnika">
-                                <select id="tr-league">
-                                    <option value="iv_liga">IV Liga</option>
-                                    <option value="okr_jaroslaw">Okr. Jarosław</option>
-                                    <option value="okr_krosno">Okr. Krosno</option>
-                                    <option value="okr_rzeszow">Okr. Rzeszów</option>
-                                    <option value="okr_debica">Okr. Dębica</option>
-                                    <option value="okr_stalowa">Okr. Stalowa Wola</option>
-                                </select>
-                            </div>
-                            <div class="form-grid-3">
-                                <input type="text" id="tr-from" placeholder="Klub oddający">
-                                <input type="text" id="tr-to" placeholder="Klub pozyskujący">
-                                <input type="text" id="tr-fee" placeholder="Kwota / Opis (Opcjonalnie)">
-                            </div>
-                            <button class="btn" onclick="saveTransfer()">Zapisz transfer</button>
-                            <button class="btn-sm" onclick="clearTrF()" style="width:100%;margin-top:10px;border:1px solid var(--border);">Wyczyść</button>
-                        </div>
-                        <h3 style="font-size:0.75rem;color:var(--muted);margin-bottom:1.1rem;text-transform:uppercase;letter-spacing:1.2px;">Historia transferów</h3>
-                        <div id="admin-trlist" class="grid"></div>
                     </div>
 
                 </div>
@@ -561,6 +645,18 @@
 
         const DEFAULT_ZONES = { promo:[1], barage:[2], releg:[14,15,16] };
 
+        // PRAWDZIWE HISTORIE ZNANYCH KLUBÓW
+        const clubHistories = {
+            "Igloopol Dębica": "Klub założony w 1978 roku przy dawnym kombinacie rolniczo-przemysłowym. Największy sukces to gra w najwyższej klasie rozgrywkowej (Ekstraklasa) w sezonach 1990/91 i 1991/92. Z klubu wywodzą się tacy piłkarze jak Leszek Pisz, Jacek Zieliński czy Jerzy Podbrożny.",
+            "Ekoball Sanok": "Drużyna nawiązująca i kontynuująca wspaniałe tradycje Stali Sanok (zał. 1946). Zasłynęła na całą Polskę historycznym występem w Pucharze Polski w 2006 roku, kiedy to jako trzecioligowiec wyeliminowała Legię Warszawa 2:1.",
+            "Polonia Przemyśl": "Jeden z najstarszych klubów w Polsce, założony jeszcze w czasach zaboru austriackiego jesienią 1909 r. Nazywana 'Przemyską Barceloną' ze względu na podobne barwy i styl w przeszłości.",
+            "Czarni Jasło": "Klub piłkarski o gigantycznej tradycji, założony w 1910 roku. Jeden z najstarszych ośrodków piłkarskich na Podkarpaciu, regularnie gromadzący wierną rzeszę kibiców.",
+            "Wisłok Wiśniowa": "Solidny klub z Podkarpacia założony w 1948 r. Od lat należy do czołowych i bardzo stabilnych drużyn szczebla wojewódzkiego, budując swoją siłę na lokalnych wychowankach.",
+            "Izolator Boguchwała": "Klub założony w 1944 roku przy miejscowych zakładach porcelany elektrotechnicznej. Znany ze wspaniałej infrastruktury 'Izo Areny' i długoletnich występów na szczeblu III ligi.",
+            "Sokół Nisko": "Zasłużony klub piłkarski założony w 1919 roku jako jedno z najstarszych stowarzyszeń w regionie. Wielokrotny uczestnik rozgrywek centralnych na przestrzeni kilkudziesięciu lat.",
+            "default": "Klub zrzeszony w Podkarpackim Związku Piłki Nożnej. Reprezentuje swoją lokalną społeczność, pisząc własną, unikalną piłkarską historię na boiskach naszego województwa."
+        };
+
         document.addEventListener('keydown', e => {
             if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='m'){ e.preventDefault(); go('admin'); }
         });
@@ -570,10 +666,7 @@
         document.getElementById('mobile-admin-trigger').addEventListener('click', () => {
             tapCount++;
             clearTimeout(tapTimer);
-            if(tapCount >= 5) {
-                tapCount = 0;
-                go('admin');
-            }
+            if(tapCount >= 5) { tapCount = 0; go('admin'); }
             tapTimer = setTimeout(() => { tapCount = 0; }, 1500);
         });
 
@@ -581,9 +674,9 @@
             document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
             document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            const map=['home','matches','table','transfers','streams','posts','contact','admin'];
+            const map=['home','matches','table','stats','transfers','streams','posts','contact','admin'];
             const idx=map.indexOf(id);
-            if(idx>=0&&idx<7) document.querySelectorAll('.tab')[idx].classList.add('active');
+            if(idx>=0&&idx<8) document.querySelectorAll('.tab')[idx].classList.add('active');
             const sec=document.getElementById(id);
             sec.querySelectorAll('.anim').forEach(el=>{el.style.animation='none';el.offsetHeight;el.style.animation=null;});
             window.scrollTo({top:0,behavior:'smooth'});
@@ -591,6 +684,7 @@
             if(id==='home'){ refreshMatches(); loadHomeTable(); }
             if(id==='matches') refreshMatches();
             if(id==='table') loadTable('iv_liga');
+            if(id==='stats') loadStats('iv_liga');
             if(id==='transfers') loadTransfers();
             if(id==='posts') loadPosts();
         }
@@ -609,8 +703,27 @@
             const c=crestsCache[(name||'').trim()];
             return c ? `<img src="${c}" class="team-crest" alt="">` : '<div class="team-crest" style="display:flex;align-items:center;justify-content:center;font-size:0.65rem;color:var(--muted);"><i class="fa-solid fa-shield"></i></div>';
         }
+        function crestImgSmallFromStr(name){
+            const c=crestsCache[(name||'').trim()];
+            return c ? `<img src="${c}" class="table-crest" alt="">` : '<div class="table-crest" style="display:flex;align-items:center;justify-content:center;font-size:0.55rem;color:var(--muted);"><i class="fa-solid fa-shield"></i></div>';
+        }
         function crestImgSmall(t){
             return t.crest ? `<img src="${t.crest}" class="table-crest" alt="">` : '<div class="table-crest" style="display:flex;align-items:center;justify-content:center;font-size:0.55rem;color:var(--muted);"><i class="fa-solid fa-shield"></i></div>';
+        }
+
+        // NAPRAWA SORTOWANIA: Prawidłowe czytanie bilansu np. "375-12" albo "+5" albo "15-10"
+        function evalGoalDiff(d){
+            if(!d) return 0;
+            let str = String(d).trim().replace(/\s/g,'');
+            if(str.includes('-') && !str.startsWith('-')){
+                let parts = str.split('-');
+                if(parts.length===2 && parts[0]!=='' && parts[1]!==''){
+                    let scored = parseInt(parts[0].replace(/[^\d]/g,''))||0;
+                    let conceded = parseInt(parts[1].replace(/[^\d]/g,''))||0;
+                    return scored - conceded;
+                }
+            }
+            return parseInt(str) || 0;
         }
 
         let zonesCache={};
@@ -681,9 +794,9 @@
             return `<div class="card">
                 <div class="league-label"><i class="fa-solid fa-circle"></i>${L[m.league]||m.league}${up?'<span class="badge-up">Nadchodzący</span>':''}</div>
                 <div class="match-row">
-                    <div class="team-wrap">${crestImg(m.homeTeam)}<span class="team-name">${m.homeTeam||'?'}</span></div>
+                    <div class="team-wrap">${crestImg(m.homeTeam)}<span class="team-name" onclick="openClubProfile('${m.homeTeam}')">${m.homeTeam||'?'}</span></div>
                     <div class="score-box ${up?'vs':''}">${up?'vs':`${m.scoreHome??'-'}:${m.scoreAway??'-'}`}</div>
-                    <div class="team-wrap away"><span class="team-name">${m.awayTeam||'?'}</span>${crestImg(m.awayTeam)}</div>
+                    <div class="team-wrap away"><span class="team-name" onclick="openClubProfile('${m.awayTeam}')">${m.awayTeam||'?'}</span>${crestImg(m.awayTeam)}</div>
                 </div>
                 <div class="match-date ${up?'up':''}">${up?fmtUpcoming(m.date):fmtFinished(m.date)}</div>
             </div>`;
@@ -717,11 +830,11 @@
                     tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:2rem;">Brak danych w lidze.</td></tr>';
                     renderLegend(league,'table-legend'); return;
                 }
-                const teams=doc.data().teams.sort((a,b)=>b.pts-a.pts||parseInt(b.diff)-parseInt(a.diff));
+                const teams=doc.data().teams.sort((a,b)=>b.pts-a.pts||evalGoalDiff(b.diff)-evalGoalDiff(a.diff));
                 tb.innerHTML=teams.map((t,i)=>`
                     <tr class="${getRowClass(i+1,league)}">
                         <td class="${i<3?'top-pos':''}">${i+1}</td>
-                        <td><div class="team-cell">${crestImgSmall(t)}<span style="font-weight:600;">${t.name}</span></div></td>
+                        <td><div class="team-cell">${crestImgSmall(t)}<span class="team-name" onclick="openClubProfile('${t.name}')" style="font-weight:600;">${t.name}</span></div></td>
                         <td style="color:var(--muted)">${t.m}</td>
                         <td style="font-weight:800;color:var(--green);">${t.pts}</td>
                         <td style="color:var(--muted);font-size:0.8rem;">${t.diff}</td>
@@ -736,11 +849,11 @@
                 await loadZones();
                 const doc=await db.collection('standings').doc('iv_liga').get();
                 if(!doc.exists||!doc.data().teams) return;
-                const all=doc.data().teams.sort((a,b)=>b.pts-a.pts);
+                const all=doc.data().teams.sort((a,b)=>b.pts-a.pts||evalGoalDiff(b.diff)-evalGoalDiff(a.diff));
                 tb.innerHTML=all.slice(0,5).map((t,i)=>`
                     <tr class="${getRowClass(i+1,'iv_liga')}">
                         <td class="${i<3?'top-pos':''}">${i+1}</td>
-                        <td><div class="team-cell">${crestImgSmall(t)}<span style="font-weight:600;">${t.name}</span></div></td>
+                        <td><div class="team-cell">${crestImgSmall(t)}<span class="team-name" onclick="openClubProfile('${t.name}')" style="font-weight:600;">${t.name}</span></div></td>
                         <td style="color:var(--muted)">${t.m}</td>
                         <td style="font-weight:800;color:var(--green);">${t.pts}</td>
                         <td style="color:var(--muted);font-size:0.8rem;">${t.diff}</td>
@@ -749,21 +862,70 @@
             }catch(e){}
         }
 
+        // STATYSTYKI ZAWODNIKÓW Z PODZIAŁEM NA LIGI
+        async function loadStats(league, btn){
+            if(btn){document.querySelectorAll('#stats-sub .sub-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+            const tb=document.getElementById('stats-tb');
+            tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:2rem;">Ładowanie...</td></tr>';
+            try {
+                const s = await db.collection('stats').where('league', '==', league).get();
+                if(s.empty) {
+                    tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:2rem;">Brak statystyk dla tej ligi.</td></tr>';
+                    return;
+                }
+                const statsList = s.docs.map(d=>d.data());
+                statsList.sort((a,b) => b.goals - a.goals || b.assists - a.assists);
+                tb.innerHTML = statsList.map((st, i) => `
+                    <tr>
+                        <td style="color:var(--muted); font-weight:800;">${i+1}</td>
+                        <td style="font-weight:600;">${st.player}</td>
+                        <td style="color:var(--muted); font-size:0.8rem;"><div class="team-cell">${crestImgSmallFromStr(st.team)} ${st.team}</div></td>
+                        <td style="font-weight:800; color:var(--green); font-size:1.1rem;">${st.goals}</td>
+                        <td style="font-weight:800; color:var(--gold); font-size:1.1rem;">${st.assists}</td>
+                    </tr>
+                `).join('');
+            } catch(e) {
+                tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:#ff6b6b;padding:2rem;">Błąd ładowania statystyk.</td></tr>';
+            }
+        }
+
+        // TRANSFERY Z PODZIAŁEM NA LIGI
+        let allTransfers = [];
         async function loadTransfers(){
             const c=document.getElementById('transfers-grid');
             try{
-                const s=await db.collection('transfers').orderBy('date','desc').limit(20).get();
+                // Zdjęty limit 20 transferów, pobieramy 150 ostatnich
+                const s=await db.collection('transfers').orderBy('date','desc').limit(150).get();
                 if(s.empty){c.innerHTML='<p style="color:var(--muted);padding:2rem;">Brak transferów.</p>';return;}
-                c.innerHTML=s.docs.map(d=>{
-                    const t=d.data();
-                    return `<div class="card">
-                        <div class="league-label"><i class="fa-solid fa-circle"></i>${L[t.league]||'Transfer'}</div>
-                        <h3 style="font-size:1.02rem;margin-bottom:0.4rem;">${t.player}</h3>
-                        <div style="color:var(--muted);font-size:0.86rem;">${t.from} ➡️ <span style="color:var(--white);font-weight:600;">${t.to}</span></div>
-                        <div style="color:var(--gold);font-weight:700;margin-top:0.7rem;font-size:0.82rem;">${t.fee||'Kwota nieujawniona'}</div>
-                    </div>`;
-                }).join('');
+                allTransfers = s.docs.map(d=>d.data());
+                renderTransfers('all');
             }catch(e){ c.innerHTML='<p style="color:#ff6b6b;padding:2rem;">Błąd ładowania.</p>'; }
+        }
+        function filterTransfers(league, btn){
+            if(btn){document.querySelectorAll('#transfers-sub .sub-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+            renderTransfers(league);
+        }
+        function renderTransfers(league){
+            const c=document.getElementById('transfers-grid');
+            let list = league === 'all' ? allTransfers : allTransfers.filter(t=>t.league === league);
+            
+            if(list.length === 0){
+                c.innerHTML='<p style="color:var(--muted);padding:2rem;">Brak transferów w tej lidze.</p>';
+                return;
+            }
+
+            c.innerHTML = list.map(t=>{
+                return `<div class="card">
+                    <div class="league-label"><i class="fa-solid fa-circle"></i>${L[t.league]||'Transfer'}</div>
+                    <h3 style="font-size:1.02rem;margin-bottom:0.8rem;">${t.player}</h3>
+                    <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.2); padding:10px; border-radius:10px;">
+                        <div style="text-align:center;">${crestImgSmallFromStr(t.from)}<div style="font-size:0.75rem; color:var(--muted); margin-top:4px;">${t.from}</div></div>
+                        <i class="fa-solid fa-arrow-right-long" style="color:var(--green);"></i>
+                        <div style="text-align:center;">${crestImgSmallFromStr(t.to)}<div style="font-size:0.75rem; color:var(--white); font-weight:600; margin-top:4px;">${t.to}</div></div>
+                    </div>
+                    ${t.fee ? `<div style="color:var(--gold);font-weight:700;margin-top:0.7rem;font-size:0.82rem;text-align:center;">${t.fee}</div>` : ''}
+                </div>`;
+            }).join('');
         }
 
         async function loadPosts(){
@@ -781,6 +943,37 @@
                     </div>`;
                 }).join('');
             }catch(e){ c.innerHTML='<p style="color:#ff6b6b;padding:2rem;">Błąd ładowania.</p>'; }
+        }
+
+        // OTWIERANIE PROFILU KLUBU
+        function openClubProfile(teamName) {
+            if(!teamName) return;
+            const modal = document.getElementById('club-modal');
+            const c = crestsCache[teamName.trim()];
+            
+            document.getElementById('modal-crest-container').innerHTML = c 
+                ? `<img src="${c}" class="modal-crest" alt="">` 
+                : `<div class="modal-crest" style="display:flex;align-items:center;justify-content:center;font-size:2rem;color:var(--muted);"><i class="fa-solid fa-shield"></i></div>`;
+            
+            document.getElementById('modal-team-name').innerText = teamName;
+            
+            // Szukanie historii
+            let historyText = clubHistories[teamName] || clubHistories["default"];
+            document.getElementById('modal-team-history').innerText = historyText;
+
+            // Filtrowanie meczów z tablicy cache 'mc'
+            let teamMatches = mc.filter(m => m.homeTeam === teamName || m.awayTeam === teamName);
+            let upList = upcomingList(teamMatches).slice(0, 3);
+            let finList = finishedList(teamMatches).slice(0, 3);
+
+            renderGrid(upList, 'modal-upcoming');
+            renderGrid(finList, 'modal-results');
+
+            modal.classList.add('active');
+        }
+
+        function closeClubProfile() {
+            document.getElementById('club-modal').classList.remove('active');
         }
 
         async function sendContact(){
@@ -802,7 +995,7 @@
                 document.getElementById('login-panel').style.display='none';
                 document.getElementById('dash').style.display='block';
                 await loadZones();
-                loadAdminM(); loadAdminT(); loadAdminZ(); loadAdminP(); loadAdminTr();
+                loadAdminM(); loadAdminT(); loadAdminZ(); loadAdminP(); loadAdminTr(); loadAdminS();
             }else{
                 user=null;
                 document.getElementById('login-panel').style.display='block';
@@ -816,7 +1009,7 @@
         function logout(){auth.signOut();go('home');}
 
         function showAT(tab){
-            ['ma','ta','za','po','tr'].forEach(t=>{
+            ['ma','ta','st','za','po','tr'].forEach(t=>{
                 document.getElementById(t).style.display=(t===tab)?'block':'none';
                 const b=document.getElementById('at-'+t);
                 b.style.background=(t===tab)?'var(--green-glow)':'transparent';
@@ -883,9 +1076,11 @@
                 const doc=await db.collection('standings').doc(league).get();
                 if(!doc.exists||!doc.data().teams)continue;
                 html+=`<div style="margin-bottom:1.4rem;"><div class="league-label" style="margin-bottom:0.8rem;"><i class="fa-solid fa-circle"></i>${L[league]}</div>`;
-                html+=doc.data().teams.map((t,i)=>`<div class="card" style="padding:0.8rem 1rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
-                    <div style="display:flex;align-items:center;gap:8px;">${t.crest?`<img src="${t.crest}" style="width:18px;height:18px;border-radius:50%;object-fit:contain;">`:''}<span style="font-weight:600;font-size:0.86rem;">${t.name}</span><span style="color:var(--muted);font-size:0.76rem;">• ${t.pts} pkt</span></div>
-                    <div style="display:flex;gap:4px;"><button class="btn-sm" onclick="editT('${league}',${i})"><i class="fa-solid fa-pen"></i></button><button class="btn-sm btn-del" onclick="delT('${league}',${i})"><i class="fa-solid fa-trash"></i></button></div></div>`).join('');
+                // W adminie też sortujemy poprawnie po zapisie dla przejrzystości
+                let sortedTeams = [...doc.data().teams].sort((a,b)=>b.pts-a.pts||evalGoalDiff(b.diff)-evalGoalDiff(a.diff));
+                html+=sortedTeams.map((t,i)=>`<div class="card" style="padding:0.8rem 1rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+                    <div style="display:flex;align-items:center;gap:8px;">${t.crest?`<img src="${t.crest}" style="width:18px;height:18px;border-radius:50%;object-fit:contain;">`:''}<span style="font-weight:600;font-size:0.86rem;">${t.name}</span><span style="color:var(--muted);font-size:0.76rem;">• ${t.pts} pkt • bil: ${t.diff}</span></div>
+                    <div style="display:flex;gap:4px;"><button class="btn-sm" onclick="editT('${league}',${doc.data().teams.indexOf(t)})"><i class="fa-solid fa-pen"></i></button><button class="btn-sm btn-del" onclick="delT('${league}',${doc.data().teams.indexOf(t)})"><i class="fa-solid fa-trash"></i></button></div></div>`).join('');
                 html+='</div>';
             }
             document.getElementById('admin-tlist').innerHTML=html||'<p style="color:var(--muted);">Brak drużyn.</p>';
@@ -906,6 +1101,44 @@
             loadAdminT();
         }
         function clearTF(){document.getElementById('t-id').value='';['t-team','t-crest','t-m','t-pts','t-diff'].forEach(i=>document.getElementById(i).value='');}
+
+        // ADMIN: STATYSTYKI ZAWODNIKÓW
+        async function saveStat(){
+            if(!user)return;
+            const id=document.getElementById('s-id').value;
+            const data={
+                player:document.getElementById('s-player').value,
+                team:document.getElementById('s-team').value,
+                league:document.getElementById('s-league').value,
+                goals:parseInt(document.getElementById('s-goals').value)||0,
+                assists:parseInt(document.getElementById('s-assists').value)||0
+            };
+            if(!data.player || !data.team) { alert('Wypełnij imię, nazwisko i klub'); return; }
+            try{
+                if(id) await db.collection('stats').doc(id).update(data); else await db.collection('stats').add(data);
+                clearSF(); loadAdminS();
+            }catch(e){alert('Błąd zapisywania statystyk');}
+        }
+        async function loadAdminS(){
+            const s=await db.collection('stats').limit(100).get();
+            document.getElementById('admin-slist').innerHTML=s.docs.map(d=>{
+                const st=d.data();
+                return `<div class="card" style="padding:0.9rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+                    <div><div style="font-weight:600;font-size:0.9rem;">${st.player} <span style="color:var(--muted); font-size:0.75rem;">(${st.team})</span></div>
+                    <div style="font-size:0.72rem;color:var(--muted);">${L[st.league]} • Gole: <span style="color:var(--green)">${st.goals}</span> • Asysty: <span style="color:var(--gold)">${st.assists}</span></div></div>
+                    <div style="display:flex;gap:4px;"><button class="btn-sm" onclick='editS("${d.id}",${JSON.stringify(st).replace(/'/g,"&#39;")})'><i class="fa-solid fa-pen"></i></button><button class="btn-sm btn-del" onclick="delS('${d.id}')"><i class="fa-solid fa-trash"></i></button></div>
+                </div>`;
+            }).join('')||'<p style="color:var(--muted);">Brak statystyk.</p>';
+        }
+        function editS(id,st){
+            document.getElementById('s-id').value=id; document.getElementById('s-player').value=st.player;
+            document.getElementById('s-team').value=st.team; document.getElementById('s-league').value=st.league;
+            document.getElementById('s-goals').value=st.goals; document.getElementById('s-assists').value=st.assists;
+            window.scrollTo({top:0,behavior:'smooth'});
+        }
+        async function delS(id){if(confirm('Usunąć statystyki zawodnika?')){await db.collection('stats').doc(id).delete();loadAdminS();}}
+        function clearSF(){document.getElementById('s-id').value='';['s-player','s-team'].forEach(i=>document.getElementById(i).value=''); document.getElementById('s-goals').value='0'; document.getElementById('s-assists').value='0';}
+
 
         async function saveZones(){
             if(!user)return;
@@ -982,10 +1215,10 @@
             }catch(e){alert('Błąd');}
         }
         async function loadAdminTr(){
-            const s=await db.collection('transfers').orderBy('date','desc').limit(20).get();
+            const s=await db.collection('transfers').orderBy('date','desc').limit(100).get();
             document.getElementById('admin-trlist').innerHTML=s.docs.map(d=>{
                 const t=d.data();
-                return `<div class="card" style="padding:0.9rem;display:flex;justify-content:space-between;align-items:center;">
+                return `<div class="card" style="padding:0.9rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
                     <div><div style="font-weight:600;font-size:0.9rem;">${t.player}</div><div style="font-size:0.72rem;color:var(--muted);">${t.from} ➡️ ${t.to}</div></div>
                     <div style="display:flex;gap:4px;"><button class="btn-sm" onclick='editTr("${d.id}",${JSON.stringify(t).replace(/'/g,"&#39;")})'><i class="fa-solid fa-pen"></i></button><button class="btn-sm btn-del" onclick="delTr('${d.id}')"><i class="fa-solid fa-trash"></i></button></div>
                 </div>`;

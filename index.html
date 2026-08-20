@@ -110,7 +110,7 @@
         .dot-barage{background:var(--barage-border);box-shadow:0 0 6px var(--barage-border);}
         .dot-releg{background:var(--releg-border);box-shadow:0 0 6px var(--releg-border);}
 
-        /* MODAL KLUBU */
+        /* MODALE */
         .modal-overlay {display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(5px); z-index:999; align-items:center; justify-content:center; padding:15px;}
         .modal-overlay.active {display:flex;}
         .modal-content {background:var(--navy); border:1px solid var(--green); box-shadow:0 0 30px var(--green-glow); border-radius:var(--radius); width:100%; max-width:650px; max-height:90vh; overflow-y:auto; position:relative; padding:2rem;}
@@ -119,8 +119,7 @@
         .modal-header {display:flex; align-items:center; gap:15px; margin-bottom:1.5rem; border-bottom:1px solid var(--border); padding-bottom:1.5rem;}
         .modal-crest {width:70px; height:70px; border-radius:50%; border:2px solid var(--border); object-fit:contain;}
         .modal-title {font-family:'Outfit'; font-size:1.8rem; font-weight:800; color:var(--white);}
-        .modal-history {font-size:0.9rem; color:var(--muted); line-height:1.7; margin-bottom:2rem; background:rgba(255,255,255,0.03); padding:15px; border-radius:12px; border-left:3px solid var(--green);}
-        .modal-matches-title {font-size:1rem; text-transform:uppercase; letter-spacing:1px; color:var(--green); margin-bottom:1rem; font-weight:600;}
+        .modal-history {font-size:0.9rem; color:var(--muted); line-height:1.7; margin-bottom:1.5rem; background:rgba(255,255,255,0.03); padding:15px; border-radius:12px; border-left:3px solid var(--green);}
 
         .admin-box{max-width:720px;margin:0 auto;}
         input,select,textarea{width:100%;padding:14px 16px;margin-bottom:12px;border:1px solid var(--border);border-radius:12px;background:rgba(0,0,0,0.35);color:var(--white);font-size:0.9rem;transition:all .3s var(--ease);}
@@ -246,14 +245,26 @@
                 <div id="modal-crest-container"></div>
                 <h2 class="modal-title" id="modal-team-name">Nazwa Klubu</h2>
             </div>
-            <div class="modal-history" id="modal-team-history">
-                Krótka historia klubu...
-            </div>
-            <h3 class="modal-matches-title"><i class="fa-solid fa-calendar-days"></i> Nadchodzące mecze</h3>
-            <div id="modal-upcoming" class="grid" style="grid-template-columns:1fr; gap:0.8rem; margin-bottom:1.5rem;"></div>
             
-            <h3 class="modal-matches-title"><i class="fa-solid fa-flag-checkered"></i> Ostatnie wyniki</h3>
-            <div id="modal-results" class="grid" style="grid-template-columns:1fr; gap:0.8rem;"></div>
+            <div class="modal-history" id="modal-team-history">
+                <!-- Dynamicznie wstawiana ustrukturyzowana historia -->
+            </div>
+
+            <div style="display:flex; gap:8px; margin-bottom:1.2rem; border-bottom:1px solid var(--border); padding-bottom:10px;">
+                <button class="btn-sm" id="modal-tab-up" onclick="switchModalMatches('up')" style="background:var(--green); color:var(--navy); font-weight:700;"><i class="fa-solid fa-calendar-days"></i> Nadchodzące</button>
+                <button class="btn-sm" id="modal-tab-res" onclick="switchModalMatches('res')" style="background:rgba(255,255,255,0.05); color:var(--muted); font-weight:700;"><i class="fa-solid fa-flag-checkered"></i> Ostatnie Wyniki</button>
+            </div>
+
+            <div id="modal-upcoming" class="grid" style="grid-template-columns:1fr; gap:0.8rem;"></div>
+            <div id="modal-results" class="grid" style="grid-template-columns:1fr; gap:0.8rem; display:none;"></div>
+        </div>
+    </div>
+
+    <!-- MODAL POSTA -->
+    <div id="post-modal" class="modal-overlay" onclick="if(event.target===this) closePostModal()">
+        <div class="modal-content anim" style="max-width:700px;">
+            <button class="modal-close" onclick="closePostModal()"><i class="fa-solid fa-xmark"></i></button>
+            <div id="post-modal-body"></div>
         </div>
     </div>
 
@@ -298,7 +309,7 @@
 
         <section id="matches" class="section">
             <div class="sub-nav anim" id="matches-sub">
-                <button class="sub-tab active" onclick="filterM('all',this)">Wszystkie</button>
+                <button class="sub-tab active" onclick="filterM('all',this)">Wszystkie Ligi</button>
                 <button class="sub-tab" onclick="filterM('iv_liga',this)">IV Liga</button>
                 <button class="sub-tab" onclick="filterM('okr_jaroslaw',this)">Okr. Jarosław</button>
                 <button class="sub-tab" onclick="filterM('okr_krosno',this)">Okr. Krosno</button>
@@ -306,9 +317,18 @@
                 <button class="sub-tab" onclick="filterM('okr_debica',this)">Okr. Dębica</button>
                 <button class="sub-tab" onclick="filterM('okr_stalowa',this)">Okr. Stalowa Wola</button>
             </div>
-            <h3 class="group-title anim d1"><i class="fa-regular fa-clock"></i>Nadchodzące mecze</h3>
+
+            <!-- PRZEŁĄCZENIE NADCHODZĄCE / WYNIKI -->
+            <div style="display:flex; gap:10px; margin-bottom:1.5rem;" class="anim d1">
+                <button class="btn-sm" id="btn-match-all" onclick="setMatchType('all')" style="background:var(--green); color:var(--navy); font-weight:700; padding:8px 16px; border-radius:10px;">Wszystkie Mecze</button>
+                <button class="btn-sm" id="btn-match-up" onclick="setMatchType('upcoming')" style="background:rgba(255,255,255,0.05); color:var(--muted); font-weight:700; padding:8px 16px; border-radius:10px;"><i class="fa-regular fa-clock"></i> Nadchodzące</button>
+                <button class="btn-sm" id="btn-match-res" onclick="setMatchType('results')" style="background:rgba(255,255,255,0.05); color:var(--muted); font-weight:700; padding:8px 16px; border-radius:10px;"><i class="fa-solid fa-flag-checkered"></i> Wyniki</button>
+            </div>
+
+            <h3 class="group-title anim d1" id="title-upcoming"><i class="fa-regular fa-clock"></i>Nadchodzące mecze</h3>
             <div id="upcoming-grid" class="grid anim d1"></div>
-            <h3 class="group-title anim d2" style="margin-top:3.2rem;"><i class="fa-solid fa-flag-checkered"></i>Wyniki</h3>
+
+            <h3 class="group-title anim d2" id="title-results" style="margin-top:3.2rem;"><i class="fa-solid fa-flag-checkered"></i>Wyniki</h3>
             <div id="results-grid" class="grid anim d2"></div>
         </section>
 
@@ -329,7 +349,7 @@
             <div class="legend anim d2" id="table-legend"></div>
         </section>
 
-        <!-- NOWA SEKCJA STATYSTYK -->
+        <!-- SEKCJA STATYSTYK Z OSOBNYMI PRZEŁĄCZNIKAMI DLA GOLI I ASYST -->
         <section id="stats" class="section">
             <div class="sub-nav anim" id="stats-sub">
                 <button class="sub-tab active" onclick="loadStats('iv_liga',this)">IV Liga</button>
@@ -339,11 +359,17 @@
                 <button class="sub-tab" onclick="loadStats('okr_debica',this)">Okr. Dębica</button>
                 <button class="sub-tab" onclick="loadStats('okr_stalowa',this)">Okr. Stalowa Wola</button>
             </div>
-            <h3 class="group-title anim d1"><i class="fa-solid fa-futbol"></i> Najlepsi Strzelcy i Asystenci</h3>
+
+            <!-- PRZEŁĄCZENIE GOLE / ASYSTY -->
+            <div style="display:flex; gap:10px; margin-bottom:1.5rem;" class="anim d1">
+                <button class="btn-sm" id="btn-stat-goals" onclick="switchStatType('goals')" style="background:var(--green); color:var(--navy); font-weight:700; padding:8px 16px; border-radius:10px;"><i class="fa-solid fa-futbol"></i> Klasyfikacja Strzelców (Gole)</button>
+                <button class="btn-sm" id="btn-stat-assists" onclick="switchStatType('assists')" style="background:rgba(255,255,255,0.05); color:var(--muted); font-weight:700; padding:8px 16px; border-radius:10px;"><i class="fa-solid fa-shoe-prints"></i> Klasyfikacja Asystentów (Asysty)</button>
+            </div>
+
             <div class="table-container anim d2">
                 <div class="table-wrap">
                     <table>
-                        <thead><tr><th>#</th><th>Zawodnik</th><th>Klub</th><th><i class="fa-solid fa-futbol" style="color:var(--green)"></i> Gole</th><th><i class="fa-solid fa-shoe-prints" style="color:var(--gold)"></i> Asysty</th></tr></thead>
+                        <thead id="stats-th"></thead>
                         <tbody id="stats-tb"></tbody>
                     </table>
                 </div>
@@ -488,7 +514,6 @@
                         <div id="admin-tlist" class="grid"></div>
                     </div>
 
-                    <!-- ADMIN STATYSTYKI -->
                     <div id="st" style="display:none;">
                         <div class="card" style="margin-bottom:2rem;">
                             <h3 style="font-size:0.75rem;color:var(--green);margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:1.2px;">Dodaj / Edytuj Statystyki Zawodnika</h3>
@@ -580,7 +605,7 @@
                                     <option value="Relacja">Relacja</option>
                                 </select>
                             </div>
-                            <textarea id="p-content" placeholder="Treść wpisu..."></textarea>
+                            <textarea id="p-content" placeholder="Treść wpisu... Możesz wklejać linki (https://...) - zostaną połączone automatycznie!"></textarea>
                             <button class="btn" onclick="savePost()">Zapisz wpis</button>
                             <button class="btn-sm" onclick="clearPF()" style="width:100%;margin-top:10px;border:1px solid var(--border);">Wyczyść</button>
                         </div>
@@ -645,16 +670,16 @@
 
         const DEFAULT_ZONES = { promo:[1], barage:[2], releg:[14,15,16] };
 
-        // PRAWDZIWE HISTORIE ZNANYCH KLUBÓW
+        // USTRUKTURYZOWANA HISTORIA I DANE KLUBÓW
         const clubHistories = {
-            "Igloopol Dębica": "Klub założony w 1978 roku przy dawnym kombinacie rolniczo-przemysłowym. Największy sukces to gra w najwyższej klasie rozgrywkowej (Ekstraklasa) w sezonach 1990/91 i 1991/92. Z klubu wywodzą się tacy piłkarze jak Leszek Pisz, Jacek Zieliński czy Jerzy Podbrożny.",
-            "Ekoball Sanok": "Drużyna nawiązująca i kontynuująca wspaniałe tradycje Stali Sanok (zał. 1946). Zasłynęła na całą Polskę historycznym występem w Pucharze Polski w 2006 roku, kiedy to jako trzecioligowiec wyeliminowała Legię Warszawa 2:1.",
-            "Polonia Przemyśl": "Jeden z najstarszych klubów w Polsce, założony jeszcze w czasach zaboru austriackiego jesienią 1909 r. Nazywana 'Przemyską Barceloną' ze względu na podobne barwy i styl w przeszłości.",
-            "Czarni Jasło": "Klub piłkarski o gigantycznej tradycji, założony w 1910 roku. Jeden z najstarszych ośrodków piłkarskich na Podkarpaciu, regularnie gromadzący wierną rzeszę kibiców.",
-            "Wisłok Wiśniowa": "Solidny klub z Podkarpacia założony w 1948 r. Od lat należy do czołowych i bardzo stabilnych drużyn szczebla wojewódzkiego, budując swoją siłę na lokalnych wychowankach.",
-            "Izolator Boguchwała": "Klub założony w 1944 roku przy miejscowych zakładach porcelany elektrotechnicznej. Znany ze wspaniałej infrastruktury 'Izo Areny' i długoletnich występów na szczeblu III ligi.",
-            "Sokół Nisko": "Zasłużony klub piłkarski założony w 1919 roku jako jedno z najstarszych stowarzyszeń w regionie. Wielokrotny uczestnik rozgrywek centralnych na przestrzeni kilkudziesięciu lat.",
-            "default": "Klub zrzeszony w Podkarpackim Związku Piłki Nożnej. Reprezentuje swoją lokalną społeczność, pisząc własną, unikalną piłkarską historię na boiskach naszego województwa."
+            "Igloopol Dębica": { year: "1978", achievement: "Ekstraklasa (1990/91, 1991/92)", desc: "Klub założony przy dawnym kombinacie rolniczo-przemysłowym. Wychował wielu znakomitych zawodników, m.in. Leszka Pisza i Jacka Zielińskiego." },
+            "Ekoball Sanok": { year: "1946 / 2014", achievement: "1/4 Finału Pucharu Polski (2006)", desc: "Kontynuator bogatych tradycji Stali Sanok, słynący z historycznego wyeliminowania Legii Warszawa w rozgrywkach centralnych." },
+            "Polonia Przemyśl": { year: "1909", achievement: "III Liga / Dawna II Liga", desc: "Jeden z najstarszych klubów w Polsce, założony pod zaborem austriackim. Tradycyjnie określany mianem 'Przemyskiej Barcelony'." },
+            "Czarni Jasło": { year: "1910", achievement: "III Liga", desc: "Jeden z najstarszych i najbardziej zasłużonych ośrodków piłkarskich na Podkarpaciu z wielotysięczną rzeszą kibiców." },
+            "Wisłok Wiśniowa": { year: "1948", achievement: "Czołówka IV Ligi Podkarpackiej", desc: "Stabilna i doskonale zorganizowana drużyna szczebla wojewódzkiego, opierająca siłę na lokalnych wychowankach." },
+            "Izolator Boguchwała": { year: "1944", achievement: "III Liga (wielokrotny wicemistrz)", desc: "Klub powstały przy zakładach ceramiki budowlanej, dysponujący nowocześnie wyposażonym kompleksem Izo Arena." },
+            "Sokół Nisko": { year: "1919", achievement: "Występy w rozgrywkach III Ligi", desc: "Zasłużone stowarzyszenie sportowe o ponad sto letniej tradycji na boiskach regionalnych." },
+            "default": { year: "Brak danych", achievement: "Rozgrywki Podkarpackiego ZPN", desc: "Klub zrzeszony w Podkarpackim Związku Piłki Nożnej, reprezentujący lokalną społeczność i budujący regionalną historię." }
         };
 
         document.addEventListener('keydown', e => {
@@ -711,7 +736,6 @@
             return t.crest ? `<img src="${t.crest}" class="table-crest" alt="">` : '<div class="table-crest" style="display:flex;align-items:center;justify-content:center;font-size:0.55rem;color:var(--muted);"><i class="fa-solid fa-shield"></i></div>';
         }
 
-        // NAPRAWA SORTOWANIA: Prawidłowe czytanie bilansu np. "375-12" albo "+5" albo "15-10"
         function evalGoalDiff(d){
             if(!d) return 0;
             let str = String(d).trim().replace(/\s/g,'');
@@ -755,7 +779,7 @@
             el.innerHTML=html||'<div class="legend-item">Brak stref</div>';
         }
 
-        let mc=[], curFilter='all';
+        let mc=[], curFilter='all', curMatchType='all';
         function matchIsUpcoming(m){ return (m.status==='upcoming' || (m.scoreHome==null||m.scoreAway==null)) && m.status!=='finished'; }
         function upcomingList(list){ return list.filter(matchIsUpcoming).sort((a,b)=>(a.date?.seconds||0)-(b.date?.seconds||0)); }
         function finishedList(list){ return list.filter(m=>!matchIsUpcoming(m)).sort((a,b)=>(b.date?.seconds||0)-(a.date?.seconds||0)); }
@@ -807,11 +831,53 @@
             if(c) c.innerHTML = data.length ? data.map(matchCard).join('') : '<p style="color:var(--muted);text-align:center;padding:1.5rem;">Brak danych.</p>';
         }
 
+        // PRZEŁĄCZANIE TYPU MECZÓW (Wszystkie / Nadchodzące / Wyniki)
+        function setMatchType(type) {
+            curMatchType = type;
+            ['all', 'upcoming', 'results'].forEach(t => {
+                const btn = document.getElementById('btn-match-' + (t==='upcoming'?'up':t==='results'?'res':'all'));
+                if(btn) {
+                    if(t === type) {
+                        btn.style.background = 'var(--green)';
+                        btn.style.color = 'var(--navy)';
+                    } else {
+                        btn.style.background = 'rgba(255,255,255,0.05)';
+                        btn.style.color = 'var(--muted)';
+                    }
+                }
+            });
+            applyFilter();
+        }
+
         function applyFilter(){
             const list = curFilter==='all' ? mc : mc.filter(m=>m.league===curFilter);
-            renderGrid(upcomingList(list),'upcoming-grid');
-            renderGrid(finishedList(list),'results-grid');
+            const upTitle = document.getElementById('title-upcoming');
+            const resTitle = document.getElementById('title-results');
+            const upGrid = document.getElementById('upcoming-grid');
+            const resGrid = document.getElementById('results-grid');
+
+            if(curMatchType === 'all') {
+                if(upTitle) upTitle.style.display = 'block';
+                if(upGrid) upGrid.style.display = 'grid';
+                if(resTitle) resTitle.style.display = 'block';
+                if(resGrid) resGrid.style.display = 'grid';
+                renderGrid(upcomingList(list),'upcoming-grid');
+                renderGrid(finishedList(list),'results-grid');
+            } else if(curMatchType === 'upcoming') {
+                if(upTitle) upTitle.style.display = 'block';
+                if(upGrid) upGrid.style.display = 'grid';
+                if(resTitle) resTitle.style.display = 'none';
+                if(resGrid) resGrid.style.display = 'none';
+                renderGrid(upcomingList(list),'upcoming-grid');
+            } else if(curMatchType === 'results') {
+                if(upTitle) upTitle.style.display = 'none';
+                if(upGrid) upGrid.style.display = 'none';
+                if(resTitle) resTitle.style.display = 'block';
+                if(resGrid) resGrid.style.display = 'grid';
+                renderGrid(finishedList(list),'results-grid');
+            }
         }
+
         function filterM(league,btn){
             curFilter=league;
             document.querySelectorAll('#matches-sub .sub-tab').forEach(b=>b.classList.remove('active'));
@@ -862,39 +928,88 @@
             }catch(e){}
         }
 
-        // STATYSTYKI ZAWODNIKÓW Z PODZIAŁEM NA LIGI
+        // STATYSTYKI ZAWODNIKÓW - OSOBNO GOLE I ASYSTY
+        let currentStatLeague = 'iv_liga';
+        let currentStatType = 'goals';
+        let cachedStats = [];
+
+        function switchStatType(type) {
+            currentStatType = type;
+            const btnG = document.getElementById('btn-stat-goals');
+            const btnA = document.getElementById('btn-stat-assists');
+            if(type === 'goals') {
+                btnG.style.background = 'var(--green)';
+                btnG.style.color = 'var(--navy)';
+                btnA.style.background = 'rgba(255,255,255,0.05)';
+                btnA.style.color = 'var(--muted)';
+            } else {
+                btnA.style.background = 'var(--gold)';
+                btnA.style.color = 'var(--navy)';
+                btnG.style.background = 'rgba(255,255,255,0.05)';
+                btnG.style.color = 'var(--muted)';
+            }
+            renderStatsTable();
+        }
+
         async function loadStats(league, btn){
-            if(btn){document.querySelectorAll('#stats-sub .sub-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
-            const tb=document.getElementById('stats-tb');
-            tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:2rem;">Ładowanie...</td></tr>';
+            if(btn){
+                document.querySelectorAll('#stats-sub .sub-tab').forEach(b=>b.classList.remove('active'));
+                btn.classList.add('active');
+            }
+            currentStatLeague = league;
+            const tb = document.getElementById('stats-tb');
+            tb.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:2rem;">Ładowanie...</td></tr>';
             try {
                 const s = await db.collection('stats').where('league', '==', league).get();
-                if(s.empty) {
-                    tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:2rem;">Brak statystyk dla tej ligi.</td></tr>';
-                    return;
-                }
-                const statsList = s.docs.map(d=>d.data());
-                statsList.sort((a,b) => b.goals - a.goals || b.assists - a.assists);
-                tb.innerHTML = statsList.map((st, i) => `
-                    <tr>
-                        <td style="color:var(--muted); font-weight:800;">${i+1}</td>
-                        <td style="font-weight:600;">${st.player}</td>
-                        <td style="color:var(--muted); font-size:0.8rem;"><div class="team-cell">${crestImgSmallFromStr(st.team)} ${st.team}</div></td>
-                        <td style="font-weight:800; color:var(--green); font-size:1.1rem;">${st.goals}</td>
-                        <td style="font-weight:800; color:var(--gold); font-size:1.1rem;">${st.assists}</td>
-                    </tr>
-                `).join('');
+                cachedStats = s.empty ? [] : s.docs.map(d=>d.data());
+                renderStatsTable();
             } catch(e) {
-                tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:#ff6b6b;padding:2rem;">Błąd ładowania statystyk.</td></tr>';
+                tb.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#ff6b6b;padding:2rem;">Błąd ładowania statystyk.</td></tr>';
             }
         }
 
-        // TRANSFERY Z PODZIAŁEM NA LIGI
+        function renderStatsTable() {
+            const th = document.getElementById('stats-th');
+            const tb = document.getElementById('stats-tb');
+            
+            if(currentStatType === 'goals') {
+                th.innerHTML = `<tr><th>#</th><th>Zawodnik</th><th>Klub</th><th style="text-align:center;"><i class="fa-solid fa-futbol" style="color:var(--green)"></i> Bramki</th></tr>`;
+                const sorted = [...cachedStats].filter(s => (s.goals || 0) > 0).sort((a,b) => (b.goals||0) - (a.goals||0));
+                if(!sorted.length) {
+                    tb.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:2rem;">Brak wpisów w klasyfikacji strzelców.</td></tr>';
+                    return;
+                }
+                tb.innerHTML = sorted.map((st, i) => `
+                    <tr>
+                        <td style="color:var(--muted); font-weight:800;">${i+1}</td>
+                        <td style="font-weight:600;">${st.player}</td>
+                        <td style="color:var(--muted); font-size:0.8rem;"><div class="team-cell">${crestImgSmallFromStr(st.team)} <span class="team-name" onclick="openClubProfile('${st.team}')">${st.team}</span></div></td>
+                        <td style="font-weight:800; color:var(--green); font-size:1.15rem; text-align:center;">${st.goals||0}</td>
+                    </tr>
+                `).join('');
+            } else {
+                th.innerHTML = `<tr><th>#</th><th>Zawodnik</th><th>Klub</th><th style="text-align:center;"><i class="fa-solid fa-shoe-prints" style="color:var(--gold)"></i> Asysty</th></tr>`;
+                const sorted = [...cachedStats].filter(s => (s.assists || 0) > 0).sort((a,b) => (b.assists||0) - (a.assists||0));
+                if(!sorted.length) {
+                    tb.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:2rem;">Brak wpisów w klasyfikacji asystentów.</td></tr>';
+                    return;
+                }
+                tb.innerHTML = sorted.map((st, i) => `
+                    <tr>
+                        <td style="color:var(--muted); font-weight:800;">${i+1}</td>
+                        <td style="font-weight:600;">${st.player}</td>
+                        <td style="color:var(--muted); font-size:0.8rem;"><div class="team-cell">${crestImgSmallFromStr(st.team)} <span class="team-name" onclick="openClubProfile('${st.team}')">${st.team}</span></div></td>
+                        <td style="font-weight:800; color:var(--gold); font-size:1.15rem; text-align:center;">${st.assists||0}</td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        // TRANSFERY
         let allTransfers = [];
         async function loadTransfers(){
             const c=document.getElementById('transfers-grid');
             try{
-                // Zdjęty limit 20 transferów, pobieramy 150 ostatnich
                 const s=await db.collection('transfers').orderBy('date','desc').limit(150).get();
                 if(s.empty){c.innerHTML='<p style="color:var(--muted);padding:2rem;">Brak transferów.</p>';return;}
                 allTransfers = s.docs.map(d=>d.data());
@@ -928,21 +1043,55 @@
             }).join('');
         }
 
+        // POSTY I DEDYKOWANE OKNO BEZPOŚREDNIEGO WEJŚCIA + ZAMIANA LINKÓW NA KLIKALNE
+        let postsCache = [];
+
+        function parseLinks(text) {
+            if(!text) return '';
+            const urlRegex = /(https?:\/\/[^\s]+)/g;
+            return text.replace(urlRegex, function(url) {
+                return `<a href="${url}" target="_blank" rel="noopener noreferrer" style="color:var(--green); font-weight:600; text-decoration:underline;" onclick="event.stopPropagation();">${url}</a>`;
+            });
+        }
+
         async function loadPosts(){
             const c=document.getElementById('posts-grid');
             try{
                 const s=await db.collection('posts').orderBy('date','desc').limit(20).get();
                 if(s.empty){c.innerHTML='<p style="color:var(--muted);padding:2rem;">Brak postów.</p>';return;}
-                c.innerHTML=s.docs.map(d=>{
-                    const p=d.data();
-                    return `<div class="card">
+                postsCache = s.docs.map(d=>({id:d.id, ...d.data()}));
+                
+                c.innerHTML=postsCache.map((p, idx)=>{
+                    return `<div class="card" onclick="openPostModal(${idx})" style="cursor:pointer;">
                         <div class="league-label"><i class="fa-solid fa-bullhorn"></i> ${p.label||'Informacja'}</div>
-                        <h3 style="font-size:1.05rem;margin-bottom:0.5rem;">${p.title}</h3>
-                        <p style="color:var(--muted);font-size:0.88rem;white-space:pre-wrap;">${p.content}</p>
-                        <div class="match-date" style="text-align:left;margin-top:1.1rem;"><i class="fa-regular fa-clock"></i> Dodano: ${fmtFinished(p.date)}</div>
+                        <h3 style="font-size:1.05rem;margin-bottom:0.5rem;color:var(--white);">${p.title}</h3>
+                        <p style="color:var(--muted);font-size:0.88rem;white-space:pre-wrap;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;text-overflow:ellipsis;">${parseLinks(p.content)}</p>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:1.2rem;">
+                            <span class="match-date" style="text-align:left;margin-top:0;"><i class="fa-regular fa-clock"></i> ${fmtFinished(p.date)}</span>
+                            <span style="font-size:0.75rem; color:var(--green); font-weight:600;">Czytaj więcej <i class="fa-solid fa-arrow-right"></i></span>
+                        </div>
                     </div>`;
                 }).join('');
             }catch(e){ c.innerHTML='<p style="color:#ff6b6b;padding:2rem;">Błąd ładowania.</p>'; }
+        }
+
+        function openPostModal(index) {
+            const p = postsCache[index];
+            if(!p) return;
+            const body = document.getElementById('post-modal-body');
+            body.innerHTML = `
+                <div class="league-label" style="margin-bottom:0.8rem;"><i class="fa-solid fa-bullhorn"></i> ${p.label||'Informacja'}</div>
+                <h2 style="font-family:'Outfit'; font-size:1.6rem; color:var(--white); margin-bottom:1rem;">${p.title}</h2>
+                <div style="font-size:0.75rem; color:var(--muted); margin-bottom:1.5rem; border-bottom:1px solid var(--border); padding-bottom:10px;">
+                    <i class="fa-regular fa-clock"></i> Opublikowano: ${fmtFinished(p.date)}
+                </div>
+                <div style="color:var(--white); font-size:0.95rem; line-height:1.7; white-space:pre-wrap; overflow-wrap:break-word;">${parseLinks(p.content)}</div>
+            `;
+            document.getElementById('post-modal').classList.add('active');
+        }
+
+        function closePostModal() {
+            document.getElementById('post-modal').classList.remove('active');
         }
 
         // OTWIERANIE PROFILU KLUBU
@@ -957,19 +1106,47 @@
             
             document.getElementById('modal-team-name').innerText = teamName;
             
-            // Szukanie historii
-            let historyText = clubHistories[teamName] || clubHistories["default"];
-            document.getElementById('modal-team-history').innerText = historyText;
+            const info = clubHistories[teamName] || clubHistories["default"];
+            document.getElementById('modal-team-history').innerHTML = `
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px; font-size:0.85rem;">
+                    <div><strong style="color:var(--green);">Rok założenia:</strong> ${info.year}</div>
+                    <div><strong style="color:var(--gold);">Najwyższe osiągnięcie:</strong> ${info.achievement}</div>
+                </div>
+                <div style="font-size:0.88rem; color:var(--muted); border-top:1px dashed var(--border); padding-top:8px;">${info.desc}</div>
+            `;
 
-            // Filtrowanie meczów z tablicy cache 'mc'
             let teamMatches = mc.filter(m => m.homeTeam === teamName || m.awayTeam === teamName);
-            let upList = upcomingList(teamMatches).slice(0, 3);
-            let finList = finishedList(teamMatches).slice(0, 3);
+            let upList = upcomingList(teamMatches).slice(0, 5);
+            let finList = finishedList(teamMatches).slice(0, 5);
 
             renderGrid(upList, 'modal-upcoming');
             renderGrid(finList, 'modal-results');
 
+            switchModalMatches('up');
             modal.classList.add('active');
+        }
+
+        function switchModalMatches(type) {
+            const upEl = document.getElementById('modal-upcoming');
+            const resEl = document.getElementById('modal-results');
+            const tabUp = document.getElementById('modal-tab-up');
+            const tabRes = document.getElementById('modal-tab-res');
+
+            if(type === 'up') {
+                upEl.style.display = 'grid';
+                resEl.style.display = 'none';
+                tabUp.style.background = 'var(--green)';
+                tabUp.style.color = 'var(--navy)';
+                tabRes.style.background = 'rgba(255,255,255,0.05)';
+                tabRes.style.color = 'var(--muted)';
+            } else {
+                upEl.style.display = 'none';
+                resEl.style.display = 'grid';
+                tabRes.style.background = 'var(--green)';
+                tabRes.style.color = 'var(--navy)';
+                tabUp.style.background = 'rgba(255,255,255,0.05)';
+                tabUp.style.color = 'var(--muted)';
+            }
         }
 
         function closeClubProfile() {
@@ -1076,7 +1253,6 @@
                 const doc=await db.collection('standings').doc(league).get();
                 if(!doc.exists||!doc.data().teams)continue;
                 html+=`<div style="margin-bottom:1.4rem;"><div class="league-label" style="margin-bottom:0.8rem;"><i class="fa-solid fa-circle"></i>${L[league]}</div>`;
-                // W adminie też sortujemy poprawnie po zapisie dla przejrzystości
                 let sortedTeams = [...doc.data().teams].sort((a,b)=>b.pts-a.pts||evalGoalDiff(b.diff)-evalGoalDiff(a.diff));
                 html+=sortedTeams.map((t,i)=>`<div class="card" style="padding:0.8rem 1rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
                     <div style="display:flex;align-items:center;gap:8px;">${t.crest?`<img src="${t.crest}" style="width:18px;height:18px;border-radius:50%;object-fit:contain;">`:''}<span style="font-weight:600;font-size:0.86rem;">${t.name}</span><span style="color:var(--muted);font-size:0.76rem;">• ${t.pts} pkt • bil: ${t.diff}</span></div>
@@ -1102,7 +1278,6 @@
         }
         function clearTF(){document.getElementById('t-id').value='';['t-team','t-crest','t-m','t-pts','t-diff'].forEach(i=>document.getElementById(i).value='');}
 
-        // ADMIN: STATYSTYKI ZAWODNIKÓW
         async function saveStat(){
             if(!user)return;
             const id=document.getElementById('s-id').value;
@@ -1138,7 +1313,6 @@
         }
         async function delS(id){if(confirm('Usunąć statystyki zawodnika?')){await db.collection('stats').doc(id).delete();loadAdminS();}}
         function clearSF(){document.getElementById('s-id').value='';['s-player','s-team'].forEach(i=>document.getElementById(i).value=''); document.getElementById('s-goals').value='0'; document.getElementById('s-assists').value='0';}
-
 
         async function saveZones(){
             if(!user)return;

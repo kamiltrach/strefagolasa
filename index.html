@@ -49,7 +49,14 @@
         main{max-width:1160px;margin:105px auto 0;padding:0 1.5rem 3rem;min-height:80vh;}
         .section{display:none;}.section.active{display:block;}
 
-        .sub-nav{display:flex;margin-bottom:2.2rem;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;padding-bottom:2px;}
+        .sub-nav-container{margin-bottom:2.2rem;}
+        .group-toggle{display:flex;gap:8px;margin-bottom:0.8rem;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;}
+        .group-toggle::-webkit-scrollbar{display:none;}
+        .grp-tab{padding:0.4rem 0.9rem;border-radius:8px;font-size:0.75rem;font-weight:700;color:var(--muted);background:rgba(255,255,255,0.05);border:1px solid var(--border);transition:all .2s var(--ease);white-space:nowrap;cursor:pointer;}
+        .grp-tab:hover{color:var(--white);background:rgba(255,255,255,0.1);}
+        .grp-tab.active{color:var(--navy);background:var(--green);border-color:var(--green);box-shadow:0 0 12px var(--green-glow);}
+
+        .sub-nav{display:flex;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;padding-bottom:2px;}
         .sub-nav::-webkit-scrollbar{display:none;}
         .sub-tab{padding:0.9rem 1.4rem;font-size:0.8rem;font-weight:600;color:var(--muted);position:relative;white-space:nowrap;flex-shrink:0;}
         .sub-tab::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:3px;background:var(--green);transform:scaleX(0);transition:transform .3s var(--ease);box-shadow:0 0 14px var(--green-glow);}
@@ -186,7 +193,7 @@
             .hero-logo{width:105px;height:105px;margin-bottom:1.4rem;}
             .grid{grid-template-columns:1fr;gap:1.1rem;}
             .card{padding:1.35rem;border-radius:16px;}
-            .sub-nav{margin-bottom:1.6rem;}
+            .sub-nav-container{margin-bottom:1.6rem;}
             .sub-tab{padding:0.75rem 1.1rem;font-size:0.75rem;}
             .form-grid,.form-grid-3{grid-template-columns:1fr;gap:8px;}
             .logo-img{height:38px;}
@@ -303,20 +310,31 @@
         </section>
 
         <section id="matches" class="section">
-            <div class="sub-nav anim" id="matches-sub">
-                <button class="sub-tab active" onclick="filterM('all',this)">Wszystkie Ligi</button>
-                <button class="sub-tab" onclick="filterM('iv_liga',this)">IV Liga</button>
-                <button class="sub-tab" onclick="filterM('okr_jaroslaw',this)">Okr. Jarosław</button>
-                <button class="sub-tab" onclick="filterM('okr_krosno',this)">Okr. Krosno</button>
-                <button class="sub-tab" onclick="filterM('okr_rzeszow',this)">Okr. Rzeszów</button>
-                <button class="sub-tab" onclick="filterM('okr_debica',this)">Okr. Dębica</button>
-                <button class="sub-tab" onclick="filterM('okr_stalowa',this)">Okr. Stalowa Wola</button>
-                <button class="sub-tab" onclick="filterM('a_przeworsk',this)">A Klasa Przeworsk</button>
-                <button class="sub-tab" onclick="filterM('b_przeworsk',this)">B Klasa Przeworsk</button>
-                <button class="sub-tab" onclick="filterM('a_jaroslaw',this)">A Klasa Jarosław</button>
-                <button class="sub-tab" onclick="filterM('b_jaroslaw',this)">B Klasa Jarosław</button>
-                <button class="sub-tab" onclick="filterM('a_rzeszow',this)">A Klasa Rzeszów</button>
-                <button class="sub-tab" onclick="filterM('b_rzeszow',this)">B Klasa Rzeszów</button>
+            <div class="sub-nav-container anim" id="matches-sub">
+                <div class="group-toggle">
+                    <button class="grp-tab active" onclick="switchGroup('matches', 'okr', this)">IV Liga & Okręgowe</button>
+                    <button class="grp-tab" onclick="switchGroup('matches', 'a', this)">A Klasy</button>
+                    <button class="grp-tab" onclick="switchGroup('matches', 'b', this)">B Klasy</button>
+                </div>
+                <div class="sub-nav grp-okr">
+                    <button class="sub-tab active" onclick="filterM('all',this)">Wszystkie Ligi</button>
+                    <button class="sub-tab" onclick="filterM('iv_liga',this)">IV Liga</button>
+                    <button class="sub-tab" onclick="filterM('okr_jaroslaw',this)">Okr. Jarosław</button>
+                    <button class="sub-tab" onclick="filterM('okr_krosno',this)">Okr. Krosno</button>
+                    <button class="sub-tab" onclick="filterM('okr_rzeszow',this)">Okr. Rzeszów</button>
+                    <button class="sub-tab" onclick="filterM('okr_debica',this)">Okr. Dębica</button>
+                    <button class="sub-tab" onclick="filterM('okr_stalowa',this)">Okr. Stalowa Wola</button>
+                </div>
+                <div class="sub-nav grp-a" style="display:none;">
+                    <button class="sub-tab" onclick="filterM('a_przeworsk',this)">A Klasa Przeworsk</button>
+                    <button class="sub-tab" onclick="filterM('a_jaroslaw',this)">A Klasa Jarosław</button>
+                    <button class="sub-tab" onclick="filterM('a_rzeszow',this)">A Klasa Rzeszów</button>
+                </div>
+                <div class="sub-nav grp-b" style="display:none;">
+                    <button class="sub-tab" onclick="filterM('b_przeworsk',this)">B Klasa Przeworsk</button>
+                    <button class="sub-tab" onclick="filterM('b_jaroslaw',this)">B Klasa Jarosław</button>
+                    <button class="sub-tab" onclick="filterM('b_rzeszow',this)">B Klasa Rzeszów</button>
+                </div>
             </div>
 
             <div style="display:flex; gap:10px; margin-bottom:1.5rem;" class="anim d1">
@@ -333,19 +351,30 @@
         </section>
 
         <section id="table" class="section">
-            <div class="sub-nav anim" id="table-sub">
-                <button class="sub-tab active" onclick="loadTable('iv_liga',this)">IV Liga</button>
-                <button class="sub-tab" onclick="loadTable('okr_jaroslaw',this)">Okr. Jarosław</button>
-                <button class="sub-tab" onclick="loadTable('okr_krosno',this)">Okr. Krosno</button>
-                <button class="sub-tab" onclick="loadTable('okr_rzeszow',this)">Okr. Rzeszów</button>
-                <button class="sub-tab" onclick="loadTable('okr_debica',this)">Okr. Dębica</button>
-                <button class="sub-tab" onclick="loadTable('okr_stalowa',this)">Okr. Stalowa Wola</button>
-                <button class="sub-tab" onclick="loadTable('a_przeworsk',this)">A Klasa Przeworsk</button>
-                <button class="sub-tab" onclick="loadTable('b_przeworsk',this)">B Klasa Przeworsk</button>
-                <button class="sub-tab" onclick="loadTable('a_jaroslaw',this)">A Klasa Jarosław</button>
-                <button class="sub-tab" onclick="loadTable('b_jaroslaw',this)">B Klasa Jarosław</button>
-                <button class="sub-tab" onclick="loadTable('a_rzeszow',this)">A Klasa Rzeszów</button>
-                <button class="sub-tab" onclick="loadTable('b_rzeszow',this)">B Klasa Rzeszów</button>
+            <div class="sub-nav-container anim" id="table-sub">
+                <div class="group-toggle">
+                    <button class="grp-tab active" onclick="switchGroup('table', 'okr', this)">IV Liga & Okręgowe</button>
+                    <button class="grp-tab" onclick="switchGroup('table', 'a', this)">A Klasy</button>
+                    <button class="grp-tab" onclick="switchGroup('table', 'b', this)">B Klasy</button>
+                </div>
+                <div class="sub-nav grp-okr">
+                    <button class="sub-tab active" onclick="loadTable('iv_liga',this)">IV Liga</button>
+                    <button class="sub-tab" onclick="loadTable('okr_jaroslaw',this)">Okr. Jarosław</button>
+                    <button class="sub-tab" onclick="loadTable('okr_krosno',this)">Okr. Krosno</button>
+                    <button class="sub-tab" onclick="loadTable('okr_rzeszow',this)">Okr. Rzeszów</button>
+                    <button class="sub-tab" onclick="loadTable('okr_debica',this)">Okr. Dębica</button>
+                    <button class="sub-tab" onclick="loadTable('okr_stalowa',this)">Okr. Stalowa Wola</button>
+                </div>
+                <div class="sub-nav grp-a" style="display:none;">
+                    <button class="sub-tab" onclick="loadTable('a_przeworsk',this)">A Klasa Przeworsk</button>
+                    <button class="sub-tab" onclick="loadTable('a_jaroslaw',this)">A Klasa Jarosław</button>
+                    <button class="sub-tab" onclick="loadTable('a_rzeszow',this)">A Klasa Rzeszów</button>
+                </div>
+                <div class="sub-nav grp-b" style="display:none;">
+                    <button class="sub-tab" onclick="loadTable('b_przeworsk',this)">B Klasa Przeworsk</button>
+                    <button class="sub-tab" onclick="loadTable('b_jaroslaw',this)">B Klasa Jarosław</button>
+                    <button class="sub-tab" onclick="loadTable('b_rzeszow',this)">B Klasa Rzeszów</button>
+                </div>
             </div>
             <div class="table-container anim d1">
                 <div class="table-wrap">
@@ -356,19 +385,30 @@
         </section>
 
         <section id="stats" class="section">
-            <div class="sub-nav anim" id="stats-sub">
-                <button class="sub-tab active" onclick="loadStats('iv_liga',this)">IV Liga</button>
-                <button class="sub-tab" onclick="loadStats('okr_jaroslaw',this)">Okr. Jarosław</button>
-                <button class="sub-tab" onclick="loadStats('okr_krosno',this)">Okr. Krosno</button>
-                <button class="sub-tab" onclick="loadStats('okr_rzeszow',this)">Okr. Rzeszów</button>
-                <button class="sub-tab" onclick="loadStats('okr_debica',this)">Okr. Dębica</button>
-                <button class="sub-tab" onclick="loadStats('okr_stalowa',this)">Okr. Stalowa Wola</button>
-                <button class="sub-tab" onclick="loadStats('a_przeworsk',this)">A Klasa Przeworsk</button>
-                <button class="sub-tab" onclick="loadStats('b_przeworsk',this)">B Klasa Przeworsk</button>
-                <button class="sub-tab" onclick="loadStats('a_jaroslaw',this)">A Klasa Jarosław</button>
-                <button class="sub-tab" onclick="loadStats('b_jaroslaw',this)">B Klasa Jarosław</button>
-                <button class="sub-tab" onclick="loadStats('a_rzeszow',this)">A Klasa Rzeszów</button>
-                <button class="sub-tab" onclick="loadStats('b_rzeszow',this)">B Klasa Rzeszów</button>
+            <div class="sub-nav-container anim" id="stats-sub">
+                <div class="group-toggle">
+                    <button class="grp-tab active" onclick="switchGroup('stats', 'okr', this)">IV Liga & Okręgowe</button>
+                    <button class="grp-tab" onclick="switchGroup('stats', 'a', this)">A Klasy</button>
+                    <button class="grp-tab" onclick="switchGroup('stats', 'b', this)">B Klasy</button>
+                </div>
+                <div class="sub-nav grp-okr">
+                    <button class="sub-tab active" onclick="loadStats('iv_liga',this)">IV Liga</button>
+                    <button class="sub-tab" onclick="loadStats('okr_jaroslaw',this)">Okr. Jarosław</button>
+                    <button class="sub-tab" onclick="loadStats('okr_krosno',this)">Okr. Krosno</button>
+                    <button class="sub-tab" onclick="loadStats('okr_rzeszow',this)">Okr. Rzeszów</button>
+                    <button class="sub-tab" onclick="loadStats('okr_debica',this)">Okr. Dębica</button>
+                    <button class="sub-tab" onclick="loadStats('okr_stalowa',this)">Okr. Stalowa Wola</button>
+                </div>
+                <div class="sub-nav grp-a" style="display:none;">
+                    <button class="sub-tab" onclick="loadStats('a_przeworsk',this)">A Klasa Przeworsk</button>
+                    <button class="sub-tab" onclick="loadStats('a_jaroslaw',this)">A Klasa Jarosław</button>
+                    <button class="sub-tab" onclick="loadStats('a_rzeszow',this)">A Klasa Rzeszów</button>
+                </div>
+                <div class="sub-nav grp-b" style="display:none;">
+                    <button class="sub-tab" onclick="loadStats('b_przeworsk',this)">B Klasa Przeworsk</button>
+                    <button class="sub-tab" onclick="loadStats('b_jaroslaw',this)">B Klasa Jarosław</button>
+                    <button class="sub-tab" onclick="loadStats('b_rzeszow',this)">B Klasa Rzeszów</button>
+                </div>
             </div>
 
             <div style="display:flex; gap:10px; margin-bottom:1.5rem;" class="anim d1">
@@ -387,20 +427,31 @@
         </section>
 
         <section id="transfers" class="section">
-            <div class="sub-nav anim" id="transfers-sub">
-                <button class="sub-tab active" onclick="filterTransfers('all',this)">Wszystkie</button>
-                <button class="sub-tab" onclick="filterTransfers('iv_liga',this)">IV Liga</button>
-                <button class="sub-tab" onclick="filterTransfers('okr_jaroslaw',this)">Okr. Jarosław</button>
-                <button class="sub-tab" onclick="filterTransfers('okr_krosno',this)">Okr. Krosno</button>
-                <button class="sub-tab" onclick="filterTransfers('okr_rzeszow',this)">Okr. Rzeszów</button>
-                <button class="sub-tab" onclick="filterTransfers('okr_debica',this)">Okr. Dębica</button>
-                <button class="sub-tab" onclick="filterTransfers('okr_stalowa',this)">Okr. Stalowa Wola</button>
-                <button class="sub-tab" onclick="filterTransfers('a_przeworsk',this)">A Klasa Przeworsk</button>
-                <button class="sub-tab" onclick="filterTransfers('b_przeworsk',this)">B Klasa Przeworsk</button>
-                <button class="sub-tab" onclick="filterTransfers('a_jaroslaw',this)">A Klasa Jarosław</button>
-                <button class="sub-tab" onclick="filterTransfers('b_jaroslaw',this)">B Klasa Jarosław</button>
-                <button class="sub-tab" onclick="filterTransfers('a_rzeszow',this)">A Klasa Rzeszów</button>
-                <button class="sub-tab" onclick="filterTransfers('b_rzeszow',this)">B Klasa Rzeszów</button>
+            <div class="sub-nav-container anim" id="transfers-sub">
+                <div class="group-toggle">
+                    <button class="grp-tab active" onclick="switchGroup('transfers', 'okr', this)">IV Liga & Okręgowe</button>
+                    <button class="grp-tab" onclick="switchGroup('transfers', 'a', this)">A Klasy</button>
+                    <button class="grp-tab" onclick="switchGroup('transfers', 'b', this)">B Klasy</button>
+                </div>
+                <div class="sub-nav grp-okr">
+                    <button class="sub-tab active" onclick="filterTransfers('all',this)">Wszystkie</button>
+                    <button class="sub-tab" onclick="filterTransfers('iv_liga',this)">IV Liga</button>
+                    <button class="sub-tab" onclick="filterTransfers('okr_jaroslaw',this)">Okr. Jarosław</button>
+                    <button class="sub-tab" onclick="filterTransfers('okr_krosno',this)">Okr. Krosno</button>
+                    <button class="sub-tab" onclick="filterTransfers('okr_rzeszow',this)">Okr. Rzeszów</button>
+                    <button class="sub-tab" onclick="filterTransfers('okr_debica',this)">Okr. Dębica</button>
+                    <button class="sub-tab" onclick="filterTransfers('okr_stalowa',this)">Okr. Stalowa Wola</button>
+                </div>
+                <div class="sub-nav grp-a" style="display:none;">
+                    <button class="sub-tab" onclick="filterTransfers('a_przeworsk',this)">A Klasa Przeworsk</button>
+                    <button class="sub-tab" onclick="filterTransfers('a_jaroslaw',this)">A Klasa Jarosław</button>
+                    <button class="sub-tab" onclick="filterTransfers('a_rzeszow',this)">A Klasa Rzeszów</button>
+                </div>
+                <div class="sub-nav grp-b" style="display:none;">
+                    <button class="sub-tab" onclick="filterTransfers('b_przeworsk',this)">B Klasa Przeworsk</button>
+                    <button class="sub-tab" onclick="filterTransfers('b_jaroslaw',this)">B Klasa Jarosław</button>
+                    <button class="sub-tab" onclick="filterTransfers('b_rzeszow',this)">B Klasa Rzeszów</button>
+                </div>
             </div>
             <h2 style="margin-bottom:2rem;text-transform:uppercase;letter-spacing:1.2px;font-size:0.82rem;color:var(--muted);" class="anim">Rynek Transferowy</h2>
             <div id="transfers-grid" class="grid anim d1"></div>
@@ -744,6 +795,21 @@
             if(tapCount >= 5) { tapCount = 0; go('admin'); }
             tapTimer = setTimeout(() => { tapCount = 0; }, 1500);
         });
+
+        function switchGroup(sectionId, grp, btn) {
+            const wrap = document.getElementById(sectionId + '-sub');
+            if(!wrap) return;
+            wrap.querySelectorAll('.grp-tab').forEach(b => b.classList.remove('active'));
+            if(btn) btn.classList.add('active');
+            
+            wrap.querySelectorAll('.grp-okr, .grp-a, .grp-b').forEach(el => el.style.display = 'none');
+            const target = wrap.querySelector('.grp-' + grp);
+            if(target) {
+                target.style.display = 'flex';
+                const firstSubTab = target.querySelector('.sub-tab');
+                if(firstSubTab) firstSubTab.click();
+            }
+        }
 
         function go(id){
             document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));

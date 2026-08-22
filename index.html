@@ -268,12 +268,12 @@
             <div class="hero anim">
                 <img src="logo.png" alt="Logo" class="hero-logo" onerror="this.outerHTML='<div style=\'width:110px;height:110px;margin:0 auto 1.5rem;border-radius:50%;border:2px solid var(--green);display:flex;align-items:center;justify-content:center;font-size:2.8rem;color:var(--green);\'><i class=\'fa-solid fa-futbol\'></i></div>'">
                 <h1>Strefa<span>Gola</span></h1>
-                <p>IV Liga, Klasa Okręgowa Jarosław, Krosno, Rzeszów, Dębica, Stalowa Wola.<br>Dane. Statystyki. Profesjonalizm.</p>
+                <p>IV Liga, Klasa Okręgowa oraz A i B Klasy Jarosław, Przeworsk, Rzeszów, Dębica, Stalowa Wola, Krosno.<br>Dane. Statystyki. Profesjonalizm.</p>
             </div>
 
             <div class="stats-row anim d1">
-                <div class="stat-item"><span class="stat-num">6</span><span class="stat-label">Lig</span></div>
-                <div class="stat-item"><span class="stat-num">96+</span><span class="stat-label">Drużyn</span></div>
+                <div class="stat-item"><span class="stat-num">12</span><span class="stat-label">Lig</span></div>
+                <div class="stat-item"><span class="stat-num">150+</span><span class="stat-label">Drużyn</span></div>
                 <div class="stat-item"><span class="stat-num">Bieżąco</span><span class="stat-label">Aktualizacje</span></div>
                 <div class="stat-item"><span class="stat-num">Podkarpacie</span><span class="stat-label">Okręg</span></div>
             </div>
@@ -311,6 +311,12 @@
                 <button class="sub-tab" onclick="filterM('okr_rzeszow',this)">Okr. Rzeszów</button>
                 <button class="sub-tab" onclick="filterM('okr_debica',this)">Okr. Dębica</button>
                 <button class="sub-tab" onclick="filterM('okr_stalowa',this)">Okr. Stalowa Wola</button>
+                <button class="sub-tab" onclick="filterM('a_przeworsk',this)">A Klasa Przeworsk</button>
+                <button class="sub-tab" onclick="filterM('b_przeworsk',this)">B Klasa Przeworsk</button>
+                <button class="sub-tab" onclick="filterM('a_jaroslaw',this)">A Klasa Jarosław</button>
+                <button class="sub-tab" onclick="filterM('b_jaroslaw',this)">B Klasa Jarosław</button>
+                <button class="sub-tab" onclick="filterM('a_rzeszow',this)">A Klasa Rzeszów</button>
+                <button class="sub-tab" onclick="filterM('b_rzeszow',this)">B Klasa Rzeszów</button>
             </div>
 
             <div style="display:flex; gap:10px; margin-bottom:1.5rem;" class="anim d1">
@@ -334,6 +340,12 @@
                 <button class="sub-tab" onclick="loadTable('okr_rzeszow',this)">Okr. Rzeszów</button>
                 <button class="sub-tab" onclick="loadTable('okr_debica',this)">Okr. Dębica</button>
                 <button class="sub-tab" onclick="loadTable('okr_stalowa',this)">Okr. Stalowa Wola</button>
+                <button class="sub-tab" onclick="loadTable('a_przeworsk',this)">A Klasa Przeworsk</button>
+                <button class="sub-tab" onclick="loadTable('b_przeworsk',this)">B Klasa Przeworsk</button>
+                <button class="sub-tab" onclick="loadTable('a_jaroslaw',this)">A Klasa Jarosław</button>
+                <button class="sub-tab" onclick="loadTable('b_jaroslaw',this)">B Klasa Jarosław</button>
+                <button class="sub-tab" onclick="loadTable('a_rzeszow',this)">A Klasa Rzeszów</button>
+                <button class="sub-tab" onclick="loadTable('b_rzeszow',this)">B Klasa Rzeszów</button>
             </div>
             <div class="table-container anim d1">
                 <div class="table-wrap">
@@ -351,6 +363,12 @@
                 <button class="sub-tab" onclick="loadStats('okr_rzeszow',this)">Okr. Rzeszów</button>
                 <button class="sub-tab" onclick="loadStats('okr_debica',this)">Okr. Dębica</button>
                 <button class="sub-tab" onclick="loadStats('okr_stalowa',this)">Okr. Stalowa Wola</button>
+                <button class="sub-tab" onclick="loadStats('a_przeworsk',this)">A Klasa Przeworsk</button>
+                <button class="sub-tab" onclick="loadStats('b_przeworsk',this)">B Klasa Przeworsk</button>
+                <button class="sub-tab" onclick="loadStats('a_jaroslaw',this)">A Klasa Jarosław</button>
+                <button class="sub-tab" onclick="loadStats('b_jaroslaw',this)">B Klasa Jarosław</button>
+                <button class="sub-tab" onclick="loadStats('a_rzeszow',this)">A Klasa Rzeszów</button>
+                <button class="sub-tab" onclick="loadStats('b_rzeszow',this)">B Klasa Rzeszów</button>
             </div>
 
             <div style="display:flex; gap:10px; margin-bottom:1.5rem;" class="anim d1">
@@ -377,6 +395,12 @@
                 <button class="sub-tab" onclick="filterTransfers('okr_rzeszow',this)">Okr. Rzeszów</button>
                 <button class="sub-tab" onclick="filterTransfers('okr_debica',this)">Okr. Dębica</button>
                 <button class="sub-tab" onclick="filterTransfers('okr_stalowa',this)">Okr. Stalowa Wola</button>
+                <button class="sub-tab" onclick="filterTransfers('a_przeworsk',this)">A Klasa Przeworsk</button>
+                <button class="sub-tab" onclick="filterTransfers('b_przeworsk',this)">B Klasa Przeworsk</button>
+                <button class="sub-tab" onclick="filterTransfers('a_jaroslaw',this)">A Klasa Jarosław</button>
+                <button class="sub-tab" onclick="filterTransfers('b_jaroslaw',this)">B Klasa Jarosław</button>
+                <button class="sub-tab" onclick="filterTransfers('a_rzeszow',this)">A Klasa Rzeszów</button>
+                <button class="sub-tab" onclick="filterTransfers('b_rzeszow',this)">B Klasa Rzeszów</button>
             </div>
             <h2 style="margin-bottom:2rem;text-transform:uppercase;letter-spacing:1.2px;font-size:0.82rem;color:var(--muted);" class="anim">Rynek Transferowy</h2>
             <div id="transfers-grid" class="grid anim d1"></div>
@@ -416,7 +440,7 @@
                 </div>
                 <div class="contact-info">
                     <div class="card contact-item"><i class="fa-solid fa-envelope"></i><div><h4>Email</h4><p>kontakt@strefagola.pl</p></div></div>
-                    <div class="card contact-item"><i class="fa-solid fa-location-dot"></i><div><h4>Region</h4><p>Województwo Podkarpackie<br>Jarosław, Krosno, Rzeszów, Dębica, Stalowa Wola</p></div></div>
+                    <div class="card contact-item"><i class="fa-solid fa-location-dot"></i><div><h4>Region</h4><p>Województwo Podkarpackie<br>Jarosław, Krosno, Rzeszów, Dębica, Stalowa Wola, Przeworsk</p></div></div>
                     <div class="card contact-item"><i class="fa-solid fa-clock"></i><div><h4>Aktualizacje</h4><p>Wyniki aktualizowane niezwłocznie po zakończeniu spotkań.<br>Tabele weryfikowane codziennie.</p></div></div>
                 </div>
             </div>
@@ -452,6 +476,7 @@
                         <div class="card" style="margin-bottom:2rem;">
                             <h3 style="font-size:0.75rem;color:var(--green);margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:1.2px;">Dodaj / Edytuj Spotkanie</h3>
                             <input type="hidden" id="m-id">
+                            <input type="hidden" id="m-db">
                             <div class="form-grid">
                                 <input type="text" id="m-home" placeholder="Gospodarz">
                                 <input type="text" id="m-away" placeholder="Gość">
@@ -465,6 +490,12 @@
                                     <option value="okr_rzeszow">Okr. Rzeszów</option>
                                     <option value="okr_debica">Okr. Dębica</option>
                                     <option value="okr_stalowa">Okr. Stalowa Wola</option>
+                                    <option value="a_przeworsk">A Klasa Przeworsk</option>
+                                    <option value="b_przeworsk">B Klasa Przeworsk</option>
+                                    <option value="a_jaroslaw">A Klasa Jarosław</option>
+                                    <option value="b_jaroslaw">B Klasa Jarosław</option>
+                                    <option value="a_rzeszow">A Klasa Rzeszów</option>
+                                    <option value="b_rzeszow">B Klasa Rzeszów</option>
                                 </select>
                             </div>
                             <div class="form-grid">
@@ -492,6 +523,12 @@
                                     <option value="okr_rzeszow">Okr. Rzeszów</option>
                                     <option value="okr_debica">Okr. Dębica</option>
                                     <option value="okr_stalowa">Okr. Stalowa Wola</option>
+                                    <option value="a_przeworsk">A Klasa Przeworsk</option>
+                                    <option value="b_przeworsk">B Klasa Przeworsk</option>
+                                    <option value="a_jaroslaw">A Klasa Jarosław</option>
+                                    <option value="b_jaroslaw">B Klasa Jarosław</option>
+                                    <option value="a_rzeszow">A Klasa Rzeszów</option>
+                                    <option value="b_rzeszow">B Klasa Rzeszów</option>
                                 </select>
                             </div>
                             <input type="text" id="t-crest" placeholder="URL herbu (np. https://.../herb.png)">
@@ -511,6 +548,7 @@
                         <div class="card" style="margin-bottom:2rem;">
                             <h3 style="font-size:0.75rem;color:var(--green);margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:1.2px;">Dodaj / Edytuj Statystyki Zawodnika</h3>
                             <input type="hidden" id="s-id">
+                            <input type="hidden" id="s-db">
                             <div class="form-grid">
                                 <input type="text" id="s-player" placeholder="Imię i nazwisko">
                                 <input type="text" id="s-team" placeholder="Nazwa drużyny">
@@ -523,6 +561,12 @@
                                     <option value="okr_rzeszow">Okr. Rzeszów</option>
                                     <option value="okr_debica">Okr. Dębica</option>
                                     <option value="okr_stalowa">Okr. Stalowa Wola</option>
+                                    <option value="a_przeworsk">A Klasa Przeworsk</option>
+                                    <option value="b_przeworsk">B Klasa Przeworsk</option>
+                                    <option value="a_jaroslaw">A Klasa Jarosław</option>
+                                    <option value="b_jaroslaw">B Klasa Jarosław</option>
+                                    <option value="a_rzeszow">A Klasa Rzeszów</option>
+                                    <option value="b_rzeszow">B Klasa Rzeszów</option>
                                 </select>
                             </div>
                             <div class="form-grid">
@@ -540,6 +584,7 @@
                         <div class="card" style="margin-bottom:2rem;">
                             <h3 style="font-size:0.75rem;color:var(--green);margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:1.2px;">Dodaj / Edytuj Transfer</h3>
                             <input type="hidden" id="tr-id">
+                            <input type="hidden" id="tr-db">
                             <div class="form-grid">
                                 <input type="text" id="tr-player" placeholder="Imię i nazwisko zawodnika">
                                 <select id="tr-league">
@@ -549,6 +594,12 @@
                                     <option value="okr_rzeszow">Okr. Rzeszów</option>
                                     <option value="okr_debica">Okr. Dębica</option>
                                     <option value="okr_stalowa">Okr. Stalowa Wola</option>
+                                    <option value="a_przeworsk">A Klasa Przeworsk</option>
+                                    <option value="b_przeworsk">B Klasa Przeworsk</option>
+                                    <option value="a_jaroslaw">A Klasa Jarosław</option>
+                                    <option value="b_jaroslaw">B Klasa Jarosław</option>
+                                    <option value="a_rzeszow">A Klasa Rzeszów</option>
+                                    <option value="b_rzeszow">B Klasa Rzeszów</option>
                                 </select>
                             </div>
                             <div class="form-grid-3">
@@ -573,6 +624,12 @@
                                 <option value="okr_rzeszow">Okr. Rzeszów</option>
                                 <option value="okr_debica">Okr. Dębica</option>
                                 <option value="okr_stalowa">Okr. Stalowa Wola</option>
+                                <option value="a_przeworsk">A Klasa Przeworsk</option>
+                                <option value="b_przeworsk">B Klasa Przeworsk</option>
+                                <option value="a_jaroslaw">A Klasa Jarosław</option>
+                                <option value="b_jaroslaw">B Klasa Jarosław</option>
+                                <option value="a_rzeszow">A Klasa Rzeszów</option>
+                                <option value="b_rzeszow">B Klasa Rzeszów</option>
                             </select>
                             <div class="form-grid-3">
                                 <input type="text" id="z-promo" placeholder="Awans (np. 1)">
@@ -648,6 +705,12 @@
     <script src="firebase-config.js"></script>
 
     <script>
+        // PAMIĘTAJ: Aby dane A-klas i B-klas zapisywały się w drugiej bazie danych Firebase, 
+        // musisz w pliku firebase-config.js zdefiniować zmienną window.db2!
+        // Przykład zawartości firebase-config.js:
+        // const app2 = firebase.initializeApp({ /* config 2 */ }, "app2");
+        // window.db2 = app2.firestore();
+
         const db = window.db;
         const auth = window.auth;
 
@@ -658,8 +721,17 @@
         const L = {
             iv_liga:'IV Liga Podkarpacka', okr_jaroslaw:'Klasa Okręgowa Jarosław',
             okr_krosno:'Klasa Okręgowa Krosno', okr_rzeszow:'Klasa Okręgowa Rzeszów',
-            okr_debica:'Klasa Okręgowa Dębica', okr_stalowa:'Klasa Okręgowa Stalowa Wola'
+            okr_debica:'Klasa Okręgowa Dębica', okr_stalowa:'Klasa Okręgowa Stalowa Wola',
+            a_przeworsk:'A Klasa Przeworsk', b_przeworsk:'B Klasa Przeworsk',
+            a_jaroslaw:'A Klasa Jarosław', b_jaroslaw:'B Klasa Jarosław',
+            a_rzeszow:'A Klasa Rzeszów', b_rzeszow:'B Klasa Rzeszów'
         };
+        
+        const NEW_LEAGUES = ['a_przeworsk', 'b_przeworsk', 'a_jaroslaw', 'b_jaroslaw', 'a_rzeszow', 'b_rzeszow'];
+        function getDB(league) {
+            if(league && NEW_LEAGUES.includes(league) && window.db2) return window.db2;
+            return window.db;
+        }
 
         const DEFAULT_ZONES = { promo:[1], barage:[2], releg:[14,15,16] };
 
@@ -700,7 +772,8 @@
             crestsCache={};
             for(const league of Object.keys(L)){
                 try{
-                    const doc=await db.collection('standings').doc(league).get();
+                    const dbase = getDB(league);
+                    const doc=await dbase.collection('standings').doc(league).get();
                     if(doc.exists&&doc.data().teams) doc.data().teams.forEach(t=>{ if(t.name&&t.crest) crestsCache[t.name.trim()]=t.crest; });
                 }catch(e){}
             }
@@ -736,7 +809,8 @@
             zonesCache={};
             for(const league of Object.keys(L)){
                 try{
-                    const doc=await db.collection('zones').doc(league).get();
+                    const dbase = getDB(league);
+                    const doc=await dbase.collection('zones').doc(league).get();
                     if(doc.exists) zonesCache[league]=doc.data();
                 }catch(e){}
             }
@@ -786,8 +860,16 @@
             if(!c1) return;
             try{
                 await loadCrests();
-                const s=await db.collection('matches').orderBy('date','asc').limit(500).get();
-                mc=s.docs.map(d=>({id:d.id,...d.data()}));
+                const s1 = await window.db.collection('matches').orderBy('date','asc').limit(500).get();
+                let allM = s1.docs.map(d=>({id:d.id, _db:'db1', ...d.data()}));
+                if (window.db2) {
+                    try {
+                        const s2 = await window.db2.collection('matches').orderBy('date','asc').limit(500).get();
+                        allM = allM.concat(s2.docs.map(d=>({id:d.id, _db:'db2', ...d.data()})));
+                    } catch(e) {}
+                }
+                allM.sort((a,b)=>(a.date?.seconds||0)-(b.date?.seconds||0));
+                mc = allM;
                 renderGrid(upcomingList(mc).slice(0,6),'home-upcoming');
                 renderGrid(finishedList(mc).slice(0,6),'home-grid');
                 applyFilter();
@@ -871,7 +953,8 @@
             tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:2rem;">Ładowanie...</td></tr>';
             try{
                 await loadZones();
-                const doc=await db.collection('standings').doc(league).get();
+                const dbase = getDB(league);
+                const doc=await dbase.collection('standings').doc(league).get();
                 if(!doc.exists||!doc.data().teams||!doc.data().teams.length){
                     tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:2rem;">Brak danych w lidze.</td></tr>';
                     renderLegend(league,'table-legend'); return;
@@ -893,7 +976,7 @@
             const tb=document.getElementById('home-tb');
             try{
                 await loadZones();
-                const doc=await db.collection('standings').doc('iv_liga').get();
+                const doc=await window.db.collection('standings').doc('iv_liga').get();
                 if(!doc.exists||!doc.data().teams) return;
                 const all=doc.data().teams.sort((a,b)=>b.pts-a.pts||evalGoalDiff(b.diff)-evalGoalDiff(a.diff));
                 tb.innerHTML=all.slice(0,5).map((t,i)=>`
@@ -939,7 +1022,8 @@
             const tb = document.getElementById('stats-tb');
             tb.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:2rem;">Ładowanie...</td></tr>';
             try {
-                const s = await db.collection('stats').where('league', '==', league).get();
+                const dbase = getDB(league);
+                const s = await dbase.collection('stats').where('league', '==', league).get();
                 cachedStats = s.empty ? [] : s.docs.map(d=>d.data());
                 renderStatsTable();
             } catch(e) {
@@ -988,9 +1072,17 @@
         async function loadTransfers(){
             const c=document.getElementById('transfers-grid');
             try{
-                const s=await db.collection('transfers').orderBy('date','desc').limit(150).get();
-                if(s.empty){c.innerHTML='<p style="color:var(--muted);padding:2rem;">Brak transferów.</p>';return;}
-                allTransfers = s.docs.map(d=>d.data());
+                const s1 = await window.db.collection('transfers').orderBy('date','desc').limit(150).get();
+                let allT = s1.docs.map(d=>({id:d.id, _db:'db1', ...d.data()}));
+                if (window.db2) {
+                    try {
+                        const s2 = await window.db2.collection('transfers').orderBy('date','desc').limit(150).get();
+                        allT = allT.concat(s2.docs.map(d=>({id:d.id, _db:'db2', ...d.data()})));
+                    } catch(e) {}
+                }
+                allT.sort((a,b)=>(b.date?.seconds||0)-(a.date?.seconds||0));
+                allTransfers = allT;
+                if(allTransfers.length===0){c.innerHTML='<p style="color:var(--muted);padding:2rem;">Brak transferów.</p>';return;}
                 renderTransfers('all');
             }catch(e){ c.innerHTML='<p style="color:#ff6b6b;padding:2rem;">Błąd ładowania.</p>'; }
         }
@@ -1034,7 +1126,7 @@
         async function loadPosts(){
             const c=document.getElementById('posts-grid');
             try{
-                const s=await db.collection('posts').orderBy('date','desc').limit(20).get();
+                const s=await window.db.collection('posts').orderBy('date','desc').limit(20).get();
                 if(s.empty){c.innerHTML='<p style="color:var(--muted);padding:2rem;">Brak postów.</p>';return;}
                 postsCache = s.docs.map(d=>({id:d.id, ...d.data()}));
                 
@@ -1131,7 +1223,7 @@
             const status=document.getElementById('c-status');
             if(!name||!email||!msg){status.style.color='#ff6b6b';status.innerText='Wypełnij wymagane pola.';return;}
             try{
-                await db.collection('messages').add({name,email,subject,message:msg,date:firebase.firestore.FieldValue.serverTimestamp(),read:false});
+                await window.db.collection('messages').add({name,email,subject,message:msg,date:firebase.firestore.FieldValue.serverTimestamp(),read:false});
                 status.style.color='var(--green)';status.innerText='✅ Wiadomość wysłana! Dziękujemy.';
                 ['c-name','c-email','c-subject','c-msg'].forEach(i=>document.getElementById(i).value='');
             }catch(e){status.style.color='#ff6b6b';status.innerText='Błąd wysyłania.';}
@@ -1172,39 +1264,67 @@
             const sh=document.getElementById('m-sh').value, sa=document.getElementById('m-sa').value;
             const hasScore = sh!=='' && sa!=='';
             const dateVal=document.getElementById('m-date').value;
+            const newLeague = document.getElementById('m-league').value;
             const data={
                 homeTeam:document.getElementById('m-home').value,
                 awayTeam:document.getElementById('m-away').value,
                 scoreHome:hasScore?parseInt(sh):null,
                 scoreAway:hasScore?parseInt(sa):null,
                 status:hasScore?'finished':'upcoming',
-                league:document.getElementById('m-league').value,
+                league:newLeague,
                 date:dateVal?firebase.firestore.Timestamp.fromDate(new Date(dateVal)):firebase.firestore.FieldValue.serverTimestamp()
             };
             try{
-                if(id)await db.collection('matches').doc(id).update(data); else await db.collection('matches').add(data);
+                const newDbase = getDB(newLeague);
+                const oldDbVal = document.getElementById('m-db').value;
+                const oldDbase = oldDbVal === 'db2' ? window.db2 : window.db;
+
+                if(id){
+                    if(oldDbase && oldDbase !== newDbase) {
+                        await oldDbase.collection('matches').doc(id).delete();
+                        await newDbase.collection('matches').doc(id).set(data);
+                    } else {
+                        await newDbase.collection('matches').doc(id).update(data);
+                    }
+                } else {
+                    await newDbase.collection('matches').add(data);
+                }
                 clearMF();loadAdminM();
-            }catch(e){alert('Błąd');}
+            }catch(e){alert('Błąd zapisu spotkania');}
         }
+        
         async function loadAdminM(){
-            const s=await db.collection('matches').orderBy('date','asc').limit(200).get();
-            const all=s.docs.map(d=>({id:d.id,...d.data()}));
+            const s1=await window.db.collection('matches').orderBy('date','asc').limit(200).get();
+            let all=s1.docs.map(d=>({id:d.id, _db:'db1', ...d.data()}));
+            if(window.db2){
+                try {
+                    const s2=await window.db2.collection('matches').orderBy('date','asc').limit(200).get();
+                    all=all.concat(s2.docs.map(d=>({id:d.id, _db:'db2', ...d.data()})));
+                } catch(e) {}
+            }
             const sorted=[...upcomingList(all),...finishedList(all)];
             document.getElementById('admin-mlist').innerHTML=sorted.map(m=>`
                 <div class="card" style="padding:0.9rem;display:flex;justify-content:space-between;align-items:center;">
                     <div><div style="font-weight:600;font-size:0.9rem;">${m.homeTeam} vs ${m.awayTeam}</div>
                     <div style="font-size:0.72rem;color:var(--muted);">${L[m.league]} • ${matchIsUpcoming(m)?'Nadchodzący':`Wynik ${m.scoreHome}:${m.scoreAway}`}</div></div>
-                    <div style="display:flex;gap:4px;"><button class="btn-sm" onclick='editM("${m.id}",${JSON.stringify(m).replace(/'/g,"&#39;")})'><i class="fa-solid fa-pen"></i></button><button class="btn-sm btn-del" onclick="delM('${m.id}')"><i class="fa-solid fa-trash"></i></button></div>
+                    <div style="display:flex;gap:4px;"><button class="btn-sm" onclick='editM("${m.id}",${JSON.stringify(m).replace(/'/g,"&#39;")})'><i class="fa-solid fa-pen"></i></button><button class="btn-sm btn-del" onclick="delM('${m.id}', '${m._db}')"><i class="fa-solid fa-trash"></i></button></div>
                 </div>`).join('')||'<p style="color:var(--muted);">Brak spotkań.</p>';
         }
         function editM(id,d){
-            document.getElementById('m-id').value=id; document.getElementById('m-home').value=d.homeTeam;
-            document.getElementById('m-away').value=d.awayTeam; document.getElementById('m-sh').value=d.scoreHome??'';
-            document.getElementById('m-sa').value=d.scoreAway??''; document.getElementById('m-league').value=d.league;
-            document.getElementById('m-date').value=toLocalInput(d.date); window.scrollTo({top:0,behavior:'smooth'});
+            document.getElementById('m-id').value=id; document.getElementById('m-db').value=d._db||'db1';
+            document.getElementById('m-home').value=d.homeTeam; document.getElementById('m-away').value=d.awayTeam; 
+            document.getElementById('m-sh').value=d.scoreHome??''; document.getElementById('m-sa').value=d.scoreAway??''; 
+            document.getElementById('m-league').value=d.league; document.getElementById('m-date').value=toLocalInput(d.date); 
+            window.scrollTo({top:0,behavior:'smooth'});
         }
-        async function delM(id){if(confirm('Usunąć?')){await db.collection('matches').doc(id).delete();loadAdminM();}}
-        function clearMF(){document.getElementById('m-id').value='';['m-home','m-away','m-sh','m-sa','m-date'].forEach(i=>document.getElementById(i).value='');}
+        async function delM(id, dbVal){
+            if(confirm('Usunąć?')){
+                const dbase = (dbVal==='db2' && window.db2) ? window.db2 : window.db;
+                await dbase.collection('matches').doc(id).delete();
+                loadAdminM();
+            }
+        }
+        function clearMF(){document.getElementById('m-id').value=''; document.getElementById('m-db').value='';['m-home','m-away','m-sh','m-sa','m-date'].forEach(i=>document.getElementById(i).value='');}
 
         async function saveTeam(){
             if(!user) return;
@@ -1226,7 +1346,7 @@
                 if(editId !== '') {
                     const idx = parseInt(editId);
                     if(oldLeague === newLeague) {
-                        const ref = db.collection('standings').doc(newLeague);
+                        const ref = getDB(newLeague).collection('standings').doc(newLeague);
                         const doc = await ref.get();
                         let teams = (doc.exists && doc.data().teams) ? [...doc.data().teams] : [];
                         if(idx >= 0 && idx < teams.length) {
@@ -1237,7 +1357,7 @@
                         await ref.set({teams, updatedAt: firebase.firestore.FieldValue.serverTimestamp()}, {merge: true});
                     } else {
                         if(oldLeague) {
-                            const oldRef = db.collection('standings').doc(oldLeague);
+                            const oldRef = getDB(oldLeague).collection('standings').doc(oldLeague);
                             const oldDoc = await oldRef.get();
                             if(oldDoc.exists && oldDoc.data().teams) {
                                 let oldTeams = [...oldDoc.data().teams];
@@ -1247,14 +1367,14 @@
                                 }
                             }
                         }
-                        const newRef = db.collection('standings').doc(newLeague);
+                        const newRef = getDB(newLeague).collection('standings').doc(newLeague);
                         const newDoc = await newRef.get();
                         let newTeams = (newDoc.exists && newDoc.data().teams) ? [...newDoc.data().teams] : [];
                         newTeams.push(teamData);
                         await newRef.set({teams: newTeams, updatedAt: firebase.firestore.FieldValue.serverTimestamp()}, {merge: true});
                     }
                 } else {
-                    const ref = db.collection('standings').doc(newLeague);
+                    const ref = getDB(newLeague).collection('standings').doc(newLeague);
                     const doc = await ref.get();
                     let teams = (doc.exists && doc.data().teams) ? [...doc.data().teams] : [];
                     teams.push(teamData);
@@ -1270,7 +1390,8 @@
         async function loadAdminT(){
             let html='';
             for(const league of Object.keys(L)){
-                const doc=await db.collection('standings').doc(league).get();
+                const dbase = getDB(league);
+                const doc=await dbase.collection('standings').doc(league).get();
                 if(!doc.exists||!doc.data().teams||!doc.data().teams.length) continue;
                 html+=`<div style="margin-bottom:1.4rem;"><div class="league-label" style="margin-bottom:0.8rem;"><i class="fa-solid fa-circle"></i>${L[league]}</div>`;
                 const teams = doc.data().teams;
@@ -1283,7 +1404,8 @@
         }
 
         async function editT(league,idx){
-            const doc=await db.collection('standings').doc(league).get(); if(!doc.exists||!doc.data().teams) return;
+            const dbase = getDB(league);
+            const doc=await dbase.collection('standings').doc(league).get(); if(!doc.exists||!doc.data().teams) return;
             const t=doc.data().teams[idx];
             if(!t) return;
             document.getElementById('t-id').value=idx;
@@ -1300,7 +1422,7 @@
 
         async function delT(league,idx){
             if(!confirm('Usunąć drużynę z tabeli?'))return;
-            const ref=db.collection('standings').doc(league);
+            const ref=getDB(league).collection('standings').doc(league);
             const doc=await ref.get();
             if(!doc.exists||!doc.data().teams) return;
             const teams=[...doc.data().teams];
@@ -1318,44 +1440,68 @@
         async function saveStat(){
             if(!user)return;
             const id=document.getElementById('s-id').value;
+            const newLeague = document.getElementById('s-league').value;
             const data={
                 player:document.getElementById('s-player').value,
                 team:document.getElementById('s-team').value,
-                league:document.getElementById('s-league').value,
+                league:newLeague,
                 goals:parseInt(document.getElementById('s-goals').value)||0,
                 assists:parseInt(document.getElementById('s-assists').value)||0
             };
             if(!data.player || !data.team) { alert('Wypełnij imię, nazwisko i klub'); return; }
             try{
-                if(id) await db.collection('stats').doc(id).update(data); else await db.collection('stats').add(data);
+                const newDbase = getDB(newLeague);
+                const oldDbVal = document.getElementById('s-db').value;
+                const oldDbase = oldDbVal === 'db2' ? window.db2 : window.db;
+
+                if(id){
+                    if(oldDbase && oldDbase !== newDbase) {
+                        await oldDbase.collection('stats').doc(id).delete();
+                        await newDbase.collection('stats').doc(id).set(data);
+                    } else {
+                        await newDbase.collection('stats').doc(id).update(data);
+                    }
+                } else await newDbase.collection('stats').add(data);
                 clearSF(); loadAdminS();
             }catch(e){alert('Błąd zapisywania statystyk');}
         }
         async function loadAdminS(){
-            const s=await db.collection('stats').limit(100).get();
-            document.getElementById('admin-slist').innerHTML=s.docs.map(d=>{
-                const st=d.data();
+            const s1=await window.db.collection('stats').limit(100).get();
+            let all=s1.docs.map(d=>({id:d.id, _db:'db1', ...d.data()}));
+            if(window.db2){
+                try{
+                    const s2=await window.db2.collection('stats').limit(100).get();
+                    all=all.concat(s2.docs.map(d=>({id:d.id, _db:'db2', ...d.data()})));
+                }catch(e){}
+            }
+            document.getElementById('admin-slist').innerHTML=all.map(st=>{
                 return `<div class="card" style="padding:0.9rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
                     <div><div style="font-weight:600;font-size:0.9rem;">${st.player} <span style="color:var(--muted); font-size:0.75rem;">(${st.team})</span></div>
                     <div style="font-size:0.72rem;color:var(--muted);">${L[st.league]} • Gole: <span style="color:var(--green)">${st.goals}</span> • Asysty: <span style="color:var(--gold)">${st.assists}</span></div></div>
-                    <div style="display:flex;gap:4px;"><button class="btn-sm" onclick='editS("${d.id}",${JSON.stringify(st).replace(/'/g,"&#39;")})'><i class="fa-solid fa-pen"></i></button><button class="btn-sm btn-del" onclick="delS('${d.id}')"><i class="fa-solid fa-trash"></i></button></div>
+                    <div style="display:flex;gap:4px;"><button class="btn-sm" onclick='editS("${st.id}",${JSON.stringify(st).replace(/'/g,"&#39;")})'><i class="fa-solid fa-pen"></i></button><button class="btn-sm btn-del" onclick="delS('${st.id}', '${st._db}')"><i class="fa-solid fa-trash"></i></button></div>
                 </div>`;
             }).join('')||'<p style="color:var(--muted);">Brak statystyk.</p>';
         }
         function editS(id,st){
-            document.getElementById('s-id').value=id; document.getElementById('s-player').value=st.player;
-            document.getElementById('s-team').value=st.team; document.getElementById('s-league').value=st.league;
-            document.getElementById('s-goals').value=st.goals; document.getElementById('s-assists').value=st.assists;
-            window.scrollTo({top:0,behavior:'smooth'});
+            document.getElementById('s-id').value=id; document.getElementById('s-db').value=st._db||'db1';
+            document.getElementById('s-player').value=st.player; document.getElementById('s-team').value=st.team; 
+            document.getElementById('s-league').value=st.league; document.getElementById('s-goals').value=st.goals; 
+            document.getElementById('s-assists').value=st.assists; window.scrollTo({top:0,behavior:'smooth'});
         }
-        async function delS(id){if(confirm('Usunąć statystyki zawodnika?')){await db.collection('stats').doc(id).delete();loadAdminS();}}
-        function clearSF(){document.getElementById('s-id').value='';['s-player','s-team'].forEach(i=>document.getElementById(i).value=''); document.getElementById('s-goals').value='0'; document.getElementById('s-assists').value='0';}
+        async function delS(id, dbVal){
+            if(confirm('Usunąć statystyki zawodnika?')){
+                const dbase = (dbVal==='db2' && window.db2) ? window.db2 : window.db;
+                await dbase.collection('stats').doc(id).delete();
+                loadAdminS();
+            }
+        }
+        function clearSF(){document.getElementById('s-id').value=''; document.getElementById('s-db').value='';['s-player','s-team'].forEach(i=>document.getElementById(i).value=''); document.getElementById('s-goals').value='0'; document.getElementById('s-assists').value='0';}
 
         async function saveZones(){
             if(!user)return;
             const league=document.getElementById('z-league').value;
             const data={promo:parsePositions(document.getElementById('z-promo').value),barage:parsePositions(document.getElementById('z-barage').value),releg:parsePositions(document.getElementById('z-releg').value),updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
-            try{ await db.collection('zones').doc(league).set(data,{merge:true}); await loadZones(); loadAdminZ(); alert('Zapisano!'); }catch(e){alert('Błąd');}
+            try{ const dbase = getDB(league); await dbase.collection('zones').doc(league).set(data,{merge:true}); await loadZones(); loadAdminZ(); alert('Zapisano!'); }catch(e){alert('Błąd');}
         }
         async function loadAdminZ(){
             let html='';
@@ -1386,12 +1532,12 @@
             };
             if(!data.title || !data.content) { alert('Wypełnij tytuł i treść'); return; }
             try{
-                if(id) await db.collection('posts').doc(id).update(data); else await db.collection('posts').add(data);
+                if(id) await window.db.collection('posts').doc(id).update(data); else await window.db.collection('posts').add(data);
                 clearPF(); loadAdminP();
             }catch(e){alert('Błąd');}
         }
         async function loadAdminP(){
-            const s=await db.collection('posts').orderBy('date','desc').limit(20).get();
+            const s=await window.db.collection('posts').orderBy('date','desc').limit(20).get();
             document.getElementById('admin-plist').innerHTML=s.docs.map(d=>{
                 const p=d.data();
                 return `<div class="card" style="padding:0.9rem;display:flex;justify-content:space-between;align-items:center;">
@@ -1405,15 +1551,16 @@
             document.getElementById('p-label').value=p.label; document.getElementById('p-content').value=p.content;
             window.scrollTo({top:0,behavior:'smooth'});
         }
-        async function delP(id){if(confirm('Usunąć post?')){await db.collection('posts').doc(id).delete();loadAdminP();}}
+        async function delP(id){if(confirm('Usunąć post?')){await window.db.collection('posts').doc(id).delete();loadAdminP();}}
         function clearPF(){document.getElementById('p-id').value='';['p-title','p-content'].forEach(i=>document.getElementById(i).value='');}
 
         async function saveTransfer(){
             if(!user)return;
             const id=document.getElementById('tr-id').value;
+            const newLeague = document.getElementById('tr-league').value;
             const data={
                 player:document.getElementById('tr-player').value,
-                league:document.getElementById('tr-league').value,
+                league:newLeague,
                 from:document.getElementById('tr-from').value,
                 to:document.getElementById('tr-to').value,
                 fee:document.getElementById('tr-fee').value,
@@ -1421,31 +1568,53 @@
             };
             if(!data.player || !data.from || !data.to) { alert('Wypełnij podstawowe dane zawodnika i klubów'); return; }
             try{
-                if(id) await db.collection('transfers').doc(id).update(data); else await db.collection('transfers').add(data);
+                const newDbase = getDB(newLeague);
+                const oldDbVal = document.getElementById('tr-db').value;
+                const oldDbase = oldDbVal === 'db2' ? window.db2 : window.db;
+
+                if(id){
+                    if(oldDbase && oldDbase !== newDbase) {
+                        await oldDbase.collection('transfers').doc(id).delete();
+                        await newDbase.collection('transfers').doc(id).set(data);
+                    } else {
+                        await newDbase.collection('transfers').doc(id).update(data);
+                    }
+                } else await newDbase.collection('transfers').add(data);
                 clearTrF(); loadAdminTr();
             }catch(e){alert('Błąd');}
         }
         async function loadAdminTr(){
-            const s=await db.collection('transfers').orderBy('date','desc').limit(100).get();
-            document.getElementById('admin-trlist').innerHTML=s.docs.map(d=>{
-                const t=d.data();
+            const s1=await window.db.collection('transfers').orderBy('date','desc').limit(100).get();
+            let all=s1.docs.map(d=>({id:d.id, _db:'db1', ...d.data()}));
+            if(window.db2){
+                try{
+                    const s2=await window.db2.collection('transfers').orderBy('date','desc').limit(100).get();
+                    all=all.concat(s2.docs.map(d=>({id:d.id, _db:'db2', ...d.data()})));
+                }catch(e){}
+            }
+            all.sort((a,b)=>(b.date?.seconds||0)-(a.date?.seconds||0));
+            document.getElementById('admin-trlist').innerHTML=all.map(t=>{
                 return `<div class="card" style="padding:0.9rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
                     <div><div style="font-weight:600;font-size:0.9rem;">${t.player}</div><div style="font-size:0.72rem;color:var(--muted);">${t.from} ➡️ ${t.to}</div></div>
-                    <div style="display:flex;gap:4px;"><button class="btn-sm" onclick='editTr("${d.id}",${JSON.stringify(t).replace(/'/g,"&#39;")})'><i class="fa-solid fa-pen"></i></button><button class="btn-sm btn-del" onclick="delTr('${d.id}')"><i class="fa-solid fa-trash"></i></button></div>
+                    <div style="display:flex;gap:4px;"><button class="btn-sm" onclick='editTr("${t.id}",${JSON.stringify(t).replace(/'/g,"&#39;")})'><i class="fa-solid fa-pen"></i></button><button class="btn-sm btn-del" onclick="delTr('${t.id}', '${t._db}')"><i class="fa-solid fa-trash"></i></button></div>
                 </div>`;
             }).join('')||'<p style="color:var(--muted);">Brak transferów.</p>';
         }
         function editTr(id,t){
-            document.getElementById('tr-id').value=id; document.getElementById('tr-player').value=t.player;
-            document.getElementById('tr-league').value=t.league; document.getElementById('tr-from').value=t.from;
-            document.getElementById('tr-to').value=t.to; document.getElementById('tr-fee').value=t.fee||'';
-            window.scrollTo({top:0,behavior:'smooth'});
+            document.getElementById('tr-id').value=id; document.getElementById('tr-db').value=t._db||'db1';
+            document.getElementById('tr-player').value=t.player; document.getElementById('tr-league').value=t.league;
+            document.getElementById('tr-from').value=t.from; document.getElementById('tr-to').value=t.to;
+            document.getElementById('tr-fee').value=t.fee||''; window.scrollTo({top:0,behavior:'smooth'});
         }
-        async function delTr(id){if(confirm('Usunąć transfer?')){await db.collection('transfers').doc(id).delete();loadAdminTr();}}
-        function clearTrF(){document.getElementById('tr-id').value='';['tr-player','tr-from','tr-to','tr-fee'].forEach(i=>document.getElementById(i).value='');}
+        async function delTr(id, dbVal){
+            if(confirm('Usunąć transfer?')){
+                const dbase = (dbVal==='db2' && window.db2) ? window.db2 : window.db;
+                await dbase.collection('transfers').doc(id).delete();
+                loadAdminTr();
+            }
+        }
+        function clearTrF(){document.getElementById('tr-id').value=''; document.getElementById('tr-db').value='';['tr-player','tr-from','tr-to','tr-fee'].forEach(i=>document.getElementById(i).value='');}
 
-        refreshMatches();
-        loadHomeTable();
     </script>
 </body>
 </html>

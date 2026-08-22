@@ -1,7 +1,3 @@
-import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
-// import { getDatabase } from "firebase/database"; // <-- Odkomentuj to, jeśli używasz Realtime Database
-
 // 1. Konfiguracja PIERWSZEJ bazy (Konto A)
 const firebaseConfigPrimary = {
     apiKey: "AIzaSyD5rE81B9PNgYh-Ut8gQUpUbHWrv4MUZHg",
@@ -25,14 +21,11 @@ const firebaseConfigSecondary = {
   measurementId: "G-QY8EE6DBZE"
 };
 
-// 3. Inicjalizacja obu aplikacji
-// Pierwsza aplikacja inicjalizuje się jako domyślna
-const app1 = initializeApp(firebaseConfigPrimary);
+// 3. Inicjalizacja obu aplikacji z użyciem globalnego obiektu 'firebase' (składnia Compat)
+firebase.initializeApp(firebaseConfigPrimary);
+const app2 = firebase.initializeApp(firebaseConfigSecondary, "DrugaBaza");
 
-// DRUGA aplikacja MUSI dostać unikalną nazwę (np. "DrugaBaza"), inaczej wywali błąd!
-const app2 = initializeApp(firebaseConfigSecondary, "DrugaBaza");
-
-// 4. Eksport instancji baz danych, aby używać ich w innych plikach
-// Jeśli używasz Realtime DB, zmień "getFirestore" na "getDatabase"
-export const db1 = getFirestore(app1);
-export const db2 = getFirestore(app2);
+// 4. Przypisanie instancji do obiektu window, aby plik HTML mógł z nich korzystać
+window.db = firebase.firestore();
+window.auth = firebase.auth();
+window.db2 = app2.firestore();

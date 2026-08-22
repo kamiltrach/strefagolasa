@@ -1497,11 +1497,261 @@
             ['t-team','t-crest','t-m','t-pts','t-diff'].forEach(i=>document.getElementById(i).value='');
         }
 
-        // Puste funkcje zapobiegające błędowi z wywołaniem brakujących w uciętym kodzie skryptów
-        async function loadAdminZ(){}
-        async function loadAdminP(){}
-        async function loadAdminTr(){}
-        async function loadAdminS(){}
+        /* --- NAPRAWIONE FUNKCJE ZARZĄDZANIA (STREFY, TRANSFERY, STATYSTYKI, POSTY) --- */
+        
+        async function saveZones(){
+            if(!user) return;
+            const league = document.getElementById('z-league').value;
+            const data = {
+                promo: parsePositions(document.getElementById('z-promo').value),
+                barage: parsePositions(document.getElementById('z-barage').value),
+                releg: parsePositions(document.getElementById('z-releg').value)
+            };
+            try {
+                const dbase = getDB(league);
+                await dbase.collection('zones').doc(league).set(data);
+                loadAdminZ();
+                alert('Strefy ligi zostały zapisane!');
+            } catch(e) { alert('Błąd zapisu stref.'); }
+        }
+
+        async function loadAdminZ(){
+            let html='';
+            for(const league of Object.keys(L)){
+                try {
+                    const dbase = getDB(league);
+                    const doc = await dbase.collection('zones').doc(league).get();
+                    if(doc.exists){
+                        const z = doc.data();
+                        html+=`<div class="card" style="padding:0.9rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+                            <div><div style="font-weight:600;font-size:0.9rem;">${L[league]}</div>
+                            <div style="font-size:0.72rem;color:var(--muted);">Awans: ${z.promo?.join(',')||'-'} | Baraże: ${z.barage?.join(',')||'-'} | Spadek: ${z.releg?.join(',')||'-'}</div></div>
+                            <button class="btn-sm" onclick="editZ('${league}', '${z.promo?.join(',')||''}', '${z.barage?.join(',')||''}', '${z.releg?.join(',')||''}')"><i class="fa-solid fa-pen"></i></button>
+                        </div>`;
+                    }
+                } catch(e) {}
+            }
+            document.getElementById('admin-zlist').innerHTML = html || '<p style="color:var(--muted);">Brak ustawień stref w bazie.</p>';
+        }
+
+        function editZ(league, promo, barage, releg){
+            document.getElementById('z-league').value = league;
+            document.getElementById('z-promo').value = promo;
+            document.getElementById('z-barage').value = barage;
+            document.getElementById('z-releg').value = releg;
+            window.scrollTo({top:0,behavior:'smooth'});
+        }
+
+        async function saveTransfer(){
+            if(!user) return;
+            const id = document.getElementById('tr-id').value;
+            const newLeague = document.getElementById('tr-league').value;
+            const data = {
+                player: document.getElementById('tr-player').value,
+                league: newLeague,
+                from: document.getElementById('tr-from').value,
+                to: document.getElementById('tr-to').value,
+                fee: document.getElementById('tr-fee').value,
+                date: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            try {
+                const newDbase = getDB(newLeague);
+                const oldDbVal = document.getElementById('tr-db').value;
+                if(id){
+                    const oldDbase = oldDbVal === 'db2' ? window.db2 : window.db;
+                    if(oldDbase && oldDbase !== newDbase) {
+                        await oldDbase.collection('transfers').doc(id).delete();
+                        await newDbase.collection('transfers').doc(id).set(data);
+                    } else {
+                        await newDbase.collection('transfers').doc(id).update(data);
+                    }
+                } else {
+                    await newDbase.collection('transfers').add(data);
+                }
+                clearTrF(); loadAdminTr();
+            } catch(e) { alert('Błąd zapisu transferu.'); }
+        }
+
+        async function loadAdminTr(){
+            try {
+                const s1=await window.db.collection('transfers').orderBy('date','desc').limit(100).get();
+                let all=s1.docs.map(d=>({id:d.id, _db:'db1', ...d.data()}));
+                if(window.db2){
+                    try {
+                        const s2=await window.db2.collection('transfers').orderBy('date','desc').limit(100).get();
+                        all=all.concat(s2.docs.map(d=>({id:d.id, _db:'db2', ...d.data()})));
+                    } catch(e) {}
+                }
+                all.sort((a,b)=>(b.date?.seconds||0)-(a.date?.seconds||0));
+                
+                document.getElementById('admin-trlist').innerHTML=all.map(t=>`
+                    <div class="card" style="padding:0.9rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+                        <div><div style="font-weight:600;font-size:0.9rem;">${t.player}</div>
+                        <div style="font-size:0.72rem;color:var(--muted);">${L[t.league]} | ${t.from} <i class="fa-solid fa-arrow-right-long" style="color:var(--green);"></i> ${t.to}</div></div>
+                        <div style="display:flex;gap:4px;">
+                            <button class="btn-sm" onclick='editTr("${t.id}",${JSON.stringify(t).replace(/'/g,"&#39;")})'><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn-sm btn-del" onclick="delTr('${t.id}', '${t._db}')"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>`).join('')||'<p style="color:var(--muted);">Brak transferów.</p>';
+            } catch(e) { document.getElementById('admin-trlist').innerHTML = '<p style="color:#ff6b6b;">Błąd ładowania transferów.</p>'; }
+        }
+
+        function editTr(id, t){
+            document.getElementById('tr-id').value = id;
+            document.getElementById('tr-db').value = t._db || 'db1';
+            document.getElementById('tr-player').value = t.player || '';
+            document.getElementById('tr-league').value = t.league || 'iv_liga';
+            document.getElementById('tr-from').value = t.from || '';
+            document.getElementById('tr-to').value = t.to || '';
+            document.getElementById('tr-fee').value = t.fee || '';
+            window.scrollTo({top:0,behavior:'smooth'});
+        }
+
+        async function delTr(id, dbVal){
+            if(confirm('Usunąć ten transfer?')){
+                const dbase = (dbVal==='db2' && window.db2) ? window.db2 : window.db;
+                await dbase.collection('transfers').doc(id).delete();
+                loadAdminTr();
+            }
+        }
+
+        function clearTrF(){
+            document.getElementById('tr-id').value=''; document.getElementById('tr-db').value='';
+            ['tr-player','tr-from','tr-to','tr-fee'].forEach(i=>document.getElementById(i).value='');
+        }
+
+        async function saveStat(){
+            if(!user) return;
+            const id = document.getElementById('s-id').value;
+            const newLeague = document.getElementById('s-league').value;
+            const data = {
+                player: document.getElementById('s-player').value,
+                team: document.getElementById('s-team').value,
+                league: newLeague,
+                goals: parseInt(document.getElementById('s-goals').value) || 0,
+                assists: parseInt(document.getElementById('s-assists').value) || 0
+            };
+            try {
+                const newDbase = getDB(newLeague);
+                const oldDbVal = document.getElementById('s-db').value;
+                if(id){
+                    const oldDbase = oldDbVal === 'db2' ? window.db2 : window.db;
+                    if(oldDbase && oldDbase !== newDbase) {
+                        await oldDbase.collection('stats').doc(id).delete();
+                        await newDbase.collection('stats').doc(id).set(data);
+                    } else {
+                        await newDbase.collection('stats').doc(id).update(data);
+                    }
+                } else {
+                    await newDbase.collection('stats').add(data);
+                }
+                clearSF(); loadAdminS();
+            } catch(e) { alert('Błąd zapisu statystyk.'); }
+        }
+
+        async function loadAdminS(){
+            try {
+                const s1=await window.db.collection('stats').get();
+                let all=s1.docs.map(d=>({id:d.id, _db:'db1', ...d.data()}));
+                if(window.db2){
+                    try {
+                        const s2=await window.db2.collection('stats').get();
+                        all=all.concat(s2.docs.map(d=>({id:d.id, _db:'db2', ...d.data()})));
+                    } catch(e) {}
+                }
+                document.getElementById('admin-slist').innerHTML=all.map(s=>`
+                    <div class="card" style="padding:0.9rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+                        <div><div style="font-weight:600;font-size:0.9rem;">${s.player}</div>
+                        <div style="font-size:0.72rem;color:var(--muted);">${L[s.league]} | ${s.team} | Gole: ${s.goals||0}, Asysty: ${s.assists||0}</div></div>
+                        <div style="display:flex;gap:4px;">
+                            <button class="btn-sm" onclick='editS("${s.id}",${JSON.stringify(s).replace(/'/g,"&#39;")})'><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn-sm btn-del" onclick="delS('${s.id}', '${s._db}')"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>`).join('')||'<p style="color:var(--muted);">Brak statystyk.</p>';
+            } catch(e) { document.getElementById('admin-slist').innerHTML = '<p style="color:#ff6b6b;">Błąd ładowania statystyk.</p>'; }
+        }
+
+        function editS(id, s){
+            document.getElementById('s-id').value = id;
+            document.getElementById('s-db').value = s._db || 'db1';
+            document.getElementById('s-player').value = s.player || '';
+            document.getElementById('s-team').value = s.team || '';
+            document.getElementById('s-league').value = s.league || 'iv_liga';
+            document.getElementById('s-goals').value = s.goals || 0;
+            document.getElementById('s-assists').value = s.assists || 0;
+            window.scrollTo({top:0,behavior:'smooth'});
+        }
+
+        async function delS(id, dbVal){
+            if(confirm('Usunąć te statystyki?')){
+                const dbase = (dbVal==='db2' && window.db2) ? window.db2 : window.db;
+                await dbase.collection('stats').doc(id).delete();
+                loadAdminS();
+            }
+        }
+
+        function clearSF(){
+            document.getElementById('s-id').value=''; document.getElementById('s-db').value='';
+            ['s-player','s-team'].forEach(i=>document.getElementById(i).value='');
+            document.getElementById('s-goals').value='0'; document.getElementById('s-assists').value='0';
+        }
+
+        async function savePost(){
+            if(!user) return;
+            const id = document.getElementById('p-id').value;
+            const data = {
+                title: document.getElementById('p-title').value,
+                label: document.getElementById('p-label').value,
+                content: document.getElementById('p-content').value,
+                date: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            try {
+                if(id){
+                    await window.db.collection('posts').doc(id).update(data);
+                } else {
+                    await window.db.collection('posts').add(data);
+                }
+                clearPF(); loadAdminP();
+            } catch(e) { alert('Błąd zapisu wpisu.'); }
+        }
+
+        async function loadAdminP(){
+            try {
+                const s = await window.db.collection('posts').orderBy('date','desc').limit(50).get();
+                let all = s.docs.map(d=>({id:d.id, ...d.data()}));
+                
+                document.getElementById('admin-plist').innerHTML=all.map(p=>`
+                    <div class="card" style="padding:0.9rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+                        <div><div style="font-weight:600;font-size:0.9rem;">${p.title}</div>
+                        <div style="font-size:0.72rem;color:var(--muted);">${p.label} | ${fmtFinished(p.date)}</div></div>
+                        <div style="display:flex;gap:4px;">
+                            <button class="btn-sm" onclick='editP("${p.id}",${JSON.stringify(p).replace(/'/g,"&#39;")})'><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn-sm btn-del" onclick="delP('${p.id}')"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>`).join('')||'<p style="color:var(--muted);">Brak wpisów.</p>';
+            } catch(e) { document.getElementById('admin-plist').innerHTML = '<p style="color:#ff6b6b;">Błąd ładowania wpisów.</p>'; }
+        }
+
+        function editP(id, p){
+            document.getElementById('p-id').value = id;
+            document.getElementById('p-title').value = p.title || '';
+            document.getElementById('p-label').value = p.label || 'Komunikat';
+            document.getElementById('p-content').value = p.content || '';
+            window.scrollTo({top:0,behavior:'smooth'});
+        }
+
+        async function delP(id){
+            if(confirm('Usunąć ten wpis?')){
+                await window.db.collection('posts').doc(id).delete();
+                loadAdminP();
+            }
+        }
+
+        function clearPF(){
+            document.getElementById('p-id').value='';
+            ['p-title','p-content'].forEach(i=>document.getElementById(i).value='');
+            document.getElementById('p-label').value='Komunikat';
+        }
         
     </script>
 </body>

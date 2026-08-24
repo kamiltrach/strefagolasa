@@ -831,15 +831,21 @@
         }
 
         let crestsCache={};
-        async function loadCrests(){
-            crestsCache={};
-            for(const league of Object.keys(L)){
-                try{
-                    const dbase = getDB(league);
-                    const doc=await dbase.collection('standings').doc(league).get();
-                    if(doc.exists&&doc.data().teams) doc.data().teams.forEach(t=>{ if(t.name&&t.crest) crestsCache[t.name.trim()]=t.crest; });
-                }catch(e){}
-            }
+        async function loadCrests(force=false){
+            if(!force && window.__crestsLoaded) return window.__crestsLoaded;
+            window.__crestsLoaded=(async()=>{
+                const entries=await Promise.all(Object.keys(L).map(async league=>{
+                    try{
+                        const dbase=getDB(league);
+                        const doc=await dbase.collection('standings').doc(league).get();
+                        if(doc.exists&&doc.data().teams) return doc.data().teams.filter(t=>t.name&&t.crest);
+                    }catch(e){}
+                    return [];
+                }));
+                crestsCache={};
+                entries.flat().forEach(t=>{ crestsCache[t.name.trim()]=t.crest; });
+            })().catch(()=>{});
+            return window.__crestsLoaded;
         }
         function crestImg(name){
             const c=crestsCache[(name||'').trim()];
@@ -898,9 +904,21 @@
         }
 
         let mc=[], curFilter='all', curMatchType='all';
+        let matchesLoadPromise=null;
+        let lastMatchesLoad=0;
+        const MATCH_CACHE_MS=8000;
+        const AB_LEAGUES=new Set(NEW_LEAGUES);
+        const MAIN_LEAGUES=new Set(Object.keys(L).filter(league=>!AB_LEAGUES.has(league)));
+
         function matchIsUpcoming(m){ return (m.status==='upcoming' || (m.scoreHome==null||m.scoreAway==null)) && m.status!=='finished'; }
         function upcomingList(list){ return list.filter(matchIsUpcoming).sort((a,b)=>(a.date?.seconds||0)-(b.date?.seconds||0)); }
         function finishedList(list){ return list.filter(m=>!matchIsUpcoming(m)).sort((a,b)=>(b.date?.seconds||0)-(a.date?.seconds||0)); }
+
+        // Bazy są rozdzielone: db1 = IV Liga/Okręgowe, db2 = A/B Klasy.
+        // Nigdy nie łączymy tych samych lig z obu baz i nie próbujemy zgadywać duplikatów.
+        function matchFromExpectedDB(m, dbName){
+            return dbName==='db2' ? AB_LEAGUES.has(m.league) : MAIN_LEAGUES.has(m.league);
+        }
 
         const DAYS=['niedziela','poniedziałek','wtorek','środa','czwartek','piątek','sobota'];
         function fmtUpcoming(ts){
@@ -918,38 +936,44 @@
             return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
         }
 
-        async function refreshMatches(){
+        async function refreshMatches(force=false){
             const c1=document.getElementById('home-upcoming');
             if(!c1) return;
-            try{
-                await loadCrests();
-                const s1 = await window.db.collection('matches').orderBy('date','asc').limit(500).get();
-                let allM = s1.docs.map(d=>({id:d.id, _db:'db1', ...d.data()}));
-                if (window.db2) {
-                    try {
-                        const s2 = await window.db2.collection('matches').orderBy('date','asc').limit(500).get();
-                        allM = allM.concat(s2.docs.map(d=>({id:d.id, _db:'db2', ...d.data()})));
-                    } catch(e) {}
-                }
-                allM.sort((a,b)=>(a.date?.seconds||0)-(b.date?.seconds||0));
-                mc = allM;
+            const now=Date.now();
+            if(!force && mc.length && (now-lastMatchesLoad)<MATCH_CACHE_MS){
                 renderGrid(upcomingList(mc).slice(0,6),'home-upcoming');
                 renderGrid(finishedList(mc).slice(0,6),'home-grid');
                 applyFilter();
-            }catch(e){ c1.innerHTML='<p style="color:#ff6b6b;">Błąd bazy.</p>'; }
-        }
-
-        function matchCard(m){
-            const up=matchIsUpcoming(m);
-            return `<div class="card">
-                <div class="league-label"><i class="fa-solid fa-circle"></i>${L[m.league]||m.league}${up?'<span class="badge-up">Nadchodzący</span>':''}</div>
-                <div class="match-row">
-                    <div class="team-wrap">${crestImg(m.homeTeam)}<span class="team-name" onclick="openClubProfile('${m.homeTeam}')">${m.homeTeam||'?'}</span></div>
-                    <div class="score-box ${up?'vs':''}">${up?'vs':`${m.scoreHome??'-'}:${m.scoreAway??'-'}`}</div>
-                    <div class="team-wrap away"><span class="team-name" onclick="openClubProfile('${m.awayTeam}')">${m.awayTeam||'?'}</span>${crestImg(m.awayTeam)}</div>
-                </div>
-                <div class="match-date ${up?'up':''}">${up?fmtUpcoming(m.date):fmtFinished(m.date)}</div>
-            </div>`;
+                return;
+            }
+            if(matchesLoadPromise && !force) return matchesLoadPromise;
+            const load=async()=>{
+                try{
+                    const crestPromise=loadCrests();
+                    const p1=window.db.collection('matches').orderBy('date','asc').limit(500).get();
+                    const p2=window.db2 ? window.db2.collection('matches').orderBy('date','asc').limit(500).get().catch(()=>null) : Promise.resolve(null);
+                    const [s1,s2]=await Promise.all([p1,p2]);
+                    // Każda baza dostarcza wyłącznie przypisane jej ligi.
+                    const allM=s1.docs
+                        .map(d=>({id:d.id,_db:'db1',...d.data()}))
+                        .filter(m=>matchFromExpectedDB(m,'db1'))
+                        .concat(s2 ? s2.docs
+                            .map(d=>({id:d.id,_db:'db2',...d.data()}))
+                            .filter(m=>matchFromExpectedDB(m,'db2')) : []);
+                    allM.sort((a,b)=>(a.date?.seconds||0)-(b.date?.seconds||0));
+                    mc=allM;
+                    lastMatchesLoad=Date.now();
+                    renderGrid(upcomingList(mc).slice(0,6),'home-upcoming');
+                    renderGrid(finishedList(mc).slice(0,6),'home-grid');
+                    applyFilter();
+                    await crestPromise;
+                    renderGrid(upcomingList(mc).slice(0,6),'home-upcoming');
+                    renderGrid(finishedList(mc).slice(0,6),'home-grid');
+                    applyFilter();
+                }catch(e){ c1.innerHTML='<p style="color:#ff6b6b;">Błąd bazy.</p>'; }
+            };
+            matchesLoadPromise=load();
+            try{ await matchesLoadPromise; } finally { matchesLoadPromise=null; }
         }
 
         function renderGrid(data,cid){
@@ -1329,8 +1353,8 @@
             const dateVal=document.getElementById('m-date').value;
             const newLeague = document.getElementById('m-league').value;
             const data={
-                homeTeam:document.getElementById('m-home').value,
-                awayTeam:document.getElementById('m-away').value,
+                homeTeam:document.getElementById('m-home').value.trim(),
+                awayTeam:document.getElementById('m-away').value.trim(),
                 scoreHome:hasScore?parseInt(sh):null,
                 scoreAway:hasScore?parseInt(sa):null,
                 status:hasScore?'finished':'upcoming',
@@ -1338,9 +1362,9 @@
                 date:dateVal?firebase.firestore.Timestamp.fromDate(new Date(dateVal)):firebase.firestore.FieldValue.serverTimestamp()
             };
             try{
-                const newDbase = getDB(newLeague);
-                const oldDbVal = document.getElementById('m-db').value;
-                const oldDbase = oldDbVal === 'db2' ? window.db2 : window.db;
+                const newDbase=getDB(newLeague);
+                const oldDbVal=document.getElementById('m-db').value;
+                const oldDbase=oldDbVal==='db2'?window.db2:window.db;
 
                 if(id){
                     if(oldDbase && oldDbase !== newDbase) {
@@ -1350,29 +1374,35 @@
                         await newDbase.collection('matches').doc(id).update(data);
                     }
                 } else {
+                    // Zapis dokładnie do bazy przypisanej do ligi. Bez deduplikacji po nazwach/datаch.
                     await newDbase.collection('matches').add(data);
                 }
-                clearMF();loadAdminM();
+                clearMF();
+                await Promise.all([loadAdminM(), refreshMatches(true)]);
             }catch(e){alert('Błąd zapisu spotkania');}
         }
-        
+
         async function loadAdminM(){
-            const s1=await window.db.collection('matches').orderBy('date','asc').limit(200).get();
-            let all=s1.docs.map(d=>({id:d.id, _db:'db1', ...d.data()}));
-            if(window.db2){
-                try {
-                    const s2=await window.db2.collection('matches').orderBy('date','asc').limit(200).get();
-                    all=all.concat(s2.docs.map(d=>({id:d.id, _db:'db2', ...d.data()})));
-                } catch(e) {}
-            }
-            const sorted=[...upcomingList(all),...finishedList(all)];
-            document.getElementById('admin-mlist').innerHTML=sorted.map(m=>`
-                <div class="card" style="padding:0.9rem;display:flex;justify-content:space-between;align-items:center;">
-                    <div><div style="font-weight:600;font-size:0.9rem;">${m.homeTeam} vs ${m.awayTeam}</div>
-                    <div style="font-size:0.72rem;color:var(--muted);">${L[m.league]} • ${matchIsUpcoming(m)?'Nadchodzący':`Wynik ${m.scoreHome}:${m.scoreAway}`}</div></div>
-                    <div style="display:flex;gap:4px;"><button class="btn-sm" onclick='editM("${m.id}",${JSON.stringify(m).replace(/'/g,"&#39;")})'><i class="fa-solid fa-pen"></i></button><button class="btn-sm btn-del" onclick="delM('${m.id}', '${m._db}')"><i class="fa-solid fa-trash"></i></button></div>
-                </div>`).join('')||'<p style="color:var(--muted);">Brak spotkań.</p>';
+            try{
+                const p1=window.db.collection('matches').orderBy('date','asc').limit(200).get();
+                const p2=window.db2 ? window.db2.collection('matches').orderBy('date','asc').limit(200).get().catch(()=>null) : Promise.resolve(null);
+                const [s1,s2]=await Promise.all([p1,p2]);
+                const all=s1.docs
+                    .map(d=>({id:d.id,_db:'db1',...d.data()}))
+                    .filter(m=>matchFromExpectedDB(m,'db1'))
+                    .concat(s2 ? s2.docs
+                        .map(d=>({id:d.id,_db:'db2',...d.data()}))
+                        .filter(m=>matchFromExpectedDB(m,'db2')) : []);
+                const sorted=[...upcomingList(all),...finishedList(all)];
+                document.getElementById('admin-mlist').innerHTML=sorted.map(m=>`
+                    <div class="card" style="padding:0.9rem;display:flex;justify-content:space-between;align-items:center;">
+                        <div><div style="font-weight:600;font-size:0.9rem;">${m.homeTeam} vs ${m.awayTeam}</div>
+                        <div style="font-size:0.72rem;color:var(--muted);">${L[m.league]} • ${matchIsUpcoming(m)?'Nadchodzący':`Wynik ${m.scoreHome}:${m.scoreAway}`}</div></div>
+                        <div style="display:flex;gap:4px;"><button class="btn-sm" onclick='editM("${m.id}",${JSON.stringify(m).replace(/'/g,"&#39;")})'><i class="fa-solid fa-pen"></i></button><button class="btn-sm btn-del" onclick="delM('${m.id}', '${m._db}')"><i class="fa-solid fa-trash"></i></button></div>
+                    </div>`).join('')||'<p style="color:var(--muted);">Brak spotkań.</p>';
+            }catch(e){ document.getElementById('admin-mlist').innerHTML='<p style="color:#ff6b6b;">Błąd ładowania spotkań.</p>'; }
         }
+
         function editM(id,d){
             document.getElementById('m-id').value=id; document.getElementById('m-db').value=d._db||'db1';
             document.getElementById('m-home').value=d.homeTeam; document.getElementById('m-away').value=d.awayTeam; 
@@ -1752,6 +1782,13 @@
             ['p-title','p-content'].forEach(i=>document.getElementById(i).value='');
             document.getElementById('p-label').value='Komunikat';
         }
+
+
+        // Prefetch mecze od razu po uruchomieniu strony, bez czekania na przejście do zakładki.
+        window.addEventListener('load',()=>{
+            refreshMatches();
+            loadHomeTable();
+        });
         
     </script>
 </body>

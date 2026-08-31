@@ -763,8 +763,8 @@
     <script src="firebase-config.js"></script>
 
     <script>
-        // PAMIĘTAJ: Aby dane A-klas i B-klas zapisywały się w drugiej bazie danych Firebase, 
-        // musisz w pliku firebase-config.js zdefiniować zmienną window.db2!
+        // db2 = A/B Klasy. db3 = wyłącznie posty, statystyki i transfery.
+        // Konfigurację db3 ustaw w pliku firebase-config.js.
         
         const db = window.db;
         const auth = window.auth;
@@ -786,6 +786,11 @@
         function getDB(league) {
             if(league && NEW_LEAGUES.includes(league) && window.db2) return window.db2;
             return window.db;
+        }
+
+        // Trzecia baza: wyłącznie POSTY, STATYSTYKI i TRANSFERY.
+        function getContentDB() {
+            return window.db3 || null;
         }
 
         const DEFAULT_ZONES = { promo:[1], barage:[2], releg:[14,15,16] };
@@ -1281,7 +1286,8 @@
             const tb = document.getElementById('stats-tb');
             tb.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:2rem;">Ładowanie...</td></tr>';
             try {
-                const dbase = getDB(league);
+                const dbase = getContentDB();
+                if(!dbase) throw new Error('Brak konfiguracji trzeciej bazy danych');
                 const s = await dbase.collection('stats').where('league', '==', league).get();
                 cachedStats = s.empty ? [] : s.docs.map(d=>d.data());
                 renderStatsTable();
@@ -1331,14 +1337,10 @@
         async function loadTransfers(){
             const c=document.getElementById('transfers-grid');
             try{
-                const s1 = await window.db.collection('transfers').orderBy('date','desc').limit(150).get();
-                let allT = s1.docs.map(d=>({id:d.id, _db:'db1', ...d.data()}));
-                if (window.db2) {
-                    try {
-                        const s2 = await window.db2.collection('transfers').orderBy('date','desc').limit(150).get();
-                        allT = allT.concat(s2.docs.map(d=>({id:d.id, _db:'db2', ...d.data()})));
-                    } catch(e) {}
-                }
+                const contentDb = getContentDB();
+                if(!contentDb) throw new Error('Brak konfiguracji trzeciej bazy danych');
+                const s1 = await contentDb.collection('transfers').orderBy('date','desc').limit(150).get();
+                let allT = s1.docs.map(d=>({id:d.id, _db:'db3', ...d.data()}));
                 allT.sort((a,b)=>(b.date?.seconds||0)-(a.date?.seconds||0));
                 allTransfers = allT;
                 if(allTransfers.length===0){c.innerHTML='<p style="color:var(--muted);padding:2rem;">Brak transferów.</p>';return;}
@@ -1385,7 +1387,9 @@
         async function loadPosts(){
             const c=document.getElementById('posts-grid');
             try{
-                const s=await window.db.collection('posts').orderBy('date','desc').limit(20).get();
+                const contentDb = getContentDB();
+                if(!contentDb) { c.innerHTML='<p style="color:#ff6b6b;padding:2rem;">Brak konfiguracji trzeciej bazy danych.</p>'; return; }
+                const s=await contentDb.collection('posts').orderBy('date','desc').limit(20).get();
                 if(s.empty){c.innerHTML='<p style="color:var(--muted);padding:2rem;">Brak postów.</p>';return;}
                 postsCache = s.docs.map(d=>({id:d.id, ...d.data()}));
                 
@@ -1534,7 +1538,8 @@
                 date:dateVal?firebase.firestore.Timestamp.fromDate(new Date(dateVal)):firebase.firestore.FieldValue.serverTimestamp()
             };
             try{
-                const newDbase = getDB(newLeague);
+                const newDbase = getContentDB();
+                if(!newDbase) throw new Error('Brak konfiguracji trzeciej bazy danych');
                 const oldDbVal = document.getElementById('m-db').value;
                 const oldDbase = oldDbVal === 'db2' ? window.db2 : window.db;
 
@@ -1761,10 +1766,11 @@
                 date: firebase.firestore.FieldValue.serverTimestamp()
             };
             try {
-                const newDbase = getDB(newLeague);
+                const newDbase = getContentDB();
+                if(!newDbase) throw new Error('Brak konfiguracji trzeciej bazy danych');
                 const oldDbVal = document.getElementById('tr-db').value;
                 if(id){
-                    const oldDbase = oldDbVal === 'db2' ? window.db2 : window.db;
+                    const oldDbase = oldDbVal === 'db3' ? window.db3 : (oldDbVal === 'db2' ? window.db2 : window.db);
                     if(oldDbase && oldDbase !== newDbase) {
                         await oldDbase.collection('transfers').doc(id).delete();
                         await newDbase.collection('transfers').doc(id).set(data);
@@ -1780,14 +1786,10 @@
 
         async function loadAdminTr(){
             try {
-                const s1=await window.db.collection('transfers').orderBy('date','desc').limit(100).get();
-                let all=s1.docs.map(d=>({id:d.id, _db:'db1', ...d.data()}));
-                if(window.db2){
-                    try {
-                        const s2=await window.db2.collection('transfers').orderBy('date','desc').limit(100).get();
-                        all=all.concat(s2.docs.map(d=>({id:d.id, _db:'db2', ...d.data()})));
-                    } catch(e) {}
-                }
+                const contentDb = getContentDB();
+                if(!contentDb) throw new Error('Brak konfiguracji trzeciej bazy danych');
+                const s1=await contentDb.collection('transfers').orderBy('date','desc').limit(100).get();
+                let all=s1.docs.map(d=>({id:d.id, _db:'db3', ...d.data()}));
                 all.sort((a,b)=>(b.date?.seconds||0)-(a.date?.seconds||0));
                 
                 document.getElementById('admin-trlist').innerHTML=all.map(t=>`
@@ -1815,7 +1817,8 @@
 
         async function delTr(id, dbVal){
             if(confirm('Usunąć ten transfer?')){
-                const dbase = (dbVal==='db2' && window.db2) ? window.db2 : window.db;
+                const dbase = (dbVal==='db3' && window.db3) ? window.db3 : null;
+                if(!dbase) throw new Error('Brak konfiguracji trzeciej bazy danych');
                 await dbase.collection('transfers').doc(id).delete();
                 loadAdminTr();
             }
@@ -1841,7 +1844,7 @@
                 const newDbase = getDB(newLeague);
                 const oldDbVal = document.getElementById('s-db').value;
                 if(id){
-                    const oldDbase = oldDbVal === 'db2' ? window.db2 : window.db;
+                    const oldDbase = oldDbVal === 'db3' ? window.db3 : (oldDbVal === 'db2' ? window.db2 : window.db);
                     if(oldDbase && oldDbase !== newDbase) {
                         await oldDbase.collection('stats').doc(id).delete();
                         await newDbase.collection('stats').doc(id).set(data);
@@ -1857,14 +1860,10 @@
 
         async function loadAdminS(){
             try {
-                const s1=await window.db.collection('stats').get();
-                let all=s1.docs.map(d=>({id:d.id, _db:'db1', ...d.data()}));
-                if(window.db2){
-                    try {
-                        const s2=await window.db2.collection('stats').get();
-                        all=all.concat(s2.docs.map(d=>({id:d.id, _db:'db2', ...d.data()})));
-                    } catch(e) {}
-                }
+                const contentDb = getContentDB();
+                if(!contentDb) throw new Error('Brak konfiguracji trzeciej bazy danych');
+                const s1=await contentDb.collection('stats').get();
+                let all=s1.docs.map(d=>({id:d.id, _db:'db3', ...d.data()}));
                 document.getElementById('admin-slist').innerHTML=all.map(s=>`
                     <div class="card" style="padding:0.9rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
                         <div><div style="font-weight:600;font-size:0.9rem;">${s.player}</div>
@@ -1890,7 +1889,8 @@
 
         async function delS(id, dbVal){
             if(confirm('Usunąć te statystyki?')){
-                const dbase = (dbVal==='db2' && window.db2) ? window.db2 : window.db;
+                const dbase = (dbVal==='db3' && window.db3) ? window.db3 : null;
+                if(!dbase) throw new Error('Brak konfiguracji trzeciej bazy danych');
                 await dbase.collection('stats').doc(id).delete();
                 loadAdminS();
             }
@@ -1912,10 +1912,12 @@
                 date: firebase.firestore.FieldValue.serverTimestamp()
             };
             try {
+                const contentDb = getContentDB();
+                if(!contentDb) throw new Error('Brak konfiguracji trzeciej bazy danych');
                 if(id){
-                    await window.db.collection('posts').doc(id).update(data);
+                    await contentDb.collection('posts').doc(id).update(data);
                 } else {
-                    await window.db.collection('posts').add(data);
+                    await contentDb.collection('posts').add(data);
                 }
                 clearPF(); loadAdminP();
             } catch(e) { alert('Błąd zapisu wpisu.'); }
@@ -1923,8 +1925,10 @@
 
         async function loadAdminP(){
             try {
-                const s = await window.db.collection('posts').orderBy('date','desc').limit(50).get();
-                let all = s.docs.map(d=>({id:d.id, ...d.data()}));
+                const contentDb = getContentDB();
+                if(!contentDb) throw new Error('Brak konfiguracji trzeciej bazy danych');
+                const s = await contentDb.collection('posts').orderBy('date','desc').limit(50).get();
+                let all = s.docs.map(d=>({id:d.id, _db:'db3', ...d.data()}));
                 
                 document.getElementById('admin-plist').innerHTML=all.map(p=>`
                     <div class="card" style="padding:0.9rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
@@ -1948,7 +1952,9 @@
 
         async function delP(id){
             if(confirm('Usunąć ten wpis?')){
-                await window.db.collection('posts').doc(id).delete();
+                const contentDb = getContentDB();
+                if(!contentDb) throw new Error('Brak konfiguracji trzeciej bazy danych');
+                await contentDb.collection('posts').doc(id).delete();
                 loadAdminP();
             }
         }

@@ -1,5 +1,5 @@
-// 1. Konfiguracja PIERWSZEJ bazy (Konto A)
-const firebaseConfigPrimary = {
+// Firebase — baza główna
+const firebaseConfig = {
     apiKey: "AIzaSyD5rE81B9PNgYh-Ut8gQUpUbHWrv4MUZHg",
     authDomain: "flutter-ai-playground-d7796.firebaseapp.com",
     databaseURL: "https://flutter-ai-playground-d7796-default-rtdb.europe-west1.firebasedatabase.app",
@@ -9,7 +9,7 @@ const firebaseConfigPrimary = {
     appId: "1:56640861835:web:f645e0c15ab2027e00068e"
 };
 
-// 2. Konfiguracja DRUGIEJ bazy (Konto B)
+// Firebase — 2. baza
 const firebaseConfigSecondary = {
   apiKey: "AIzaSyBs9M0G0-77vi8nAJyYYE3nfOOQlP_AAHo",
   authDomain: "aplicationkj.firebaseapp.com",
@@ -21,11 +21,35 @@ const firebaseConfigSecondary = {
   measurementId: "G-QY8EE6DBZE"
 };
 
-// 3. Inicjalizacja obu aplikacji z użyciem globalnego obiektu 'firebase' (składnia Compat)
-firebase.initializeApp(firebaseConfigPrimary);
-const app2 = firebase.initializeApp(firebaseConfigSecondary, "DrugaBaza");
+// Firebase — 3. baza
+// Ta baza przechowuje:
+// posts      -> wszystkie posty
+// stats      -> wszystkie statystyki
+// transfers  -> wszystkie transfery
+const firebaseConfigTertiary = {
+  apiKey: "AIzaSyCSfpNxbRTwL2PErQrNW4UQ-B4zqhHkrVw",
+  authDomain: "strefa-f41ef.firebaseapp.com",
+  projectId: "strefa-f41ef",
+  storageBucket: "strefa-f41ef.firebasestorage.app",
+  messagingSenderId: "460055344104",
+  appId: "1:460055344104:web:221886736a2ac85160ea5d",
+  measurementId: "G-ZPP3H30M35"
+};
 
-// 4. Przypisanie instancji do obiektu window, aby plik HTML mógł z nich korzystać
+firebase.initializeApp(firebaseConfig);
+
+const secondaryApp = firebase.initializeApp(
+    firebaseConfigSecondary,
+    "secondary"
+);
+
+const tertiaryApp = firebase.initializeApp(
+    firebaseConfigTertiary,
+    "tertiary"
+);
+
 window.db = firebase.firestore();
+window.db2 = secondaryApp.firestore();
+window.db3 = tertiaryApp.firestore();
+
 window.auth = firebase.auth();
-window.db2 = app2.firestore();

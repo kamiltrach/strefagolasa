@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Strefa Gola - Podkarpacie</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -223,7 +225,7 @@
 
     <nav>
         <div class="logo-wrap">
-            <img src="logo.png" alt="Strefa Gola" class="logo-img" onerror="this.style.display='none'">
+            <img src="logo.png" alt="Strefa Gola" class="logo-img" decoding="async" loading="eager" onerror="this.style.display='none'">
             <div>
                 <div class="logo-text">Strefa<span>Gola</span></div>
                 <div class="logo-sub">Podkarpacie</div>
@@ -273,7 +275,7 @@
     <main>
         <section id="home" class="section active">
             <div class="hero anim">
-                <img src="logo.png" alt="Logo" class="hero-logo" onerror="this.outerHTML='<div style=\'width:110px;height:110px;margin:0 auto 1.5rem;border-radius:50%;border:2px solid var(--green);display:flex;align-items:center;justify-content:center;font-size:2.8rem;color:var(--green);\'><i class=\'fa-solid fa-futbol\'></i></div>'">
+                <img src="logo.png" alt="Logo" class="hero-logo" decoding="async" fetchpriority="high" onerror="this.outerHTML='<div style=\'width:110px;height:110px;margin:0 auto 1.5rem;border-radius:50%;border:2px solid var(--green);display:flex;align-items:center;justify-content:center;font-size:2.8rem;color:var(--green);\'><i class=\'fa-solid fa-futbol\'></i></div>'">
                 <h1>Strefa<span>Gola</span></h1>
                 <p>IV Liga, Klasa Okręgowa oraz A i B Klasy Jarosław, Przeworsk, Rzeszów, Dębica, Stalowa Wola, Krosno.<br>Dane. Statystyki. Profesjonalizm.</p>
             </div>
@@ -838,23 +840,38 @@
         }
 
         let crestsCache={};
+        let crestsLoadPromise=null;
+        let crestsLoadedAt=0;
         async function loadCrests(){
-            crestsCache={};
-            for(const league of Object.keys(L)){
-                try{
-                    const dbase = getDB(league);
-                    const doc=await dbase.collection('standings').doc(league).get();
-                    if(doc.exists&&doc.data().teams) doc.data().teams.forEach(t=>{ if(t.name&&t.crest) crestsCache[t.name.trim()]=t.crest; });
-                }catch(e){}
+            const now=Date.now();
+            if(crestsLoadPromise && (now-crestsLoadedAt)<30000) return crestsLoadPromise;
+            crestsLoadPromise=(async()=>{
+                const nextCache={};
+                await Promise.all(Object.keys(L).map(async league=>{
+                    try{
+                        const dbase = getDB(league);
+                        const doc=await dbase.collection('standings').doc(league).get();
+                        if(doc.exists&&doc.data().teams) doc.data().teams.forEach(t=>{
+                            if(t.name&&t.crest) nextCache[t.name.trim()]=t.crest;
+                        });
+                    }catch(e){}
+                }));
+                crestsCache=nextCache;
+                crestsLoadedAt=Date.now();
+            })();
+            try{
+                await crestsLoadPromise;
+            }finally{
+                if(Date.now()-crestsLoadedAt>=30000) crestsLoadPromise=null;
             }
         }
         function crestImg(name){
             const c=crestsCache[(name||'').trim()];
-            return c ? `<img src="${c}" class="team-crest" alt="">` : '<div class="team-crest" style="display:flex;align-items:center;justify-content:center;font-size:0.65rem;color:var(--muted);"><i class="fa-solid fa-shield"></i></div>';
+            return c ? `<img src="${c}" class="team-crest" alt="" loading="lazy" decoding="async">` : '<div class="team-crest" style="display:flex;align-items:center;justify-content:center;font-size:0.65rem;color:var(--muted);"><i class="fa-solid fa-shield"></i></div>';
         }
         function crestImgSmallFromStr(name){
             const c=crestsCache[(name||'').trim()];
-            return c ? `<img src="${c}" class="table-crest" alt="">` : '<div class="table-crest" style="display:flex;align-items:center;justify-content:center;font-size:0.55rem;color:var(--muted);"><i class="fa-solid fa-shield"></i></div>';
+            return c ? `<img src="${c}" class="table-crest" alt="" loading="lazy" decoding="async">` : '<div class="table-crest" style="display:flex;align-items:center;justify-content:center;font-size:0.55rem;color:var(--muted);"><i class="fa-solid fa-shield"></i></div>';
         }
         function crestImgSmall(t){
             return t.crest ? `<img src="${t.crest}" class="table-crest" alt="">` : '<div class="table-crest" style="display:flex;align-items:center;justify-content:center;font-size:0.55rem;color:var(--muted);"><i class="fa-solid fa-shield"></i></div>';

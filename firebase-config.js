@@ -1,4 +1,6 @@
-// Firebase — baza główna
+// ===============================
+// BAZA 1 — główna
+// ===============================
 const firebaseConfig = {
     apiKey: "AIzaSyD5rE81B9PNgYh-Ut8gQUpUbHWrv4MUZHg",
     authDomain: "flutter-ai-playground-d7796.firebaseapp.com",
@@ -9,7 +11,10 @@ const firebaseConfig = {
     appId: "1:56640861835:web:f645e0c15ab2027e00068e"
 };
 
-// Firebase — 2. baza
+
+// ===============================
+// BAZA 2 — A/B KLASY
+// ===============================
 const firebaseConfigSecondary = {
   apiKey: "AIzaSyBs9M0G0-77vi8nAJyYYE3nfOOQlP_AAHo",
   authDomain: "aplicationkj.firebaseapp.com",
@@ -21,11 +26,10 @@ const firebaseConfigSecondary = {
   measurementId: "G-QY8EE6DBZE"
 };
 
-// Firebase — 3. baza
-// Ta baza przechowuje:
-// posts      -> wszystkie posty
-// stats      -> wszystkie statystyki
-// transfers  -> wszystkie transfery
+
+// ===============================
+// BAZA 3 — POSTY / STATYSTYKI / TRANSFERY
+// ===============================
 const firebaseConfigTertiary = {
   apiKey: "AIzaSyCSfpNxbRTwL2PErQrNW4UQ-B4zqhHkrVw",
   authDomain: "strefa-f41ef.firebaseapp.com",
@@ -36,20 +40,43 @@ const firebaseConfigTertiary = {
   measurementId: "G-ZPP3H30M35"
 };
 
+
+// ===============================
+// URUCHOMIENIE FIREBASE
+// ===============================
+
+// Baza 1
 firebase.initializeApp(firebaseConfig);
 
+// Baza 2
 const secondaryApp = firebase.initializeApp(
     firebaseConfigSecondary,
     "secondary"
 );
 
+// Baza 3
 const tertiaryApp = firebase.initializeApp(
     firebaseConfigTertiary,
     "tertiary"
 );
 
+
+// ===============================
+// REFERENCJE DO BAZ
+// ===============================
+
 window.db = firebase.firestore();
+
 window.db2 = secondaryApp.firestore();
+
 window.db3 = tertiaryApp.firestore();
 
+
+// Auth pozostaje z BAZY 1
 window.auth = firebase.auth();
+
+
+// Kontrola
+console.log("Firebase DB1:", window.db ? "OK" : "BRAK");
+console.log("Firebase DB2:", window.db2 ? "OK" : "BRAK");
+console.log("Firebase DB3:", window.db3 ? "OK" : "BRAK");

@@ -588,6 +588,13 @@
                                 <input type="number" id="t-pts" placeholder="Punkty">
                                 <input type="text" id="t-diff" placeholder="Bilans (+12 lub strz-str)">
                             </div>
+                            <label style="display:flex;align-items:center;gap:10px;margin:4px 0 12px;color:var(--muted);font-size:0.8rem;cursor:pointer;">
+                                <input type="checkbox" id="t-manual" style="width:auto;margin:0;accent-color:var(--green);">
+                                <span>Ręcznie ustaw statystyki (M, Pkt, Bilans) — bez automatycznego liczenia z meczów</span>
+                            </label>
+                            <p style="font-size:0.72rem;color:var(--muted);margin-bottom:12px;">
+                                Domyślnie statystyki są liczone z zakończonych meczów tej ligi. Po zaznaczeniu możesz wpisać M, Pkt i Bilans ręcznie.
+                            </p>
                             <button class="btn" onclick="saveTeam()">Zapisz drużynę</button>
                             <button class="btn-sm" onclick="clearTF()" style="width:100%;margin-top:10px;border:1px solid var(--border);">Wyczyść</button>
                         </div>
@@ -1010,48 +1017,182 @@
             applyFilter();
         }
 
+        async function getCalculatedTeams(league){
+            const dbase = getDB(league);
+            const standingsRef = dbase.collection('standings').doc(league);
+            const [standingsDoc, matchesSnap] = await Promise.all([
+                standingsRef.get(),
+                dbase.collection('matches').get()
+            ]);
+
+            if(!standingsDoc.exists || !standingsDoc.data().teams) return [];
+
+            const teams = (standingsDoc.data().teams || []).map(t => ({
+                ...t,
+                m: Number(t.m) || 0,
+                pts: Number(t.pts) || 0,
+                diff: t.diff ?? '0',
+                manual: t.manual === true
+            }));
+
+            const stats = {};
+            teams.forEach(t => {
+                if(!t.manual){
+                    stats[t.name.trim().toLowerCase()] = {m:0, pts:0, gf:0, ga:0};
+                }
+            });
+
+            matchesSnap.forEach(doc => {
+                const m = doc.data();
+                if(m.league !== league || m.status !== 'finished') return;
+                if(!Number.isFinite(Number(m.scoreHome)) || !Number.isFinite(Number(m.scoreAway))) return;
+
+                const home = (m.homeTeam || '').trim().toLowerCase();
+                const away = (m.awayTeam || '').trim().toLowerCase();
+                const sh = Number(m.scoreHome);
+                const sa = Number(m.scoreAway);
+
+                if(stats[home]){
+                    stats[home].m++;
+                    stats[home].gf += sh;
+                    stats[home].ga += sa;
+                    stats[home].pts += sh > sa ? 3 : (sh === sa ? 1 : 0);
+                }
+                if(stats[away]){
+                    stats[away].m++;
+                    stats[away].gf += sa;
+                    stats[away].ga += sh;
+                    stats[away].pts += sa > sh ? 3 : (sa === sh ? 1 : 0);
+                }
+            });
+
+            return teams.map(t => {
+                if(t.manual) return t;
+                const s = stats[t.name.trim().toLowerCase()] || {m:0,pts:0,gf:0,ga:0};
+                return {
+                    ...t,
+                    m: s.m,
+                    pts: s.pts,
+                    diff: s.gf - s.ga >= 0 ? `+${s.gf - s.ga}` : `${s.gf - s.ga}`,
+                    gf: s.gf,
+                    ga: s.ga
+                };
+            });
+        }
+
+        async function recalculateStandings(league){
+            try{
+                const dbase = getDB(league);
+                const ref = dbase.collection('standings').doc(league);
+                const doc = await ref.get();
+                if(!doc.exists || !doc.data().teams) return;
+
+                const teams = doc.data().teams.map(t => ({...t}));
+                const matchesSnap = await dbase.collection('matches').get();
+
+                const stats = {};
+                teams.forEach(t => {
+                    if(t.manual !== true){
+                        stats[(t.name || '').trim().toLowerCase()] = {m:0, pts:0, gf:0, ga:0};
+                    }
+                });
+
+                matchesSnap.forEach(matchDoc => {
+                    const m = matchDoc.data();
+                    if(m.league !== league || m.status !== 'finished') return;
+                    if(!Number.isFinite(Number(m.scoreHome)) || !Number.isFinite(Number(m.scoreAway))) return;
+
+                    const home = (m.homeTeam || '').trim().toLowerCase();
+                    const away = (m.awayTeam || '').trim().toLowerCase();
+                    const sh = Number(m.scoreHome);
+                    const sa = Number(m.scoreAway);
+
+                    if(stats[home]){
+                        stats[home].m++;
+                        stats[home].gf += sh;
+                        stats[home].ga += sa;
+                        stats[home].pts += sh > sa ? 3 : (sh === sa ? 1 : 0);
+                    }
+                    if(stats[away]){
+                        stats[away].m++;
+                        stats[away].gf += sa;
+                        stats[away].ga += sh;
+                        stats[away].pts += sa > sh ? 3 : (sa === sh ? 1 : 0);
+                    }
+                });
+
+                teams.forEach(t => {
+                    if(t.manual === true) return;
+                    const s = stats[(t.name || '').trim().toLowerCase()] || {m:0,pts:0,gf:0,ga:0};
+                    t.m = s.m;
+                    t.pts = s.pts;
+                    t.diff = s.gf - s.ga >= 0 ? `+${s.gf - s.ga}` : `${s.gf - s.ga}`;
+                    t.gf = s.gf;
+                    t.ga = s.ga;
+                });
+
+                await ref.set({
+                    teams,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, {merge:true});
+            }catch(e){
+                console.error('Błąd automatycznego przeliczania tabeli:', e);
+            }
+        }
+
         async function loadTable(league,btn){
-            if(btn){document.querySelectorAll('#table-sub .sub-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+            if(btn){
+                document.querySelectorAll('#table-sub .sub-tab').forEach(b=>b.classList.remove('active'));
+                btn.classList.add('active');
+            }
             const tb=document.getElementById('tb');
             tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:2rem;">Ładowanie...</td></tr>';
             try{
                 await loadZones();
-                const dbase = getDB(league);
-                const doc=await dbase.collection('standings').doc(league).get();
-                if(!doc.exists||!doc.data().teams||!doc.data().teams.length){
+                await recalculateStandings(league);
+                const teams = await getCalculatedTeams(league);
+
+                if(!teams.length){
                     tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:2rem;">Brak danych w lidze.</td></tr>';
-                    renderLegend(league,'table-legend'); return;
+                    renderLegend(league,'table-legend');
+                    return;
                 }
-                const teams=doc.data().teams.sort((a,b)=>b.pts-a.pts||evalGoalDiff(b.diff)-evalGoalDiff(a.diff));
+
+                teams.sort((a,b)=>Number(b.pts)-Number(a.pts)||evalGoalDiff(b.diff)-evalGoalDiff(a.diff));
+
                 tb.innerHTML=teams.map((t,i)=>`
                     <tr class="${getRowClass(i+1,league)}">
                         <td class="${i<3?'top-pos':''}">${i+1}</td>
-                        <td><div class="team-cell">${crestImgSmall(t)}<span class="team-name" onclick="openClubProfile('${t.name}')" style="font-weight:600;">${t.name}</span></div></td>
+                        <td><div class="team-cell">${crestImgSmall(t)}<span class="team-name" onclick="openClubProfile('${String(t.name).replace(/'/g,"\\'")}')" style="font-weight:600;">${t.name}</span></div></td>
                         <td style="color:var(--muted)">${t.m}</td>
                         <td style="font-weight:800;color:var(--green);">${t.pts}</td>
                         <td style="color:var(--muted);font-size:0.8rem;">${t.diff}</td>
                     </tr>`).join('');
                 renderLegend(league,'table-legend');
-            }catch(e){tb.innerHTML=`<tr><td colspan="5" style="text-align:center;color:#ff6b6b;padding:2rem;">Błąd bazy</td></tr>`;}
+            }catch(e){
+                console.error(e);
+                tb.innerHTML=`<tr><td colspan="5" style="text-align:center;color:#ff6b6b;padding:2rem;">Błąd bazy</td></tr>`;
+            }
         }
 
         async function loadHomeTable(){
             const tb=document.getElementById('home-tb');
             try{
                 await loadZones();
-                const doc=await window.db.collection('standings').doc('iv_liga').get();
-                if(!doc.exists||!doc.data().teams) return;
-                const all=doc.data().teams.sort((a,b)=>b.pts-a.pts||evalGoalDiff(b.diff)-evalGoalDiff(a.diff));
+                await recalculateStandings('iv_liga');
+                const all=await getCalculatedTeams('iv_liga');
+                all.sort((a,b)=>Number(b.pts)-Number(a.pts)||evalGoalDiff(b.diff)-evalGoalDiff(a.diff));
+
                 tb.innerHTML=all.slice(0,5).map((t,i)=>`
                     <tr class="${getRowClass(i+1,'iv_liga')}">
                         <td class="${i<3?'top-pos':''}">${i+1}</td>
-                        <td><div class="team-cell">${crestImgSmall(t)}<span class="team-name" onclick="openClubProfile('${t.name}')" style="font-weight:600;">${t.name}</span></div></td>
+                        <td><div class="team-cell">${crestImgSmall(t)}<span class="team-name" onclick="openClubProfile('${String(t.name).replace(/'/g,"\\'") }')" style="font-weight:600;">${t.name}</span></div></td>
                         <td style="color:var(--muted)">${t.m}</td>
                         <td style="font-weight:800;color:var(--green);">${t.pts}</td>
                         <td style="color:var(--muted);font-size:0.8rem;">${t.diff}</td>
                     </tr>`).join('');
                 renderLegend('iv_liga','home-legend');
-            }catch(e){}
+            }catch(e){console.error(e);}
         }
 
         let currentStatLeague = 'iv_liga';
@@ -1352,6 +1493,7 @@
                 } else {
                     await newDbase.collection('matches').add(data);
                 }
+                await recalculateStandings(newLeague);
                 clearMF();loadAdminM();
             }catch(e){alert('Błąd zapisu spotkania');}
         }
@@ -1383,7 +1525,11 @@
         async function delM(id, dbVal){
             if(confirm('Usunąć?')){
                 const dbase = (dbVal==='db2' && window.db2) ? window.db2 : window.db;
-                await dbase.collection('matches').doc(id).delete();
+                const matchRef = dbase.collection('matches').doc(id);
+                const matchDoc = await matchRef.get();
+                const league = matchDoc.exists ? matchDoc.data().league : '';
+                await matchRef.delete();
+                if(league) await recalculateStandings(league);
                 loadAdminM();
             }
         }
@@ -1395,12 +1541,14 @@
             const oldLeague = document.getElementById('t-old-league').value;
             const newLeague = document.getElementById('t-league').value;
 
+            const manual = document.getElementById('t-manual').checked;
             const teamData = {
                 name: document.getElementById('t-team').value.trim(),
                 crest: document.getElementById('t-crest').value.trim() || '',
                 m: parseInt(document.getElementById('t-m').value) || 0,
                 pts: parseInt(document.getElementById('t-pts').value) || 0,
-                diff: document.getElementById('t-diff').value.trim() || '0'
+                diff: document.getElementById('t-diff').value.trim() || '0',
+                manual
             };
 
             if(!teamData.name) { alert('Podaj nazwę drużyny.'); return; }
@@ -1443,6 +1591,7 @@
                     teams.push(teamData);
                     await ref.set({teams, updatedAt: firebase.firestore.FieldValue.serverTimestamp()}, {merge: true});
                 }
+                await recalculateStandings(newLeague);
                 clearTF();
                 loadAdminT();
             } catch(e) {
@@ -1459,7 +1608,7 @@
                 html+=`<div style="margin-bottom:1.4rem;"><div class="league-label" style="margin-bottom:0.8rem;"><i class="fa-solid fa-circle"></i>${L[league]}</div>`;
                 const teams = doc.data().teams;
                 html+=teams.map((t, idx)=>`<div class="card" style="padding:0.8rem 1rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
-                    <div style="display:flex;align-items:center;gap:8px;">${crestImgSmall(t)} <span style="font-weight:600;font-size:0.9rem;">${t.name}</span></div>
+                    <div style="display:flex;align-items:center;gap:8px;">${crestImgSmall(t)} <div><span style="font-weight:600;font-size:0.9rem;">${t.name}</span><div style="font-size:0.62rem;color:${t.manual === true || t.manual === undefined ? 'var(--gold)' : 'var(--green)'};">${t.manual === true || t.manual === undefined ? 'RĘCZNIE' : 'AUTOMATYCZNIE'}</div></div></div>
                     <div style="display:flex;gap:4px;"><button class="btn-sm" onclick='editT("${league}", ${idx}, ${JSON.stringify(t).replace(/'/g,"&#39;")})'><i class="fa-solid fa-pen"></i></button><button class="btn-sm btn-del" onclick="delT('${league}', ${idx})"><i class="fa-solid fa-trash"></i></button></div>
                 </div>`).join('');
                 html += `</div>`;
@@ -1476,6 +1625,7 @@
             document.getElementById('t-m').value = t.m || 0;
             document.getElementById('t-pts').value = t.pts || 0;
             document.getElementById('t-diff').value = t.diff || '0';
+            document.getElementById('t-manual').checked = (t.manual !== false);
             window.scrollTo({top:0,behavior:'smooth'});
         }
 
@@ -1495,6 +1645,7 @@
         function clearTF(){
             document.getElementById('t-id').value=''; document.getElementById('t-old-league').value='';
             ['t-team','t-crest','t-m','t-pts','t-diff'].forEach(i=>document.getElementById(i).value='');
+            document.getElementById('t-manual').checked=false;
         }
 
         /* --- NAPRAWIONE FUNKCJE ZARZĄDZANIA (STREFY, TRANSFERY, STATYSTYKI, POSTY) --- */

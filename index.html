@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Strefa Gola - Podkarpacie</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -36,7 +34,7 @@
         .anim{animation:fadeUp .6s var(--ease) forwards;opacity:0;will-change:transform, opacity;}
         .d1{animation-delay:.06s}.d2{animation-delay:.12s}.d3{animation-delay:.18s}.d4{animation-delay:.24s}
 
-        nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(11,22,44,0.94);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);height:76px;display:flex;align-items:center;justify-content:space-between;padding:0 4%;}
+        nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(11,22,44,0.94);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);height:76px;display:flex;align-items:center;justify-content:space-between;padding:0 4%;}
         .logo-wrap{display:flex;align-items:center;gap:12px;flex-shrink:0;}
         .logo-img{height:46px;width:auto;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4));}
         .logo-text{font-size:1.1rem;font-weight:800;text-transform:uppercase;white-space:nowrap;}
@@ -67,7 +65,7 @@
         .sub-tab.active::after{transform:scaleX(1);}
 
         .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.4rem;}
-        .card{background:var(--glass);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius);padding:1.8rem;transition:all .35s var(--ease);position:relative;overflow:hidden;}
+        .card{background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius);padding:1.8rem;transition:all .35s var(--ease);position:relative;overflow:hidden;}
         .card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--green),var(--gold));opacity:0;transition:opacity .35s;}
         .card:hover{border-color:rgba(126,211,33,0.35);transform:translateY(-3px);box-shadow:0 14px 40px rgba(0,0,0,0.3);}
         .card:hover::before{opacity:1;}
@@ -91,7 +89,7 @@
         .group-title i{color:var(--green);margin-right:8px;}
 
         .table-container{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:var(--radius);}
-        .table-wrap{background:var(--glass);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;min-width:540px;}
+        .table-wrap{background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;min-width:540px;}
         table{width:100%;border-collapse:collapse;}
         th{padding:1.1rem;text-align:left;font-size:0.62rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);background:rgba(0,0,0,0.25);border-bottom:1px solid var(--border);}
         tr{transition:background-color 0.25s var(--ease);}
@@ -225,7 +223,7 @@
 
     <nav>
         <div class="logo-wrap">
-            <img src="logo.png" alt="Strefa Gola" class="logo-img" decoding="async" loading="eager" onerror="this.style.display='none'">
+            <img src="logo.png" alt="Strefa Gola" class="logo-img" onerror="this.style.display='none'">
             <div>
                 <div class="logo-text">Strefa<span>Gola</span></div>
                 <div class="logo-sub">Podkarpacie</div>
@@ -275,7 +273,7 @@
     <main>
         <section id="home" class="section active">
             <div class="hero anim">
-                <img src="logo.png" alt="Logo" class="hero-logo" decoding="async" fetchpriority="high" onerror="this.outerHTML='<div style=\'width:110px;height:110px;margin:0 auto 1.5rem;border-radius:50%;border:2px solid var(--green);display:flex;align-items:center;justify-content:center;font-size:2.8rem;color:var(--green);\'><i class=\'fa-solid fa-futbol\'></i></div>'">
+                <img src="logo.png" alt="Logo" class="hero-logo" onerror="this.outerHTML='<div style=\'width:110px;height:110px;margin:0 auto 1.5rem;border-radius:50%;border:2px solid var(--green);display:flex;align-items:center;justify-content:center;font-size:2.8rem;color:var(--green);\'><i class=\'fa-solid fa-futbol\'></i></div>'">
                 <h1>Strefa<span>Gola</span></h1>
                 <p>IV Liga, Klasa Okręgowa oraz A i B Klasy Jarosław, Przeworsk, Rzeszów, Dębica, Stalowa Wola, Krosno.<br>Dane. Statystyki. Profesjonalizm.</p>
             </div>
@@ -820,58 +818,89 @@
             }
         }
 
+        const sectionLoaded = {
+            home:false, matches:false, table:false, stats:false, transfers:false, posts:false
+        };
+
         function go(id){
             document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
             document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
+
+            const section=document.getElementById(id);
+            if(!section) return;
+            section.classList.add('active');
+
             const map=['home','matches','table','stats','transfers','streams','posts','contact','admin'];
             const idx=map.indexOf(id);
             if(idx>=0&&idx<8) document.querySelectorAll('.tab')[idx].classList.add('active');
-            const sec=document.getElementById(id);
-            sec.querySelectorAll('.anim').forEach(el=>{el.style.animation='none';el.offsetHeight;el.style.animation=null;});
+
+            section.querySelectorAll('.anim').forEach(el=>{
+                el.style.animation='none';
+                el.offsetHeight;
+                el.style.animation=null;
+            });
+
             window.scrollTo({top:0,behavior:'smooth'});
-            
-            if(id==='home'){ refreshMatches(); loadHomeTable(); }
-            if(id==='matches') refreshMatches();
-            if(id==='table') loadTable('iv_liga');
-            if(id==='stats') loadStats('iv_liga');
-            if(id==='transfers') loadTransfers();
-            if(id==='posts') loadPosts();
+
+            if(id==='home' && !sectionLoaded.home){
+                sectionLoaded.home=true;
+                Promise.allSettled([refreshMatches(),loadHomeTable()]);
+            }
+            if(id==='matches' && !sectionLoaded.matches){
+                sectionLoaded.matches=true;
+                refreshMatches();
+            }
+            if(id==='table' && !sectionLoaded.table){
+                sectionLoaded.table=true;
+                loadTable('iv_liga');
+            }
+            if(id==='stats' && !sectionLoaded.stats){
+                sectionLoaded.stats=true;
+                loadStats('iv_liga');
+            }
+            if(id==='transfers' && !sectionLoaded.transfers){
+                sectionLoaded.transfers=true;
+                loadTransfers();
+            }
+            if(id==='posts' && !sectionLoaded.posts){
+                sectionLoaded.posts=true;
+                loadPosts();
+            }
         }
 
         let crestsCache={};
         let crestsLoadPromise=null;
-        let crestsLoadedAt=0;
-        async function loadCrests(){
-            const now=Date.now();
-            if(crestsLoadPromise && (now-crestsLoadedAt)<30000) return crestsLoadPromise;
+        async function loadCrests(force=false){
+            if(!force && Object.keys(crestsCache).length) return crestsCache;
+            if(!force && crestsLoadPromise) return crestsLoadPromise;
+
             crestsLoadPromise=(async()=>{
                 const nextCache={};
                 await Promise.all(Object.keys(L).map(async league=>{
                     try{
-                        const dbase = getDB(league);
+                        const dbase=getDB(league);
                         const doc=await dbase.collection('standings').doc(league).get();
-                        if(doc.exists&&doc.data().teams) doc.data().teams.forEach(t=>{
-                            if(t.name&&t.crest) nextCache[t.name.trim()]=t.crest;
-                        });
+                        if(doc.exists&&doc.data().teams){
+                            doc.data().teams.forEach(t=>{
+                                if(t.name&&t.crest) nextCache[t.name.trim()]=t.crest;
+                            });
+                        }
                     }catch(e){}
                 }));
                 crestsCache=nextCache;
-                crestsLoadedAt=Date.now();
+                return crestsCache;
             })();
-            try{
-                await crestsLoadPromise;
-            }finally{
-                if(Date.now()-crestsLoadedAt>=30000) crestsLoadPromise=null;
-            }
+
+            try{return await crestsLoadPromise;}
+            finally{crestsLoadPromise=null;}
         }
         function crestImg(name){
             const c=crestsCache[(name||'').trim()];
-            return c ? `<img src="${c}" class="team-crest" alt="" loading="lazy" decoding="async">` : '<div class="team-crest" style="display:flex;align-items:center;justify-content:center;font-size:0.65rem;color:var(--muted);"><i class="fa-solid fa-shield"></i></div>';
+            return c ? `<img src="${c}" class="team-crest" alt="">` : '<div class="team-crest" style="display:flex;align-items:center;justify-content:center;font-size:0.65rem;color:var(--muted);"><i class="fa-solid fa-shield"></i></div>';
         }
         function crestImgSmallFromStr(name){
             const c=crestsCache[(name||'').trim()];
-            return c ? `<img src="${c}" class="table-crest" alt="" loading="lazy" decoding="async">` : '<div class="table-crest" style="display:flex;align-items:center;justify-content:center;font-size:0.55rem;color:var(--muted);"><i class="fa-solid fa-shield"></i></div>';
+            return c ? `<img src="${c}" class="table-crest" alt="">` : '<div class="table-crest" style="display:flex;align-items:center;justify-content:center;font-size:0.55rem;color:var(--muted);"><i class="fa-solid fa-shield"></i></div>';
         }
         function crestImgSmall(t){
             return t.crest ? `<img src="${t.crest}" class="table-crest" alt="">` : '<div class="table-crest" style="display:flex;align-items:center;justify-content:center;font-size:0.55rem;color:var(--muted);"><i class="fa-solid fa-shield"></i></div>';
@@ -892,15 +921,26 @@
         }
 
         let zonesCache={};
-        async function loadZones(){
-            zonesCache={};
-            for(const league of Object.keys(L)){
-                try{
-                    const dbase = getDB(league);
-                    const doc=await dbase.collection('zones').doc(league).get();
-                    if(doc.exists) zonesCache[league]=doc.data();
-                }catch(e){}
-            }
+        let zonesLoadPromise=null;
+        async function loadZones(force=false){
+            if(!force && Object.keys(zonesCache).length) return zonesCache;
+            if(!force && zonesLoadPromise) return zonesLoadPromise;
+
+            zonesLoadPromise=(async()=>{
+                const nextCache={};
+                await Promise.all(Object.keys(L).map(async league=>{
+                    try{
+                        const dbase=getDB(league);
+                        const doc=await dbase.collection('zones').doc(league).get();
+                        if(doc.exists) nextCache[league]=doc.data();
+                    }catch(e){}
+                }));
+                zonesCache=nextCache;
+                return zonesCache;
+            })();
+
+            try{return await zonesLoadPromise;}
+            finally{zonesLoadPromise=null;}
         }
         function getZones(league){ return zonesCache[league] || DEFAULT_ZONES; }
         function parsePositions(str){ return (str||'').split(',').map(s=>parseInt(s.trim())).filter(n=>!isNaN(n)&&n>0); }
@@ -1166,7 +1206,6 @@
             tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:2rem;">Ładowanie...</td></tr>';
             try{
                 await loadZones();
-                await recalculateStandings(league);
                 const teams = await getCalculatedTeams(league);
 
                 if(!teams.length){
@@ -1196,7 +1235,6 @@
             const tb=document.getElementById('home-tb');
             try{
                 await loadZones();
-                await recalculateStandings('iv_liga');
                 const all=await getCalculatedTeams('iv_liga');
                 all.sort((a,b)=>Number(b.pts)-Number(a.pts)||evalGoalDiff(b.diff)-evalGoalDiff(a.diff));
 
@@ -1920,7 +1958,43 @@
             ['p-title','p-content'].forEach(i=>document.getElementById(i).value='');
             document.getElementById('p-label').value='Komunikat';
         }
-        
+                
+        function preloadSiteData(){
+            sectionLoaded.home=true;
+
+            // Start loading immediately on page entry.
+            Promise.allSettled([
+                loadCrests(),
+                loadZones(),
+                refreshMatches(),
+                loadHomeTable()
+            ]);
+
+            // After the first render, prepare the main tabs in the background.
+            const preload=()=>{
+                sectionLoaded.table=true;
+                sectionLoaded.stats=true;
+                sectionLoaded.transfers=true;
+                sectionLoaded.posts=true;
+
+                Promise.allSettled([
+                    loadTable('iv_liga'),
+                    loadStats('iv_liga'),
+                    loadTransfers(),
+                    loadPosts()
+                ]);
+            };
+
+            if('requestIdleCallback' in window){
+                requestIdleCallback(preload,{timeout:1200});
+            }else{
+                setTimeout(preload,150);
+            }
+        }
+
+        // Wymuszone ładowanie już przy wejściu na stronę.
+        window.addEventListener('load', preloadSiteData);
+
     </script>
 </body>
 </html>

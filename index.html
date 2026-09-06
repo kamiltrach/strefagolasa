@@ -203,7 +203,7 @@
         .stream-loader img{width:76px;height:76px;object-fit:contain;filter:drop-shadow(0 8px 25px rgba(126,211,33,.22));}
         .stream-spinner{width:30px;height:30px;border:3px solid rgba(255,255,255,.12);border-top-color:var(--green);border-radius:50%;animation:streamSpin .8s linear infinite;}
         .stream-loading-text{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;}
-        .stream-overlay{position:absolute;inset:0;z-index:4;display:flex;align-items:center;justify-content:center;pointer-events:none;}
+        .stream-overlay{position:absolute;inset:0;z-index:4;display:flex;align-items:center;justify-content:center;background:rgba(9,16,30,.98);pointer-events:auto;}
         .stream-start{pointer-events:auto;border:1px solid rgba(255,255,255,.12);background:rgba(9,16,30,.88);color:#fff;border-radius:999px;padding:.7rem 1.15rem;font-weight:800;cursor:pointer;backdrop-filter:blur(8px);}
         .stream-fullscreen{position:absolute;right:12px;bottom:12px;z-index:5;border:1px solid rgba(255,255,255,.12);background:rgba(9,16,30,.86);color:#fff;border-radius:8px;padding:.5rem .65rem;cursor:pointer;opacity:.9;}
         @keyframes streamSpin{to{transform:rotate(360deg)}}
@@ -2064,7 +2064,7 @@
                 cc_load_policy:'0',
                 enablejsapi:'1'
             });
-            return `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?${params.toString()}`;
+            return `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?autoplay=1&controls=1&rel=0&playsinline=1&fs=1&iv_load_policy=3`;
         }
 
         function streamLoaderMarkup(){
@@ -2072,13 +2072,16 @@
         }
 
         function startStream(frame){
-            const loader=frame?.querySelector('.stream-loader');
-            const iframe=frame?.querySelector('iframe');
+            if(!frame) return;
+            const loader=frame.querySelector('.stream-loader');
+            const overlay=frame.querySelector('.stream-overlay');
+            const iframe=frame.querySelector('iframe');
+            if(!iframe) return;
             if(loader) loader.classList.add('hidden');
-            if(iframe){
-                iframe.style.pointerEvents='auto';
-                iframe.src=iframe.dataset.src;
-            }
+            if(overlay) overlay.remove();
+            iframe.style.pointerEvents='auto';
+            if(!iframe.src) iframe.src=iframe.dataset.src;
+        }
         }
 
         function fullscreenStream(frame){

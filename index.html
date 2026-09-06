@@ -243,6 +243,7 @@
 
     <div class="secret-trigger" id="mobile-admin-trigger"></div>
 
+    <!-- MODAL PROFILU KLUBU -->
     <div id="club-modal" class="modal-overlay" onclick="if(event.target===this) closeClubProfile()">
         <div class="modal-content anim">
             <button class="modal-close" onclick="closeClubProfile()"><i class="fa-solid fa-xmark"></i></button>
@@ -261,6 +262,7 @@
         </div>
     </div>
 
+    <!-- MODAL POSTA -->
     <div id="post-modal" class="modal-overlay" onclick="if(event.target===this) closePostModal()">
         <div class="modal-content anim" style="max-width:700px;">
             <button class="modal-close" onclick="closePostModal()"><i class="fa-solid fa-xmark"></i></button>
@@ -1552,11 +1554,11 @@
         }
         
         async function loadAdminM(){
-            const s1=await window.db.collection('matches').orderBy('date','asc').get();
+            const s1=await window.db.collection('matches').orderBy('date','asc').limit(200).get();
             let all=s1.docs.map(d=>({id:d.id, _db:'db1', ...d.data()}));
             if(window.db2){
                 try {
-                    const s2=await window.db2.collection('matches').orderBy('date','asc').get();
+                    const s2=await window.db2.collection('matches').orderBy('date','asc').limit(200).get();
                     all=all.concat(s2.docs.map(d=>({id:d.id, _db:'db2', ...d.data()})));
                 } catch(e) {}
             }

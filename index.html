@@ -888,9 +888,11 @@
             if(!section) return;
             section.classList.add('active');
 
-            const map=['home','matches','table','stats','transfers','streams','posts','contact','admin'];
-            const idx=map.indexOf(id);
-            if(idx>=0&&idx<8) document.querySelectorAll('.tab')[idx].classList.add('active');
+            const tabs=document.querySelectorAll('.tab');
+            tabs.forEach(b=>{
+                const m=(b.getAttribute('onclick')||'').match(/go\(['"]([^'"]+)['"]\)/);
+                if(m && m[1]===id) b.classList.add('active');
+            });
 
             section.querySelectorAll('.anim').forEach(el=>{
                 el.style.animation='none';

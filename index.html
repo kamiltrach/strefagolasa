@@ -182,39 +182,6 @@
         .footer-bottom{max-width:1160px;margin:1.8rem auto 0;padding-top:1.2rem;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.76rem;}
         .secret-trigger{position:fixed;bottom:0;right:0;width:70px;height:70px;z-index:999;cursor:default;}
 
-
-        /* --- TRANSMISJE --- */
-        .stream-shell{max-width:1000px;margin:0 auto;}
-        .stream-header{text-align:center;margin:2.5rem 0 1.5rem;}
-        .stream-header h1{font-size:2.2rem;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:.5rem;}
-        .stream-header h1 span{color:var(--green);}
-        .stream-header p{color:var(--muted);font-size:.9rem;}
-        .stream-list{display:grid;gap:1.5rem;}
-        .stream-card{background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:0 14px 40px rgba(0,0,0,.22);}
-        .stream-card.is-live{border-color:rgba(126,211,33,.38);box-shadow:0 0 28px var(--green-glow),0 14px 40px rgba(0,0,0,.22);}
-        .stream-titlebar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:1rem 1.2rem;border-bottom:1px solid var(--border);}
-        .stream-title{font-family:'Outfit';font-size:1rem;font-weight:800;}
-        .stream-badge{font-size:.62rem;text-transform:uppercase;letter-spacing:1px;font-weight:800;padding:5px 9px;border-radius:999px;background:rgba(126,211,33,.12);color:var(--green);border:1px solid rgba(126,211,33,.35);white-space:nowrap;}
-        .stream-badge.upcoming{color:var(--gold);background:rgba(245,166,35,.1);border-color:rgba(245,166,35,.35);}
-        .stream-frame{position:relative;width:100%;aspect-ratio:16/9;background:#050a13;overflow:hidden;}
-        .stream-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
-        .stream-loader{position:absolute;inset:0;z-index:3;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;background:var(--navy);transition:opacity .35s ease,visibility .35s ease;}
-        .stream-loader.hidden{opacity:0;visibility:hidden;pointer-events:none;}
-        .stream-loader img{width:76px;height:76px;object-fit:contain;filter:drop-shadow(0 8px 25px rgba(126,211,33,.22));}
-        .stream-spinner{width:30px;height:30px;border:3px solid rgba(255,255,255,.12);border-top-color:var(--green);border-radius:50%;animation:streamSpin .8s linear infinite;}
-        .stream-loading-text{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;}
-        .stream-overlay{position:absolute;inset:0;z-index:4;display:flex;align-items:center;justify-content:center;background:rgba(9,16,30,.98);pointer-events:auto;}
-        .stream-start{pointer-events:auto;border:1px solid rgba(255,255,255,.12);background:rgba(9,16,30,.88);color:#fff;border-radius:999px;padding:.7rem 1.15rem;font-weight:800;cursor:pointer;backdrop-filter:blur(8px);}
-        .stream-fullscreen{position:absolute;right:12px;bottom:12px;z-index:5;border:1px solid rgba(255,255,255,.12);background:rgba(9,16,30,.86);color:#fff;border-radius:8px;padding:.5rem .65rem;cursor:pointer;opacity:.9;}
-        @keyframes streamSpin{to{transform:rotate(360deg)}}
-        .stream-info{padding:1rem 1.2rem;color:var(--muted);font-size:.78rem;}
-        .stream-admin-preview{margin-top:2px;margin-bottom:12px;font-size:.72rem;color:var(--muted);word-break:break-all;}
-        @media(max-width:960px){
-            .stream-header{margin:2rem 0 1.2rem;}
-            .stream-header h1{font-size:1.9rem;}
-            .stream-titlebar{padding:.85rem 1rem;}
-        }
-
         @media(max-width:960px){
             nav{height:auto;min-height:70px;flex-direction:column;gap:10px;padding:12px 16px;}
             .logo-wrap{width:100%;justify-content:center;}
@@ -491,14 +458,11 @@
         </section>
 
         <section id="streams" class="section">
-            <div class="stream-shell">
-                <div class="stream-header anim">
-                    <h1>Transmisje <span>na żywo</span></h1>
-                    <p>Oglądaj aktywne transmisje bezpośrednio w Strefie Gola.</p>
-                </div>
-                <div id="streams-list" class="stream-list anim d1">
-                    <div class="card" style="text-align:center;color:var(--muted);padding:2.5rem;">Ładowanie transmisji...</div>
-                </div>
+            <div class="wip-container anim">
+                <div class="wip-icon"><i class="fa-solid fa-tower-broadcast"></i></div>
+                <h2 class="wip-title">Transmisje</h2>
+                <p class="wip-text">Pracujemy nad tym, abyś mógł oglądać najlepsze spotkania z Podkarpacia bezpośrednio na naszej stronie.</p>
+                <div class="wip-badge"><i class="fa-solid fa-wrench"></i> Sekcja w trakcie prac</div>
             </div>
         </section>
         
@@ -555,7 +519,6 @@
                             <button class="btn-sm" onclick="showAT('tr')" id="at-tr">Transfery</button>
                             <button class="btn-sm" onclick="showAT('za')" id="at-za">Strefy</button>
                             <button class="btn-sm" onclick="showAT('po')" id="at-po">Posty</button>
-                            <button class="btn-sm" onclick="showAT('stream')" id="at-stream">Transmisje</button>
                             <button class="btn-sm" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i></button>
                         </div>
                     </div>
@@ -737,27 +700,6 @@
                         <div id="admin-zlist" class="grid"></div>
                     </div>
 
-                    <div id="stream" style="display:none;">
-                        <div class="card" style="margin-bottom:2rem;">
-                            <h3 style="font-size:0.75rem;color:var(--green);margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:1.2px;">Dodaj / Edytuj Transmisję</h3>
-                            <input type="hidden" id="stream-id">
-                            <input type="text" id="stream-title" placeholder="Tytuł transmisji">
-                            <input type="url" id="stream-url" placeholder="Link do transmisji YouTube (https://www.youtube.com/watch?v=...)">
-                            <div class="form-grid">
-                                <select id="stream-status">
-                                    <option value="live">Na żywo</option>
-                                    <option value="upcoming">Nadchodząca</option>
-                                </select>
-                                <input type="text" id="stream-info" placeholder="Opis / mecz (opcjonalnie)">
-                            </div>
-                            <div class="stream-admin-preview" id="stream-preview">ID filmu zostanie wykryte automatycznie.</div>
-                            <button class="btn" onclick="saveStream()">Zapisz transmisję</button>
-                            <button class="btn-sm" onclick="clearStreamF()" style="width:100%;margin-top:10px;border:1px solid var(--border);">Wyczyść</button>
-                        </div>
-                        <h3 style="font-size:0.75rem;color:var(--muted);margin-bottom:1.1rem;text-transform:uppercase;letter-spacing:1.2px;">Transmisje w bazie</h3>
-                        <div id="admin-stream-list" class="grid"></div>
-                    </div>
-
                     <div id="po" style="display:none;">
                         <div class="card" style="margin-bottom:2rem;">
                             <h3 style="font-size:0.75rem;color:var(--green);margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:1.2px;">Dodaj / Edytuj Post</h3>
@@ -888,11 +830,9 @@
             if(!section) return;
             section.classList.add('active');
 
-            const tabs=document.querySelectorAll('.tab');
-            tabs.forEach(b=>{
-                const m=(b.getAttribute('onclick')||'').match(/go\(['"]([^'"]+)['"]\)/);
-                if(m && m[1]===id) b.classList.add('active');
-            });
+            const map=['home','matches','table','stats','transfers','streams','posts','contact','admin'];
+            const idx=map.indexOf(id);
+            if(idx>=0&&idx<8) document.querySelectorAll('.tab')[idx].classList.add('active');
 
             section.querySelectorAll('.anim').forEach(el=>{
                 el.style.animation='none';
@@ -921,9 +861,6 @@
             if(id==='transfers' && !sectionLoaded.transfers){
                 sectionLoaded.transfers=true;
                 loadTransfers();
-            }
-            if(id==='streams'){
-                loadStreams();
             }
             if(id==='posts' && !sectionLoaded.posts){
                 sectionLoaded.posts=true;
@@ -1558,7 +1495,7 @@
                 document.getElementById('login-panel').style.display='none';
                 document.getElementById('dash').style.display='block';
                 await loadZones();
-                loadAdminM(); loadAdminT(); loadAdminZ(); loadAdminP(); loadAdminTr(); loadAdminS(); loadAdminStreams();
+                loadAdminM(); loadAdminT(); loadAdminZ(); loadAdminP(); loadAdminTr(); loadAdminS();
             }else{
                 user=null;
                 document.getElementById('login-panel').style.display='block';
@@ -1572,7 +1509,7 @@
         function logout(){auth.signOut();go('home');}
 
         function showAT(tab){
-            ['ma','ta','st','za','po','tr','stream'].forEach(t=>{
+            ['ma','ta','st','za','po','tr'].forEach(t=>{
                 document.getElementById(t).style.display=(t===tab)?'block':'none';
                 const b=document.getElementById('at-'+t);
                 b.style.background=(t===tab)?'var(--green-glow)':'transparent';
@@ -2022,233 +1959,6 @@
             document.getElementById('p-label').value='Komunikat';
         }
                 
-
-        /* --- TRANSMISJE: dane z Firestore db2 + bezpieczny embed YouTube --- */
-        let streamsCache = [];
-        let streamLoadPromise = null;
-
-        function getStreamDB(){
-            // Transmisje są trzymane w drugiej bazie. Nie przenosimy ich do db1.
-            return window.db2 || null;
-        }
-
-        function extractYouTubeId(value){
-            if(!value) return '';
-            const raw=String(value).trim();
-            if(/^[a-zA-Z0-9_-]{11}$/.test(raw)) return raw;
-            try{
-                const u=new URL(raw);
-                const host=u.hostname.replace(/^www\./,'').toLowerCase();
-                if(host==='youtu.be') return (u.pathname.split('/').filter(Boolean)[0]||'').slice(0,11);
-                if(host==='youtube.com' || host==='m.youtube.com' || host==='youtube-nocookie.com'){
-                    if(u.pathname==='/watch') return (u.searchParams.get('v')||'').slice(0,11);
-                    const parts=u.pathname.split('/').filter(Boolean);
-                    const idx=parts.indexOf('embed');
-                    if(idx>=0) return (parts[idx+1]||'').slice(0,11);
-                    const liveIdx=parts.indexOf('live');
-                    if(liveIdx>=0) return (parts[liveIdx+1]||'').slice(0,11);
-                    const shortsIdx=parts.indexOf('shorts');
-                    if(shortsIdx>=0) return (parts[shortsIdx+1]||'').slice(0,11);
-                }
-            }catch(e){}
-            return '';
-        }
-
-        function youtubeEmbedUrl(videoId){
-            const params=new URLSearchParams({
-                autoplay:'0',
-                controls:'1',
-                rel:'0',
-                modestbranding:'1',
-                playsinline:'1',
-                fs:'1',
-                iv_load_policy:'3',
-                cc_load_policy:'0',
-                enablejsapi:'1'
-            });
-            return `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?autoplay=1&controls=1&rel=0&playsinline=1&fs=1&iv_load_policy=3`;
-        }
-
-        function streamLoaderMarkup(){
-            return `<div class="stream-loader"><img src="logo.png" alt="Strefa Gola" onerror="this.style.display='none'"><div class="stream-spinner"></div><div class="stream-loading-text">Ładowanie transmisji</div></div>`;
-        }
-
-        function startStream(frame){
-            if(!frame) return;
-            const loader=frame.querySelector('.stream-loader');
-            const overlay=frame.querySelector('.stream-overlay');
-            const iframe=frame.querySelector('iframe');
-            if(!iframe) return;
-            if(loader) loader.classList.add('hidden');
-            if(overlay) overlay.remove();
-            iframe.style.pointerEvents='auto';
-            if(!iframe.src) iframe.src=iframe.dataset.src;
-        }
-        }
-
-        function fullscreenStream(frame){
-            if(!frame) return;
-            if(document.fullscreenElement) {
-                document.exitFullscreen?.();
-                return;
-            }
-            frame.requestFullscreen?.();
-        }
-
-        function renderStreams(list){
-            const c=document.getElementById('streams-list');
-            if(!c) return;
-            const valid=list.filter(x=>x.videoId);
-            if(!valid.length){
-                c.innerHTML='<div class="card" style="text-align:center;color:var(--muted);padding:2.5rem;">Brak aktywnych transmisji.</div>';
-                return;
-            }
-            c.innerHTML=valid.map((st,idx)=>{
-                const live=st.status==='live';
-                const frameId=`stream-frame-${idx}`;
-                return `<article class="stream-card ${live?'is-live':''}">
-                    <div class="stream-titlebar">
-                        <div class="stream-title">${st.title||'Transmisja'}</div>
-                        <div class="stream-badge ${live?'':'upcoming'}">${live?'Na żywo':'Nadchodząca'}</div>
-                    </div>
-                    <div class="stream-frame" id="${frameId}">
-                        ${streamLoaderMarkup()}
-                        <div class="stream-overlay">
-                            <button class="stream-start" onclick="startStream(document.getElementById('${frameId}'))">▶ Otwórz transmisję</button>
-                        </div>
-                        <button class="stream-fullscreen" onclick="fullscreenStream(document.getElementById('${frameId}'))" aria-label="Pełny ekran">⛶</button>
-                        <iframe
-                            data-src="${youtubeEmbedUrl(st.videoId)}"
-                            title="${(st.title||'Transmisja').replace(/"/g,'&quot;')}"
-                            allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
-                            allowfullscreen
-                            referrerpolicy="strict-origin-when-cross-origin"
-                            loading="${idx===0?'eager':'lazy'}">
-                        </iframe>
-                    </div>
-                    ${st.info?`<div class="stream-info">${st.info}</div>`:''}
-                </article>`;
-            }).join('');
-        }
-
-        async function loadStreams(force=false){
-            if(!force && streamLoadPromise) return streamLoadPromise;
-            const c=document.getElementById('streams-list');
-            if(!c) return;
-            const dbase=getStreamDB();
-            if(!dbase){
-                c.innerHTML='<div class="card" style="text-align:center;color:#ff6b6b;padding:2.5rem;">Brak połączenia z drugą bazą danych.</div>';
-                return;
-            }
-            streamLoadPromise=(async()=>{
-                try{
-                    const snap=await dbase.collection('streams').orderBy('createdAt','desc').limit(20).get();
-                    streamsCache=snap.docs.map(d=>({id:d.id,...d.data()})).map(st=>({
-                        ...st,
-                        videoId:st.videoId || extractYouTubeId(st.url)
-                    }));
-                    renderStreams(streamsCache);
-                }catch(e){
-                    console.error('Błąd ładowania transmisji:',e);
-                    c.innerHTML='<div class="card" style="text-align:center;color:#ff6b6b;padding:2.5rem;">Błąd ładowania transmisji.</div>';
-                }finally{
-                    streamLoadPromise=null;
-                }
-            })();
-            return streamLoadPromise;
-        }
-
-        function updateStreamPreview(){
-            const id=extractYouTubeId(document.getElementById('stream-url').value);
-            const el=document.getElementById('stream-preview');
-            if(el) el.textContent=id ? `Wykryto ID filmu: ${id}` : 'Nie rozpoznano poprawnego linku YouTube.';
-            return id;
-        }
-
-        async function saveStream(){
-            if(!user) return;
-            const dbase=getStreamDB();
-            if(!dbase){ alert('Druga baza danych (window.db2) nie jest dostępna.'); return; }
-            const id=document.getElementById('stream-id').value;
-            const url=document.getElementById('stream-url').value.trim();
-            const videoId=extractYouTubeId(url);
-            if(!videoId){ alert('Wklej poprawny link YouTube lub 11-znakowe ID filmu.'); return; }
-            const data={
-                title:document.getElementById('stream-title').value.trim() || 'Transmisja',
-                url,
-                videoId,
-                status:document.getElementById('stream-status').value,
-                info:document.getElementById('stream-info').value.trim(),
-                updatedAt:firebase.firestore.FieldValue.serverTimestamp()
-            };
-            try{
-                if(id) await dbase.collection('streams').doc(id).update(data);
-                else await dbase.collection('streams').add({...data,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
-                clearStreamF();
-                await loadAdminStreams();
-                await loadStreams(true);
-            }catch(e){
-                console.error(e);
-                alert('Błąd zapisu transmisji.');
-            }
-        }
-
-        async function loadAdminStreams(){
-            const c=document.getElementById('admin-stream-list');
-            if(!c) return;
-            const dbase=getStreamDB();
-            if(!dbase){ c.innerHTML='<p style="color:#ff6b6b;">Brak window.db2.</p>'; return; }
-            try{
-                const snap=await dbase.collection('streams').orderBy('createdAt','desc').limit(50).get();
-                const all=snap.docs.map(d=>({id:d.id,...d.data()}));
-                c.innerHTML=all.map(st=>`
-                    <div class="card" style="padding:0.9rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
-                        <div>
-                            <div style="font-weight:600;font-size:0.9rem;">${st.title||'Transmisja'}</div>
-                            <div style="font-size:0.72rem;color:var(--muted);">${st.status==='live'?'NA ŻYWO':'NADCHODZĄCA'} | ${st.videoId||extractYouTubeId(st.url)||'brak ID'}</div>
-                        </div>
-                        <div style="display:flex;gap:4px;">
-                            <button class="btn-sm" onclick='editStream("${st.id}",${JSON.stringify(st).replace(/'/g,"&#39;")})'><i class="fa-solid fa-pen"></i></button>
-                            <button class="btn-sm btn-del" onclick="delStream('${st.id}')"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </div>`).join('') || '<p style="color:var(--muted);">Brak transmisji.</p>';
-            }catch(e){
-                c.innerHTML='<p style="color:#ff6b6b;">Błąd ładowania transmisji.</p>';
-            }
-        }
-
-        function editStream(id,st){
-            document.getElementById('stream-id').value=id;
-            document.getElementById('stream-title').value=st.title||'';
-            document.getElementById('stream-url').value=st.url||st.videoId||'';
-            document.getElementById('stream-status').value=st.status||'live';
-            document.getElementById('stream-info').value=st.info||'';
-            updateStreamPreview();
-            window.scrollTo({top:0,behavior:'smooth'});
-        }
-
-        async function delStream(id){
-            if(!user) return;
-            const dbase=getStreamDB();
-            if(!dbase) return;
-            if(confirm('Usunąć tę transmisję?')){
-                try{
-                    await dbase.collection('streams').doc(id).delete();
-                    await loadAdminStreams();
-                    await loadStreams(true);
-                }catch(e){ alert('Błąd usuwania transmisji.'); }
-            }
-        }
-
-        function clearStreamF(){
-            ['stream-id','stream-title','stream-url','stream-info'].forEach(i=>document.getElementById(i).value='');
-            document.getElementById('stream-status').value='live';
-            const p=document.getElementById('stream-preview');
-            if(p) p.textContent='ID filmu zostanie wykryte automatycznie.';
-        }
-
-        document.getElementById('stream-url')?.addEventListener('input', updateStreamPreview);
-
         function preloadSiteData(){
             sectionLoaded.home=true;
 
@@ -2271,8 +1981,7 @@
                     loadTable('iv_liga'),
                     loadStats('iv_liga'),
                     loadTransfers(),
-                    loadPosts(),
-                    loadStreams()
+                    loadPosts()
                 ]);
             };
 

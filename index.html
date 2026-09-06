@@ -920,12 +920,12 @@
                 sectionLoaded.transfers=true;
                 loadTransfers();
             }
+            if(id==='streams'){
+                loadStreams();
+            }
             if(id==='posts' && !sectionLoaded.posts){
                 sectionLoaded.posts=true;
                 loadPosts();
-            }
-            if(id==='streams'){
-                loadStreams();
             }
         }
 

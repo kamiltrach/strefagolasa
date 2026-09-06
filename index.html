@@ -203,6 +203,9 @@
         .stream-loader img{width:76px;height:76px;object-fit:contain;filter:drop-shadow(0 8px 25px rgba(126,211,33,.22));}
         .stream-spinner{width:30px;height:30px;border:3px solid rgba(255,255,255,.12);border-top-color:var(--green);border-radius:50%;animation:streamSpin .8s linear infinite;}
         .stream-loading-text{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;}
+        .stream-overlay{position:absolute;inset:0;z-index:4;display:flex;align-items:center;justify-content:center;pointer-events:none;}
+        .stream-start{pointer-events:auto;border:1px solid rgba(255,255,255,.12);background:rgba(9,16,30,.88);color:#fff;border-radius:999px;padding:.7rem 1.15rem;font-weight:800;cursor:pointer;backdrop-filter:blur(8px);}
+        .stream-fullscreen{position:absolute;right:12px;bottom:12px;z-index:5;border:1px solid rgba(255,255,255,.12);background:rgba(9,16,30,.86);color:#fff;border-radius:8px;padding:.5rem .65rem;cursor:pointer;opacity:.9;}
         @keyframes streamSpin{to{transform:rotate(360deg)}}
         .stream-info{padding:1rem 1.2rem;color:var(--muted);font-size:.78rem;}
         .stream-admin-preview{margin-top:2px;margin-bottom:12px;font-size:.72rem;color:var(--muted);word-break:break-all;}
@@ -2068,9 +2071,23 @@
             return `<div class="stream-loader"><img src="logo.png" alt="Strefa Gola" onerror="this.style.display='none'"><div class="stream-spinner"></div><div class="stream-loading-text">Ładowanie transmisji</div></div>`;
         }
 
-        function hideStreamLoader(frame){
+        function startStream(frame){
             const loader=frame?.querySelector('.stream-loader');
+            const iframe=frame?.querySelector('iframe');
             if(loader) loader.classList.add('hidden');
+            if(iframe){
+                iframe.style.pointerEvents='auto';
+                iframe.src=iframe.dataset.src;
+            }
+        }
+
+        function fullscreenStream(frame){
+            if(!frame) return;
+            if(document.fullscreenElement) {
+                document.exitFullscreen?.();
+                return;
+            }
+            frame.requestFullscreen?.();
         }
 
         function renderStreams(list){
@@ -2091,14 +2108,17 @@
                     </div>
                     <div class="stream-frame" id="${frameId}">
                         ${streamLoaderMarkup()}
+                        <div class="stream-overlay">
+                            <button class="stream-start" onclick="startStream(document.getElementById('${frameId}'))">▶ Otwórz transmisję</button>
+                        </div>
+                        <button class="stream-fullscreen" onclick="fullscreenStream(document.getElementById('${frameId}'))" aria-label="Pełny ekran">⛶</button>
                         <iframe
-                            src="${youtubeEmbedUrl(st.videoId)}"
+                            data-src="${youtubeEmbedUrl(st.videoId)}"
                             title="${(st.title||'Transmisja').replace(/"/g,'&quot;')}"
                             allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
                             allowfullscreen
                             referrerpolicy="strict-origin-when-cross-origin"
-                            loading="${idx===0?'eager':'lazy'}"
-                            onload="hideStreamLoader(document.getElementById('${frameId}'))">
+                            loading="${idx===0?'eager':'lazy'}">
                         </iframe>
                     </div>
                     ${st.info?`<div class="stream-info">${st.info}</div>`:''}

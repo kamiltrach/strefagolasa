@@ -217,6 +217,54 @@
             .score-box{font-size:1.05rem;width:25%;}
             .team-wrap{width:37.5%;gap:5px;}
         }
+
+        /* TRANSMISJE */
+        .stream-wrap{max-width:1000px;margin:0 auto;}
+        .stream-head{text-align:center;padding:2.6rem 0 1.8rem;}
+        .stream-head h1{font-size:2.35rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.55rem;}
+        .stream-head h1 span{color:var(--green);}
+        .stream-head p{color:var(--muted);font-size:.9rem;}
+        .streams-grid{display:grid;gap:1.4rem;}
+        .stream-card{padding:0;overflow:hidden;}
+        .stream-title-row{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;padding:1.25rem 1.35rem 1rem;}
+        .stream-title-row h3{font-size:1.08rem;margin-bottom:.3rem;}
+        .stream-meta{font-size:.72rem;color:var(--muted);}
+        .live-pill{display:inline-flex;align-items:center;gap:6px;color:#fff;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.45);padding:6px 10px;border-radius:999px;font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.8px;white-space:nowrap;}
+        .live-dot{width:7px;height:7px;border-radius:50%;background:#ff4b4b;box-shadow:0 0 10px rgba(255,75,75,.75);animation:pulseDot 1.5s infinite;}
+        @keyframes pulseDot{0%,100%{opacity:1}50%{opacity:.35}}
+        .stream-player{background:#000;aspect-ratio:16/9;position:relative;overflow:hidden;}
+        .stream-player iframe{display:block;width:100%;height:100%;border:0;}
+        .stream-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#050b17;z-index:2;transition:opacity .35s ease,visibility .35s ease;}
+        .stream-loading.hide{opacity:0;visibility:hidden;pointer-events:none;}
+        .stream-loader-inner{text-align:center;padding:1.5rem;}
+        .stream-loader-logo{width:72px;height:72px;object-fit:contain;filter:drop-shadow(0 8px 20px rgba(126,211,33,.25));margin-bottom:.9rem;}
+        .stream-loader-inner strong{display:block;font-family:'Outfit';font-size:1rem;margin-bottom:.55rem;}
+        .stream-loader-inner span{font-size:.75rem;color:var(--muted);}
+        .stream-spinner{width:26px;height:26px;border-radius:50%;border:3px solid rgba(126,211,33,.18);border-top-color:var(--green);animation:spin .8s linear infinite;margin:1rem auto 0;}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        .stream-empty{padding:3rem 1.5rem;text-align:center;}
+        .stream-empty i{font-size:3rem;color:var(--green);margin-bottom:1rem;}
+        .stream-empty h3{font-size:1.2rem;margin-bottom:.4rem;}
+        .stream-empty p{color:var(--muted);font-size:.85rem;}
+        .stream-controls{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:.7rem .9rem;background:rgba(0,0,0,.38);border-top:1px solid var(--border);}
+        .stream-control-group{display:flex;gap:6px;align-items:center;}
+        .stream-control{display:inline-flex;align-items:center;justify-content:center;width:36px;height:32px;border-radius:8px;background:rgba(255,255,255,.05);color:var(--muted);transition:all .2s;}
+        .stream-control:hover{background:rgba(126,211,33,.14);color:var(--green);}
+        .stream-status{font-size:.68rem;color:var(--muted);font-weight:600;}
+        .stream-desc{padding:0 1.35rem 1.25rem;color:var(--muted);font-size:.84rem;white-space:pre-wrap;overflow-wrap:anywhere;}
+        .admin-stream-list{display:grid;gap:.6rem;margin-top:1rem;}
+        .admin-stream-item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:.85rem 1rem;border:1px solid var(--border);border-radius:12px;background:rgba(255,255,255,.025);}
+        .admin-stream-item .stream-url{font-size:.7rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:62vw;}
+        .stream-toggle{display:flex;align-items:center;gap:9px;color:var(--muted);font-size:.78rem;margin:.2rem 0 .8rem;}
+        .stream-toggle input{width:auto;margin:0;accent-color:var(--green);}
+        @media(max-width:960px){
+            .stream-title-row{padding:1rem;}
+            .stream-desc{padding:0 1rem 1rem;}
+            .stream-controls{padding:.65rem .75rem;}
+            .admin-stream-item{align-items:flex-start;flex-direction:column;}
+            .admin-stream-item .stream-url{max-width:100%;}
+        }
+
     </style>
 </head>
 <body>
@@ -458,11 +506,12 @@
         </section>
 
         <section id="streams" class="section">
-            <div class="wip-container anim">
-                <div class="wip-icon"><i class="fa-solid fa-tower-broadcast"></i></div>
-                <h2 class="wip-title">Transmisje</h2>
-                <p class="wip-text">Pracujemy nad tym, abyś mógł oglądać najlepsze spotkania z Podkarpacia bezpośrednio na naszej stronie.</p>
-                <div class="wip-badge"><i class="fa-solid fa-wrench"></i> Sekcja w trakcie prac</div>
+            <div class="stream-wrap">
+                <div class="stream-head anim">
+                    <h1>Live <span>Transmisje</span></h1>
+                    <p>Oglądaj aktywne transmisje bezpośrednio w Strefie Gola.</p>
+                </div>
+                <div id="streams-grid" class="streams-grid anim d1"></div>
             </div>
         </section>
         
@@ -519,6 +568,7 @@
                             <button class="btn-sm" onclick="showAT('tr')" id="at-tr">Transfery</button>
                             <button class="btn-sm" onclick="showAT('za')" id="at-za">Strefy</button>
                             <button class="btn-sm" onclick="showAT('po')" id="at-po">Posty</button>
+                            <button class="btn-sm" onclick="showAT('ststreams')" id="at-ststreams">Transmisje</button>
                             <button class="btn-sm" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i></button>
                         </div>
                     </div>
@@ -719,6 +769,28 @@
                         </div>
                         <h3 style="font-size:0.75rem;color:var(--muted);margin-bottom:1.1rem;text-transform:uppercase;letter-spacing:1.2px;">Zarządzanie wpisami</h3>
                         <div id="admin-plist" class="grid"></div>
+                    <div id="ststreams" style="display:none;">
+                        <div class="card" style="margin-bottom:2rem;">
+                            <h3 style="font-size:0.75rem;color:var(--green);margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:1.2px;">Dodaj / Edytuj Transmisję</h3>
+                            <input type="hidden" id="stream-id">
+                            <div class="form-grid">
+                                <input type="text" id="stream-title" placeholder="Tytuł transmisji">
+                                <input type="text" id="stream-match" placeholder="Mecz / opis dodatkowy (opcjonalnie)">
+                            </div>
+                            <input type="url" id="stream-url" placeholder="Link do transmisji YouTube (np. https://www.youtube.com/watch?v=...)">
+                            <textarea id="stream-desc" placeholder="Krótki opis transmisji (opcjonalnie)"></textarea>
+                            <label class="stream-toggle">
+                                <input type="checkbox" id="stream-active" checked>
+                                <span>Pokazuj transmisję na stronie</span>
+                            </label>
+                            <button class="btn" onclick="saveStream()">Zapisz transmisję</button>
+                            <button class="btn-sm" onclick="clearStreamForm()" style="width:100%;margin-top:10px;border:1px solid var(--border);">Wyczyść</button>
+                            <p style="font-size:0.72rem;color:var(--muted);margin-top:10px;">Dane transmisji są zapisywane w bazie nr 2 (<code>window.db2</code>).</p>
+                        </div>
+                        <h3 style="font-size:0.75rem;color:var(--muted);margin-bottom:1.1rem;text-transform:uppercase;letter-spacing:1.2px;">Transmisje w bazie</h3>
+                        <div id="admin-stream-list" class="admin-stream-list"></div>
+                    </div>
+
                     </div>
 
                 </div>
@@ -761,6 +833,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <script src="firebase-config.js"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
 
     <script>
         // PAMIĘTAJ: Aby dane A-klas i B-klas zapisywały się w drugiej bazie danych Firebase, 
@@ -819,7 +892,7 @@
         }
 
         const sectionLoaded = {
-            home:false, matches:false, table:false, stats:false, transfers:false, posts:false
+            home:false, matches:false, table:false, stats:false, transfers:false, streams:false, posts:false
         };
 
         function go(id){
@@ -861,6 +934,10 @@
             if(id==='transfers' && !sectionLoaded.transfers){
                 sectionLoaded.transfers=true;
                 loadTransfers();
+            }
+            if(id==='streams'){
+                sectionLoaded.streams=true;
+                loadStreams();
             }
             if(id==='posts' && !sectionLoaded.posts){
                 sectionLoaded.posts=true;
@@ -1495,7 +1572,7 @@
                 document.getElementById('login-panel').style.display='none';
                 document.getElementById('dash').style.display='block';
                 await loadZones();
-                loadAdminM(); loadAdminT(); loadAdminZ(); loadAdminP(); loadAdminTr(); loadAdminS();
+                loadAdminM(); loadAdminT(); loadAdminZ(); loadAdminP(); loadAdminTr(); loadAdminS(); loadAdminStreams();
             }else{
                 user=null;
                 document.getElementById('login-panel').style.display='block';
@@ -1509,7 +1586,7 @@
         function logout(){auth.signOut();go('home');}
 
         function showAT(tab){
-            ['ma','ta','st','za','po','tr'].forEach(t=>{
+            ['ma','ta','st','za','po','tr','ststreams'].forEach(t=>{
                 document.getElementById(t).style.display=(t===tab)?'block':'none';
                 const b=document.getElementById('at-'+t);
                 b.style.background=(t===tab)?'var(--green-glow)':'transparent';
@@ -1959,6 +2036,288 @@
             document.getElementById('p-label').value='Komunikat';
         }
                 
+
+        /* --- TRANSMISJE / BAZA NR 2 / CUSTOM UI --- */
+        let youtubeApiReady = false;
+        let streamPlayers = {};
+        let streamRecords = [];
+        let streamApiWaiters = [];
+
+        window.onYouTubeIframeAPIReady = function(){
+            youtubeApiReady = true;
+            streamApiWaiters.splice(0).forEach(fn=>{ try{fn();}catch(e){} });
+        };
+
+        function whenYouTubeReady(fn){
+            if(youtubeApiReady || window.YT) {
+                fn();
+            } else {
+                streamApiWaiters.push(fn);
+            }
+        }
+
+        function getYoutubeId(value){
+            if(!value) return '';
+            const raw = String(value).trim();
+            if(/^[a-zA-Z0-9_-]{11}$/.test(raw)) return raw;
+            try{
+                const u = new URL(raw);
+                const host = u.hostname.replace(/^www\./,'').toLowerCase();
+                if(host === 'youtu.be') return u.pathname.replace('/','').split('/')[0];
+                if(host.includes('youtube.com')){
+                    if(u.searchParams.get('v')) return u.searchParams.get('v');
+                    const parts = u.pathname.split('/').filter(Boolean);
+                    const idx = parts.findIndex(p => ['embed','shorts','live'].includes(p));
+                    if(idx >= 0 && parts[idx+1]) return parts[idx+1];
+                }
+            }catch(e){}
+            const m = raw.match(/(?:v=|youtu\.be\/|youtube\.com\/(?:embed\/|shorts\/|live\/))([a-zA-Z0-9_-]{11})/);
+            return m ? m[1] : '';
+        }
+
+        function safeText(v){
+            return String(v ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));
+        }
+
+        async function loadStreams(){
+            const container=document.getElementById('streams-grid');
+            if(!container) return;
+            container.innerHTML = `<div class="stream-empty card"><i class="fa-solid fa-circle-notch fa-spin"></i><h3>Ładowanie transmisji…</h3><p>Przygotowujemy odtwarzacz.</p></div>`;
+            if(!window.db2){
+                container.innerHTML = `<div class="stream-empty card"><i class="fa-solid fa-database"></i><h3>Brak połączenia z bazą nr 2</h3><p>Skonfiguruj <code>window.db2</code> w firebase-config.js.</p></div>`;
+                return;
+            }
+            try{
+                const snap=await window.db2.collection('streams').get();
+                streamRecords=snap.docs.map(d=>({id:d.id,...d.data()}))
+                    .filter(s=>s.active!==false)
+                    .sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+                renderStreams();
+            }catch(e){
+                console.error('Błąd transmisji:',e);
+                container.innerHTML='<div class="stream-empty card"><i class="fa-solid fa-triangle-exclamation"></i><h3>Nie udało się załadować transmisji</h3><p>Sprawdź reguły Firestore dla bazy nr 2.</p></div>';
+            }
+        }
+
+        function renderStreams(){
+            const container=document.getElementById('streams-grid');
+            if(!container) return;
+            Object.values(streamPlayers).forEach(p=>{try{p.destroy();}catch(e){}});
+            streamPlayers={};
+
+            if(!streamRecords.length){
+                container.innerHTML = `<div class="stream-empty card"><i class="fa-solid fa-tower-broadcast"></i><h3>Brak aktywnej transmisji</h3><p>Kiedy redakcja doda live w panelu, pojawi się tutaj.</p></div>`;
+                return;
+            }
+
+            container.innerHTML = streamRecords.map((s,index)=>{
+                const vid=getYoutubeId(s.url);
+                const pid=`yt-player-${s.id}`;
+                const desc=s.description ? `<div class="stream-desc">${safeText(s.description)}</div>` : '';
+                return `<article class="card stream-card" data-stream-id="${safeText(s.id)}">
+                    <div class="stream-title-row">
+                        <div>
+                            <div class="league-label" style="margin-bottom:.55rem;"><i class="fa-solid fa-tower-broadcast"></i> ${safeText(s.match||'Transmisja na żywo')}</div>
+                            <h3>${safeText(s.title||'Transmisja na żywo')}</h3>
+                            <div class="stream-meta">Odtwarzacz Strefy Gola</div>
+                        </div>
+                        <span class="live-pill"><span class="live-dot"></span> LIVE</span>
+                    </div>
+                    <div class="stream-player" id="stream-wrap-${safeText(s.id)}">
+                        <div class="stream-loading" id="stream-loading-${safeText(s.id)}">
+                            <div class="stream-loader-inner">
+                                <img src="logo.png" alt="" class="stream-loader-logo" onerror="this.style.display='none'">
+                                <strong>Ładowanie transmisji…</strong>
+                                <span>Przygotowujemy obraz i dźwięk.</span>
+                                <div class="stream-spinner"></div>
+                            </div>
+                        </div>
+                        <div id="${pid}" aria-label="Odtwarzacz transmisji"></div>
+                    </div>
+                    <div class="stream-controls">
+                        <div class="stream-control-group">
+                            <button class="stream-control" title="Odtwórz / pauza" onclick="toggleStreamPlay('${safeText(s.id)}')"><i id="stream-play-icon-${safeText(s.id)}" class="fa-solid fa-play"></i></button>
+                            <button class="stream-control" title="Wycisz / włącz dźwięk" onclick="toggleStreamMute('${safeText(s.id)}')"><i id="stream-mute-icon-${safeText(s.id)}" class="fa-solid fa-volume-high"></i></button>
+                        </div>
+                        <span class="stream-status" id="stream-status-${safeText(s.id)}">Gotowe</span>
+                        <button class="stream-control" title="Pełny ekran" onclick="fullscreenStream('${safeText(s.id)}')"><i class="fa-solid fa-expand"></i></button>
+                    </div>
+                    ${desc}
+                </article>`;
+            }).join('');
+
+            whenYouTubeReady(()=>{
+                streamRecords.forEach(s=>{
+                    const videoId=getYoutubeId(s.url);
+                    if(videoId) createStreamPlayer(s,videoId);
+                    else {
+                        const st=document.getElementById('stream-status-'+s.id);
+                        if(st) st.textContent='Nieprawidłowy link';
+                        const ld=document.getElementById('stream-loading-'+s.id);
+                        if(ld) ld.classList.add('hide');
+                    }
+                });
+            });
+        }
+
+        function createStreamPlayer(stream, videoId){
+            const target='yt-player-'+stream.id;
+            if(!document.getElementById(target)) return;
+            const origin = window.location.origin && window.location.origin !== 'null' ? window.location.origin : undefined;
+            const player = new YT.Player(target,{
+                videoId,
+                host:'https://www.youtube-nocookie.com',
+                playerVars:{
+                    controls:0,
+                    rel:0,
+                    iv_load_policy:3,
+                    playsinline:1,
+                    autoplay:0,
+                    fs:0,
+                    disablekb:1,
+                    ...(origin ? {origin} : {})
+                },
+                events:{
+                    onReady:function(e){
+                        streamPlayers[stream.id]=e.target;
+                        const loading=document.getElementById('stream-loading-'+stream.id);
+                        if(loading) loading.classList.add('hide');
+                        const status=document.getElementById('stream-status-'+stream.id);
+                        if(status) status.textContent='Gotowe do odtworzenia';
+                    },
+                    onStateChange:function(e){
+                        const icon=document.getElementById('stream-play-icon-'+stream.id);
+                        const status=document.getElementById('stream-status-'+stream.id);
+                        if(e.data===YT.PlayerState.PLAYING){
+                            if(icon) icon.className='fa-solid fa-pause';
+                            if(status) status.textContent='Odtwarzanie';
+                        } else if(e.data===YT.PlayerState.BUFFERING){
+                            if(status) status.textContent='Buforowanie…';
+                        } else if(e.data===YT.PlayerState.PAUSED){
+                            if(icon) icon.className='fa-solid fa-play';
+                            if(status) status.textContent='Pauza';
+                        } else if(e.data===YT.PlayerState.ENDED){
+                            if(icon) icon.className='fa-solid fa-rotate-right';
+                            if(status) status.textContent='Transmisja zakończona';
+                        }
+                    },
+                    onError:function(){
+                        const status=document.getElementById('stream-status-'+stream.id);
+                        if(status) status.textContent='Nie można odtworzyć transmisji';
+                        const loading=document.getElementById('stream-loading-'+stream.id);
+                        if(loading) loading.classList.add('hide');
+                    }
+                }
+            });
+        }
+
+        function toggleStreamPlay(id){
+            const p=streamPlayers[id];
+            if(!p || !p.getPlayerState) return;
+            const state=p.getPlayerState();
+            if(state===YT.PlayerState.PLAYING) p.pauseVideo();
+            else p.playVideo();
+        }
+        function toggleStreamMute(id){
+            const p=streamPlayers[id];
+            if(!p) return;
+            if(p.isMuted()) p.unMute();
+            else p.mute();
+            const icon=document.getElementById('stream-mute-icon-'+id);
+            if(icon) icon.className = p.isMuted() ? 'fa-solid fa-volume-xmark' : 'fa-solid fa-volume-high';
+        }
+        function fullscreenStream(id){
+            const el=document.getElementById('stream-wrap-'+id);
+            if(!el) return;
+            if(document.fullscreenElement) document.exitFullscreen().catch(()=>{});
+            else if(el.requestFullscreen) el.requestFullscreen().catch(()=>{});
+        }
+
+        async function saveStream(){
+            if(!user) return;
+            if(!window.db2){ alert('Brak bazy nr 2 (window.db2).'); return; }
+            const id=document.getElementById('stream-id').value;
+            const title=document.getElementById('stream-title').value.trim();
+            const match=document.getElementById('stream-match').value.trim();
+            const url=document.getElementById('stream-url').value.trim();
+            const description=document.getElementById('stream-desc').value.trim();
+            const active=document.getElementById('stream-active').checked;
+            const videoId=getYoutubeId(url);
+            if(!title){alert('Podaj tytuł transmisji.');return;}
+            if(!videoId){alert('Wklej poprawny link do filmu/live z YouTube.');return;}
+            const data={
+                title,
+                match,
+                url,
+                videoId,
+                description,
+                active,
+                createdAt: id ? firebase.firestore.FieldValue.serverTimestamp() : firebase.firestore.FieldValue.serverTimestamp(),
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            try{
+                if(id) await window.db2.collection('streams').doc(id).set(data,{merge:true});
+                else await window.db2.collection('streams').add(data);
+                clearStreamForm();
+                await loadAdminStreams();
+                if(document.getElementById('streams').classList.contains('active')) await loadStreams();
+                alert('Transmisja została zapisana.');
+            }catch(e){
+                console.error(e);
+                alert('Błąd zapisu transmisji w bazie nr 2.');
+            }
+        }
+
+        async function loadAdminStreams(){
+            const c=document.getElementById('admin-stream-list');
+            if(!c) return;
+            if(!window.db2){c.innerHTML='<p style="color:#ff6b6b;">Brak window.db2.</p>';return;}
+            try{
+                const s=await window.db2.collection('streams').get();
+                const all=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.updatedAt?.seconds||0)-(a.updatedAt?.seconds||0));
+                c.innerHTML=all.map(x=>`
+                    <div class="admin-stream-item">
+                        <div style="min-width:0;">
+                            <div style="font-weight:700;font-size:.88rem;">${safeText(x.title||'Bez tytułu')}</div>
+                            <div style="font-size:.7rem;color:${x.active!==false?'var(--green)':'var(--muted)'};margin-top:4px;">${x.active!==false?'AKTYWNA':'UKRYTA'}${x.match?' • '+safeText(x.match):''}</div>
+                            <div class="stream-url">${safeText(x.url||'')}</div>
+                        </div>
+                        <div style="display:flex;gap:4px;flex-shrink:0;">
+                            <button class="btn-sm" onclick='editStream(${JSON.stringify(x).replace(/'/g,"&#39;")})'><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn-sm btn-del" onclick="deleteStream('${safeText(x.id)}')"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>`).join('') || '<p style="color:var(--muted);">Brak transmisji.</p>';
+            }catch(e){
+                console.error(e);
+                c.innerHTML='<p style="color:#ff6b6b;">Błąd ładowania transmisji.</p>';
+            }
+        }
+
+        function editStream(s){
+            document.getElementById('stream-id').value=s.id||'';
+            document.getElementById('stream-title').value=s.title||'';
+            document.getElementById('stream-match').value=s.match||'';
+            document.getElementById('stream-url').value=s.url||'';
+            document.getElementById('stream-desc').value=s.description||'';
+            document.getElementById('stream-active').checked=s.active!==false;
+            window.scrollTo({top:0,behavior:'smooth'});
+        }
+
+        async function deleteStream(id){
+            if(!window.db2 || !id) return;
+            if(!confirm('Usunąć tę transmisję?')) return;
+            try{
+                await window.db2.collection('streams').doc(id).delete();
+                await loadAdminStreams();
+                if(document.getElementById('streams').classList.contains('active')) await loadStreams();
+            }catch(e){ alert('Błąd usuwania transmisji.'); }
+        }
+
+        function clearStreamForm(){
+            ['stream-id','stream-title','stream-match','stream-url','stream-desc'].forEach(i=>document.getElementById(i).value='');
+            document.getElementById('stream-active').checked=true;
+        }
+
         function preloadSiteData(){
             sectionLoaded.home=true;
 

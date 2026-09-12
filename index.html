@@ -769,6 +769,8 @@
                         </div>
                         <h3 style="font-size:0.75rem;color:var(--muted);margin-bottom:1.1rem;text-transform:uppercase;letter-spacing:1.2px;">Zarządzanie wpisami</h3>
                         <div id="admin-plist" class="grid"></div>
+                    </div>
+
                     <div id="ststreams" style="display:none;">
                         <div class="card" style="margin-bottom:2rem;">
                             <h3 style="font-size:0.75rem;color:var(--green);margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:1.2px;">Dodaj / Edytuj Transmisję</h3>
@@ -777,7 +779,7 @@
                                 <input type="text" id="stream-title" placeholder="Tytuł transmisji">
                                 <input type="text" id="stream-match" placeholder="Mecz / opis dodatkowy (opcjonalnie)">
                             </div>
-                            <input type="url" id="stream-url" placeholder="Link do transmisji YouTube (np. https://www.youtube.com/watch?v=...)">
+                            <input type="url" id="stream-url" placeholder="Link do transmisji YouTube (opcjonalnie — puste pole = Transmisja offline)">
                             <textarea id="stream-desc" placeholder="Krótki opis transmisji (opcjonalnie)"></textarea>
                             <label class="stream-toggle">
                                 <input type="checkbox" id="stream-active" checked>
@@ -785,7 +787,7 @@
                             </label>
                             <button class="btn" onclick="saveStream()">Zapisz transmisję</button>
                             <button class="btn-sm" onclick="clearStreamForm()" style="width:100%;margin-top:10px;border:1px solid var(--border);">Wyczyść</button>
-                            <p style="font-size:0.72rem;color:var(--muted);margin-top:10px;">Dane transmisji są zapisywane w bazie nr 2 (<code>window.db2</code>).</p>
+                            <p style="font-size:0.72rem;color:var(--muted);margin-top:10px;">Puste pole linku oznacza stan „Transmisja offline”. Dane są zapisywane w bazie nr 2 (<code>window.db2</code>).</p>
                         </div>
                         <h3 style="font-size:0.75rem;color:var(--muted);margin-bottom:1.1rem;text-transform:uppercase;letter-spacing:1.2px;">Transmisje w bazie</h3>
                         <div id="admin-stream-list" class="admin-stream-list"></div>
@@ -2089,9 +2091,10 @@
             }
             try{
                 const snap=await window.db2.collection('streams').get();
-                streamRecords=snap.docs.map(d=>({id:d.id,...d.data()}))
+                const allStreams=snap.docs.map(d=>({id:d.id,...d.data()}))
                     .filter(s=>s.active!==false)
                     .sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+                streamRecords=allStreams.filter(s=>getYoutubeId(s.url));
                 renderStreams();
             }catch(e){
                 console.error('Błąd transmisji:',e);
@@ -2106,7 +2109,7 @@
             streamPlayers={};
 
             if(!streamRecords.length){
-                container.innerHTML = `<div class="stream-empty card"><i class="fa-solid fa-tower-broadcast"></i><h3>Brak aktywnej transmisji</h3><p>Kiedy redakcja doda live w panelu, pojawi się tutaj.</p></div>`;
+                container.innerHTML = `<div class="stream-empty card"><i class="fa-solid fa-tower-broadcast"></i><h3>Transmisja offline</h3></div>`;
                 return;
             }
 
@@ -2242,9 +2245,9 @@
             const url=document.getElementById('stream-url').value.trim();
             const description=document.getElementById('stream-desc').value.trim();
             const active=document.getElementById('stream-active').checked;
-            const videoId=getYoutubeId(url);
+            const videoId=url ? getYoutubeId(url) : '';
             if(!title){alert('Podaj tytuł transmisji.');return;}
-            if(!videoId){alert('Wklej poprawny link do filmu/live z YouTube.');return;}
+            if(url && !videoId){alert('Wklej poprawny link do filmu/live z YouTube albo zostaw pole linku puste, aby ustawić transmisję offline.');return;}
             const data={
                 title,
                 match,

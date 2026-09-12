@@ -233,7 +233,14 @@
         .live-dot{width:7px;height:7px;border-radius:50%;background:#ff4b4b;box-shadow:0 0 10px rgba(255,75,75,.75);animation:pulseDot 1.5s infinite;}
         @keyframes pulseDot{0%,100%{opacity:1}50%{opacity:.35}}
         .stream-player{background:#000;aspect-ratio:16/9;position:relative;overflow:hidden;}
-        .stream-player iframe{display:block;width:100%;height:100%;border:0;}
+        .stream-player iframe{display:block;width:100%;height:100%;border:0;pointer-events:none;}
+        .stream-brand-mask{position:absolute;z-index:4;pointer-events:none;background:#000;}
+        .stream-brand-mask.top{top:0;right:0;width:145px;height:42px;}
+        .stream-brand-mask.bottom{right:0;bottom:0;width:112px;height:36px;}
+        .stream-brand-mask.left-bottom{left:0;bottom:0;width:42px;height:30px;}
+        .stream-player.fullscreen-active .stream-brand-mask.top{width:210px;height:60px;}
+        .stream-player.fullscreen-active .stream-brand-mask.bottom{width:165px;height:52px;}
+        .stream-player.fullscreen-active .stream-brand-mask.left-bottom{width:60px;height:44px;}
         .stream-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#050b17;z-index:2;transition:opacity .35s ease,visibility .35s ease;}
         .stream-loading.hide{opacity:0;visibility:hidden;pointer-events:none;}
         .stream-loader-inner{text-align:center;padding:1.5rem;}
@@ -2135,6 +2142,9 @@
                                 <div class="stream-spinner"></div>
                             </div>
                         </div>
+                        <div class="stream-brand-mask top"></div>
+                        <div class="stream-brand-mask bottom"></div>
+                        <div class="stream-brand-mask left-bottom"></div>
                         <div id="${pid}" aria-label="Odtwarzacz transmisji"></div>
                     </div>
                     <div class="stream-controls">
@@ -2174,6 +2184,7 @@
                     controls:0,
                     rel:0,
                     iv_load_policy:3,
+                    modestbranding:1,
                     playsinline:1,
                     autoplay:0,
                     fs:0,
@@ -2232,9 +2243,16 @@
         function fullscreenStream(id){
             const el=document.getElementById('stream-wrap-'+id);
             if(!el) return;
-            if(document.fullscreenElement) document.exitFullscreen().catch(()=>{});
-            else if(el.requestFullscreen) el.requestFullscreen().catch(()=>{});
+            const player=el;
+            if(document.fullscreenElement){
+                document.exitFullscreen().catch(()=>{});
+            } else if(el.requestFullscreen){
+                el.requestFullscreen().catch(()=>{});
+            }
         }
+        document.addEventListener('fullscreenchange',()=>{
+            document.querySelectorAll('.stream-player').forEach(el=>el.classList.toggle('fullscreen-active',document.fullscreenElement===el));
+        });
 
         async function saveStream(){
             if(!user) return;

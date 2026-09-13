@@ -524,6 +524,50 @@
                     </div>
 
                     <div id="ma">
+                        <!-- Sekcja masowego dodawania meczów -->
+                        <div class="card" style="margin-bottom:2rem;">
+                            <h3 style="font-size:0.75rem;color:var(--green);margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:1.2px;">Masowe Dodawanie Spotkań</h3>
+                            <select id="m-mass-league" style="margin-bottom:10px;">
+                                <option value="iv_liga">IV Liga</option>
+                                <option value="okr_jaroslaw">Okr. Jarosław</option>
+                                <option value="okr_krosno">Okr. Krosno</option>
+                                <option value="okr_rzeszow">Okr. Rzeszów</option>
+                                <option value="okr_debica">Okr. Dębica</option>
+                                <option value="okr_stalowa">Okr. Stalowa Wola</option>
+                                <option value="a_debica">A Klasa Dębica</option>
+                                <option value="a_jaroslaw">A Klasa Jarosław</option>
+                                <option value="a_krosno_1">A Klasa Krosno I</option>
+                                <option value="a_krosno_2">A Klasa Krosno II</option>
+                                <option value="a_krosno_3">A Klasa Krosno III</option>
+                                <option value="a_lancut">A Klasa Łańcut</option>
+                                <option value="a_mielec">A Klasa Mielec</option>
+                                <option value="a_przeworsk">A Klasa Przeworsk</option>
+                                <option value="a_rzeszow">A Klasa Rzeszów</option>
+                                <option value="a_stalowa_1">A Klasa Stalowa Wola I</option>
+                                <option value="a_stalowa_2">A Klasa Stalowa Wola II</option>
+                                <option value="b_debica_1">B Klasa Dębica I</option>
+                                <option value="b_debica_2">B Klasa Dębica II</option>
+                                <option value="b_jaroslaw">B Klasa Jarosław</option>
+                                <option value="b_kolbuszowa">B Klasa Kolbuszowa</option>
+                                <option value="b_krosno_1">B Klasa Krosno I</option>
+                                <option value="b_krosno_2">B Klasa Krosno II</option>
+                                <option value="b_krosno_3">B Klasa Krosno III</option>
+                                <option value="b_krosno_4">B Klasa Krosno IV</option>
+                                <option value="b_krosno_5">B Klasa Krosno V</option>
+                                <option value="b_lancut_1">B Klasa Łańcut I</option>
+                                <option value="b_lancut_2">B Klasa Łańcut II</option>
+                                <option value="b_mielec_1">B Klasa Mielec I</option>
+                                <option value="b_mielec_2">B Klasa Mielec II</option>
+                                <option value="b_przeworsk">B Klasa Przeworsk</option>
+                                <option value="b_rzeszow">B Klasa Rzeszów</option>
+                                <option value="b_stalowa_1">B Klasa Stalowa Wola I</option>
+                                <option value="b_stalowa_2">B Klasa Stalowa Wola II</option>
+                                <option value="b_stalowa_3">B Klasa Stalowa Wola III</option>
+                            </select>
+                            <textarea id="m-mass-data" placeholder="Wzór do wklejenia wielu wierszy:&#10;Gospodarz vs Gość, YYYY-MM-DD, HH:MM&#10;Inny Gospodarz vs Inny Gość, 2026-10-24, 16:30"></textarea>
+                            <button class="btn" onclick="saveMassMatches()">Dodaj mecze masowo</button>
+                        </div>
+                        
                         <div class="card" style="margin-bottom:2rem;">
                             <h3 style="font-size:0.75rem;color:var(--green);margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:1.2px;">Dodaj / Edytuj Spotkanie</h3>
                             <input type="hidden" id="m-id">
@@ -541,12 +585,35 @@
                                     <option value="okr_rzeszow">Okr. Rzeszów</option>
                                     <option value="okr_debica">Okr. Dębica</option>
                                     <option value="okr_stalowa">Okr. Stalowa Wola</option>
-                                    <option value="a_przeworsk">A Klasa Przeworsk</option>
-                                    <option value="b_przeworsk">B Klasa Przeworsk</option>
+                                    <option value="a_debica">A Klasa Dębica</option>
                                     <option value="a_jaroslaw">A Klasa Jarosław</option>
-                                    <option value="b_jaroslaw">B Klasa Jarosław</option>
+                                    <option value="a_krosno_1">A Klasa Krosno I</option>
+                                    <option value="a_krosno_2">A Klasa Krosno II</option>
+                                    <option value="a_krosno_3">A Klasa Krosno III</option>
+                                    <option value="a_lancut">A Klasa Łańcut</option>
+                                    <option value="a_mielec">A Klasa Mielec</option>
+                                    <option value="a_przeworsk">A Klasa Przeworsk</option>
                                     <option value="a_rzeszow">A Klasa Rzeszów</option>
+                                    <option value="a_stalowa_1">A Klasa Stalowa Wola I</option>
+                                    <option value="a_stalowa_2">A Klasa Stalowa Wola II</option>
+                                    <option value="b_debica_1">B Klasa Dębica I</option>
+                                    <option value="b_debica_2">B Klasa Dębica II</option>
+                                    <option value="b_jaroslaw">B Klasa Jarosław</option>
+                                    <option value="b_kolbuszowa">B Klasa Kolbuszowa</option>
+                                    <option value="b_krosno_1">B Klasa Krosno I</option>
+                                    <option value="b_krosno_2">B Klasa Krosno II</option>
+                                    <option value="b_krosno_3">B Klasa Krosno III</option>
+                                    <option value="b_krosno_4">B Klasa Krosno IV</option>
+                                    <option value="b_krosno_5">B Klasa Krosno V</option>
+                                    <option value="b_lancut_1">B Klasa Łańcut I</option>
+                                    <option value="b_lancut_2">B Klasa Łańcut II</option>
+                                    <option value="b_mielec_1">B Klasa Mielec I</option>
+                                    <option value="b_mielec_2">B Klasa Mielec II</option>
+                                    <option value="b_przeworsk">B Klasa Przeworsk</option>
                                     <option value="b_rzeszow">B Klasa Rzeszów</option>
+                                    <option value="b_stalowa_1">B Klasa Stalowa Wola I</option>
+                                    <option value="b_stalowa_2">B Klasa Stalowa Wola II</option>
+                                    <option value="b_stalowa_3">B Klasa Stalowa Wola III</option>
                                 </select>
                             </div>
                             <div class="form-grid">
@@ -556,16 +623,6 @@
                             <button class="btn" onclick="saveMatch()">Zapisz spotkanie</button>
                             <button class="btn-sm" onclick="clearMF()" style="width:100%;margin-top:10px;border:1px solid var(--border);">Wyczyść</button>
                         </div>
-
-                        <!-- NOWA FUNKCJA: Dodawanie Masowe -->
-                        <div class="card" style="margin-bottom:2rem;">
-                            <h3 style="font-size:0.75rem;color:var(--green);margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:1.2px;">Dodaj masowo mecze</h3>
-                            <p style="font-size:0.72rem;color:var(--muted);margin-bottom:12px;">Wybrana liga z rozwijanej listy z pierwszego formularza zostanie przypisana do wszystkich dodanych tu meczów.<br>Format w każdej linijce musi być dokładnie taki:<br><strong>Nazwa Gospodarza vs Nazwa Gościa, YYYY-MM-DD, HH:MM</strong></p>
-                            <textarea id="m-mass" placeholder="Gospodarz vs Gość, 2026-10-15, 15:30&#10;Inny Gospodarz vs Inny Gość, 2026-10-16, 17:00"></textarea>
-                            <button class="btn" onclick="massSaveMatches()">Dodaj mecze masowo</button>
-                        </div>
-                        <!-- KONIEC NOWEJ FUNKCJI -->
-
                         <h3 style="font-size:0.75rem;color:var(--muted);margin-bottom:1.1rem;text-transform:uppercase;letter-spacing:1.2px;">Baza Spotkań</h3>
                         <div id="admin-mlist" class="grid"></div>
                     </div>
@@ -584,12 +641,35 @@
                                     <option value="okr_rzeszow">Okr. Rzeszów</option>
                                     <option value="okr_debica">Okr. Dębica</option>
                                     <option value="okr_stalowa">Okr. Stalowa Wola</option>
-                                    <option value="a_przeworsk">A Klasa Przeworsk</option>
-                                    <option value="b_przeworsk">B Klasa Przeworsk</option>
+                                    <option value="a_debica">A Klasa Dębica</option>
                                     <option value="a_jaroslaw">A Klasa Jarosław</option>
-                                    <option value="b_jaroslaw">B Klasa Jarosław</option>
+                                    <option value="a_krosno_1">A Klasa Krosno I</option>
+                                    <option value="a_krosno_2">A Klasa Krosno II</option>
+                                    <option value="a_krosno_3">A Klasa Krosno III</option>
+                                    <option value="a_lancut">A Klasa Łańcut</option>
+                                    <option value="a_mielec">A Klasa Mielec</option>
+                                    <option value="a_przeworsk">A Klasa Przeworsk</option>
                                     <option value="a_rzeszow">A Klasa Rzeszów</option>
+                                    <option value="a_stalowa_1">A Klasa Stalowa Wola I</option>
+                                    <option value="a_stalowa_2">A Klasa Stalowa Wola II</option>
+                                    <option value="b_debica_1">B Klasa Dębica I</option>
+                                    <option value="b_debica_2">B Klasa Dębica II</option>
+                                    <option value="b_jaroslaw">B Klasa Jarosław</option>
+                                    <option value="b_kolbuszowa">B Klasa Kolbuszowa</option>
+                                    <option value="b_krosno_1">B Klasa Krosno I</option>
+                                    <option value="b_krosno_2">B Klasa Krosno II</option>
+                                    <option value="b_krosno_3">B Klasa Krosno III</option>
+                                    <option value="b_krosno_4">B Klasa Krosno IV</option>
+                                    <option value="b_krosno_5">B Klasa Krosno V</option>
+                                    <option value="b_lancut_1">B Klasa Łańcut I</option>
+                                    <option value="b_lancut_2">B Klasa Łańcut II</option>
+                                    <option value="b_mielec_1">B Klasa Mielec I</option>
+                                    <option value="b_mielec_2">B Klasa Mielec II</option>
+                                    <option value="b_przeworsk">B Klasa Przeworsk</option>
                                     <option value="b_rzeszow">B Klasa Rzeszów</option>
+                                    <option value="b_stalowa_1">B Klasa Stalowa Wola I</option>
+                                    <option value="b_stalowa_2">B Klasa Stalowa Wola II</option>
+                                    <option value="b_stalowa_3">B Klasa Stalowa Wola III</option>
                                 </select>
                             </div>
                             <input type="text" id="t-crest" placeholder="URL herbu (np. https://.../herb.png)">
@@ -629,12 +709,35 @@
                                     <option value="okr_rzeszow">Okr. Rzeszów</option>
                                     <option value="okr_debica">Okr. Dębica</option>
                                     <option value="okr_stalowa">Okr. Stalowa Wola</option>
-                                    <option value="a_przeworsk">A Klasa Przeworsk</option>
-                                    <option value="b_przeworsk">B Klasa Przeworsk</option>
+                                    <option value="a_debica">A Klasa Dębica</option>
                                     <option value="a_jaroslaw">A Klasa Jarosław</option>
-                                    <option value="b_jaroslaw">B Klasa Jarosław</option>
+                                    <option value="a_krosno_1">A Klasa Krosno I</option>
+                                    <option value="a_krosno_2">A Klasa Krosno II</option>
+                                    <option value="a_krosno_3">A Klasa Krosno III</option>
+                                    <option value="a_lancut">A Klasa Łańcut</option>
+                                    <option value="a_mielec">A Klasa Mielec</option>
+                                    <option value="a_przeworsk">A Klasa Przeworsk</option>
                                     <option value="a_rzeszow">A Klasa Rzeszów</option>
+                                    <option value="a_stalowa_1">A Klasa Stalowa Wola I</option>
+                                    <option value="a_stalowa_2">A Klasa Stalowa Wola II</option>
+                                    <option value="b_debica_1">B Klasa Dębica I</option>
+                                    <option value="b_debica_2">B Klasa Dębica II</option>
+                                    <option value="b_jaroslaw">B Klasa Jarosław</option>
+                                    <option value="b_kolbuszowa">B Klasa Kolbuszowa</option>
+                                    <option value="b_krosno_1">B Klasa Krosno I</option>
+                                    <option value="b_krosno_2">B Klasa Krosno II</option>
+                                    <option value="b_krosno_3">B Klasa Krosno III</option>
+                                    <option value="b_krosno_4">B Klasa Krosno IV</option>
+                                    <option value="b_krosno_5">B Klasa Krosno V</option>
+                                    <option value="b_lancut_1">B Klasa Łańcut I</option>
+                                    <option value="b_lancut_2">B Klasa Łańcut II</option>
+                                    <option value="b_mielec_1">B Klasa Mielec I</option>
+                                    <option value="b_mielec_2">B Klasa Mielec II</option>
+                                    <option value="b_przeworsk">B Klasa Przeworsk</option>
                                     <option value="b_rzeszow">B Klasa Rzeszów</option>
+                                    <option value="b_stalowa_1">B Klasa Stalowa Wola I</option>
+                                    <option value="b_stalowa_2">B Klasa Stalowa Wola II</option>
+                                    <option value="b_stalowa_3">B Klasa Stalowa Wola III</option>
                                 </select>
                             </div>
                             <div class="form-grid">
@@ -662,12 +765,35 @@
                                     <option value="okr_rzeszow">Okr. Rzeszów</option>
                                     <option value="okr_debica">Okr. Dębica</option>
                                     <option value="okr_stalowa">Okr. Stalowa Wola</option>
-                                    <option value="a_przeworsk">A Klasa Przeworsk</option>
-                                    <option value="b_przeworsk">B Klasa Przeworsk</option>
+                                    <option value="a_debica">A Klasa Dębica</option>
                                     <option value="a_jaroslaw">A Klasa Jarosław</option>
-                                    <option value="b_jaroslaw">B Klasa Jarosław</option>
+                                    <option value="a_krosno_1">A Klasa Krosno I</option>
+                                    <option value="a_krosno_2">A Klasa Krosno II</option>
+                                    <option value="a_krosno_3">A Klasa Krosno III</option>
+                                    <option value="a_lancut">A Klasa Łańcut</option>
+                                    <option value="a_mielec">A Klasa Mielec</option>
+                                    <option value="a_przeworsk">A Klasa Przeworsk</option>
                                     <option value="a_rzeszow">A Klasa Rzeszów</option>
+                                    <option value="a_stalowa_1">A Klasa Stalowa Wola I</option>
+                                    <option value="a_stalowa_2">A Klasa Stalowa Wola II</option>
+                                    <option value="b_debica_1">B Klasa Dębica I</option>
+                                    <option value="b_debica_2">B Klasa Dębica II</option>
+                                    <option value="b_jaroslaw">B Klasa Jarosław</option>
+                                    <option value="b_kolbuszowa">B Klasa Kolbuszowa</option>
+                                    <option value="b_krosno_1">B Klasa Krosno I</option>
+                                    <option value="b_krosno_2">B Klasa Krosno II</option>
+                                    <option value="b_krosno_3">B Klasa Krosno III</option>
+                                    <option value="b_krosno_4">B Klasa Krosno IV</option>
+                                    <option value="b_krosno_5">B Klasa Krosno V</option>
+                                    <option value="b_lancut_1">B Klasa Łańcut I</option>
+                                    <option value="b_lancut_2">B Klasa Łańcut II</option>
+                                    <option value="b_mielec_1">B Klasa Mielec I</option>
+                                    <option value="b_mielec_2">B Klasa Mielec II</option>
+                                    <option value="b_przeworsk">B Klasa Przeworsk</option>
                                     <option value="b_rzeszow">B Klasa Rzeszów</option>
+                                    <option value="b_stalowa_1">B Klasa Stalowa Wola I</option>
+                                    <option value="b_stalowa_2">B Klasa Stalowa Wola II</option>
+                                    <option value="b_stalowa_3">B Klasa Stalowa Wola III</option>
                                 </select>
                             </div>
                             <div class="form-grid-3">
@@ -686,18 +812,41 @@
                         <div class="card" style="margin-bottom:2rem;">
                             <h3 style="font-size:0.75rem;color:var(--green);margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:1.2px;">Strefy lig</h3>
                             <select id="z-league">
-                                <option value="iv_liga">IV Liga</option>
-                                <option value="okr_jaroslaw">Okr. Jarosław</option>
-                                <option value="okr_krosno">Okr. Krosno</option>
-                                <option value="okr_rzeszow">Okr. Rzeszów</option>
-                                <option value="okr_debica">Okr. Dębica</option>
-                                <option value="okr_stalowa">Okr. Stalowa Wola</option>
-                                <option value="a_przeworsk">A Klasa Przeworsk</option>
-                                <option value="b_przeworsk">B Klasa Przeworsk</option>
-                                <option value="a_jaroslaw">A Klasa Jarosław</option>
-                                <option value="b_jaroslaw">B Klasa Jarosław</option>
-                                <option value="a_rzeszow">A Klasa Rzeszów</option>
-                                <option value="b_rzeszow">B Klasa Rzeszów</option>
+                                    <option value="iv_liga">IV Liga</option>
+                                    <option value="okr_jaroslaw">Okr. Jarosław</option>
+                                    <option value="okr_krosno">Okr. Krosno</option>
+                                    <option value="okr_rzeszow">Okr. Rzeszów</option>
+                                    <option value="okr_debica">Okr. Dębica</option>
+                                    <option value="okr_stalowa">Okr. Stalowa Wola</option>
+                                    <option value="a_debica">A Klasa Dębica</option>
+                                    <option value="a_jaroslaw">A Klasa Jarosław</option>
+                                    <option value="a_krosno_1">A Klasa Krosno I</option>
+                                    <option value="a_krosno_2">A Klasa Krosno II</option>
+                                    <option value="a_krosno_3">A Klasa Krosno III</option>
+                                    <option value="a_lancut">A Klasa Łańcut</option>
+                                    <option value="a_mielec">A Klasa Mielec</option>
+                                    <option value="a_przeworsk">A Klasa Przeworsk</option>
+                                    <option value="a_rzeszow">A Klasa Rzeszów</option>
+                                    <option value="a_stalowa_1">A Klasa Stalowa Wola I</option>
+                                    <option value="a_stalowa_2">A Klasa Stalowa Wola II</option>
+                                    <option value="b_debica_1">B Klasa Dębica I</option>
+                                    <option value="b_debica_2">B Klasa Dębica II</option>
+                                    <option value="b_jaroslaw">B Klasa Jarosław</option>
+                                    <option value="b_kolbuszowa">B Klasa Kolbuszowa</option>
+                                    <option value="b_krosno_1">B Klasa Krosno I</option>
+                                    <option value="b_krosno_2">B Klasa Krosno II</option>
+                                    <option value="b_krosno_3">B Klasa Krosno III</option>
+                                    <option value="b_krosno_4">B Klasa Krosno IV</option>
+                                    <option value="b_krosno_5">B Klasa Krosno V</option>
+                                    <option value="b_lancut_1">B Klasa Łańcut I</option>
+                                    <option value="b_lancut_2">B Klasa Łańcut II</option>
+                                    <option value="b_mielec_1">B Klasa Mielec I</option>
+                                    <option value="b_mielec_2">B Klasa Mielec II</option>
+                                    <option value="b_przeworsk">B Klasa Przeworsk</option>
+                                    <option value="b_rzeszow">B Klasa Rzeszów</option>
+                                    <option value="b_stalowa_1">B Klasa Stalowa Wola I</option>
+                                    <option value="b_stalowa_2">B Klasa Stalowa Wola II</option>
+                                    <option value="b_stalowa_3">B Klasa Stalowa Wola III</option>
                             </select>
                             <div class="form-grid-3">
                                 <input type="text" id="z-promo" placeholder="Awans (np. 1)">
@@ -773,9 +922,6 @@
     <script src="firebase-config.js"></script>
 
     <script>
-        // PAMIĘTAJ: Aby dane A-klas i B-klas zapisywały się w drugiej bazie danych Firebase, 
-        // musisz w pliku firebase-config.js zdefiniować zmienną window.db2!
-        
         const db = window.db;
         const auth = window.auth;
 
@@ -787,14 +933,24 @@
             iv_liga:'IV Liga Podkarpacka', okr_jaroslaw:'Klasa Okręgowa Jarosław',
             okr_krosno:'Klasa Okręgowa Krosno', okr_rzeszow:'Klasa Okręgowa Rzeszów',
             okr_debica:'Klasa Okręgowa Dębica', okr_stalowa:'Klasa Okręgowa Stalowa Wola',
-            a_przeworsk:'A Klasa Przeworsk', b_przeworsk:'B Klasa Przeworsk',
-            a_jaroslaw:'A Klasa Jarosław', b_jaroslaw:'B Klasa Jarosław',
-            a_rzeszow:'A Klasa Rzeszów', b_rzeszow:'B Klasa Rzeszów'
+            a_debica:'A Klasa Dębica', a_jaroslaw:'A Klasa Jarosław', 
+            a_krosno_1:'A Klasa Krosno I', a_krosno_2:'A Klasa Krosno II', a_krosno_3:'A Klasa Krosno III',
+            a_lancut:'A Klasa Łańcut', a_mielec:'A Klasa Mielec',
+            a_przeworsk:'A Klasa Przeworsk', a_rzeszow:'A Klasa Rzeszów',
+            a_stalowa_1:'A Klasa Stalowa Wola I', a_stalowa_2:'A Klasa Stalowa Wola II',
+            b_debica_1:'B Klasa Dębica I', b_debica_2:'B Klasa Dębica II',
+            b_jaroslaw:'B Klasa Jarosław', b_kolbuszowa:'B Klasa Kolbuszowa',
+            b_krosno_1:'B Klasa Krosno I', b_krosno_2:'B Klasa Krosno II', b_krosno_3:'B Klasa Krosno III', b_krosno_4:'B Klasa Krosno IV', b_krosno_5:'B Klasa Krosno V',
+            b_lancut_1:'B Klasa Łańcut I', b_lancut_2:'B Klasa Łańcut II',
+            b_mielec_1:'B Klasa Mielec I', b_mielec_2:'B Klasa Mielec II',
+            b_przeworsk:'B Klasa Przeworsk', b_rzeszow:'B Klasa Rzeszów',
+            b_stalowa_1:'B Klasa Stalowa Wola I', b_stalowa_2:'B Klasa Stalowa Wola II', b_stalowa_3:'B Klasa Stalowa Wola III'
         };
         
-        const NEW_LEAGUES = ['a_przeworsk', 'b_przeworsk', 'a_jaroslaw', 'b_jaroslaw', 'a_rzeszow', 'b_rzeszow'];
+        // Funkcja decydująca do której bazy kierować zapytania
+        // Wymóg: A Klasy i wyższe do pierwszej, B Klasy do drugiej.
         function getDB(league) {
-            if(league && NEW_LEAGUES.includes(league) && window.db2) return window.db2;
+            if(league && league.startsWith('b_') && window.db2) return window.db2;
             return window.db;
         }
 
@@ -1075,13 +1231,6 @@
                 if(resGrid) resGrid.style.display = 'grid';
                 renderGrid(finishedList(list),'results-grid');
             }
-        }
-
-        function filterM(league,btn){
-            curFilter=league;
-            document.querySelectorAll('#matches-sub .sub-tab').forEach(b=>b.classList.remove('active'));
-            btn.classList.add('active');
-            applyFilter();
         }
 
         async function getCalculatedTeams(league){
@@ -1505,8 +1654,7 @@
                 document.getElementById('login-panel').style.display='none';
                 document.getElementById('dash').style.display='block';
                 await loadZones();
-                loadAdminM(); loadAdminT(); loadAdminZ(); loadAdminTr(); 
-                // Uproszczone z powodu uciętego kodu w oryginalnym pliku (jeśli nie wywołujesz tu loadAdminP i loadAdminS, zignoruj te błędy).
+                loadAdminM(); loadAdminT(); loadAdminZ(); loadAdminP(); loadAdminTr(); loadAdminS();
             }else{
                 user=null;
                 document.getElementById('login-panel').style.display='block';
@@ -1527,83 +1675,6 @@
                 b.style.color=(t===tab)?'var(--green)':'var(--muted)';
             });
         }
-
-        // --- SKRYPT DODAWANIA MASOWEGO (NOWE) ---
-        async function massSaveMatches(){
-            if(!user) return;
-            const text = document.getElementById('m-mass').value.trim();
-            if(!text) {
-                alert("Wprowadź tekst z meczami do dodania.");
-                return;
-            }
-            
-            const league = document.getElementById('m-league').value;
-            const dbase = getDB(league);
-            const lines = text.split('\n');
-            let addedCount = 0;
-            
-            for(let line of lines){
-                line = line.trim();
-                if(!line) continue;
-                
-                // Format: Gospodarz vs Gość, 2026-09-15, 17:00
-                const parts = line.split(',');
-                if(parts.length < 3) continue;
-                
-                const teamsPart = parts[0].trim();
-                const datePart = parts[1].trim();
-                const timePart = parts[2].trim();
-                
-                const teamSplit = teamsPart.split(' vs ');
-                if(teamSplit.length !== 2) continue;
-                
-                const home = teamSplit[0].trim();
-                const away = teamSplit[1].trim();
-                
-                let dateStr = datePart + 'T' + timePart; 
-                if(datePart.includes('.')){
-                    const dp = datePart.split('.');
-                    if(dp.length === 3){
-                        dateStr = dp[2] + '-' + dp[1] + '-' + dp[0] + 'T' + timePart;
-                    }
-                }
-                
-                const matchDate = new Date(dateStr);
-                let timestamp;
-                if(!isNaN(matchDate.getTime())){
-                    timestamp = firebase.firestore.Timestamp.fromDate(matchDate);
-                } else {
-                    timestamp = firebase.firestore.FieldValue.serverTimestamp();
-                }
-                
-                const data = {
-                    homeTeam: home,
-                    awayTeam: away,
-                    scoreHome: null,
-                    scoreAway: null,
-                    status: 'upcoming',
-                    league: league,
-                    date: timestamp
-                };
-                
-                try {
-                    await dbase.collection('matches').add(data);
-                    addedCount++;
-                } catch(e) {
-                    console.error("Błąd zapisu:", e);
-                }
-            }
-            
-            if(addedCount > 0){
-                alert(`Dodano pomyślnie ${addedCount} meczów.`);
-                document.getElementById('m-mass').value = '';
-                await recalculateStandings(league);
-                loadAdminM();
-            } else {
-                alert('Nie udało się dodać żadnych meczów. Sprawdź czy format jest poprawny:\nGospodarz vs Gość, YYYY-MM-DD, HH:MM');
-            }
-        }
-        // --- KONIEC NOWEGO SKRYPTU ---
 
         async function saveMatch(){
             if(!user)return;
@@ -1639,6 +1710,72 @@
                 await recalculateStandings(newLeague);
                 clearMF();loadAdminM();
             }catch(e){alert('Błąd zapisu spotkania');}
+        }
+        
+        async function saveMassMatches(){
+            if(!user) return;
+            const text = document.getElementById('m-mass-data').value;
+            const league = document.getElementById('m-mass-league').value;
+            if(!text || !league) { alert('Wypełnij pole z danymi i wybierz ligę.'); return; }
+            
+            const lines = text.split('\n');
+            const dbase = getDB(league);
+            let added = 0;
+            
+            for(let line of lines) {
+                line = line.trim();
+                if(!line) continue;
+                
+                // Oczekiwany format: Drużyna A vs Drużyna B, 2026-10-24, 15:00
+                const parts = line.split(',');
+                if(parts.length < 3) continue;
+                
+                const matchStr = parts[0];
+                const dateStr = parts[1].trim(); 
+                const timeStr = parts[2].trim(); 
+                
+                const teams = matchStr.split(' vs ');
+                if(teams.length !== 2) continue;
+                
+                let dateObj = null;
+                let d = dateStr;
+                // Poprawka na polski format z kropkami np. 24.10.2026
+                if(d.includes('.')){
+                    let dp = d.split('.');
+                    if(dp.length===3) d = `${dp[2]}-${dp[1]}-${dp[0]}`;
+                }
+                
+                try {
+                    let parsedDate = new Date(`${d}T${timeStr}`);
+                    if(!isNaN(parsedDate)) {
+                        dateObj = firebase.firestore.Timestamp.fromDate(parsedDate);
+                    } else {
+                        dateObj = firebase.firestore.FieldValue.serverTimestamp();
+                    }
+                } catch(e) {
+                    dateObj = firebase.firestore.FieldValue.serverTimestamp();
+                }
+
+                const data = {
+                    homeTeam: teams[0].trim(),
+                    awayTeam: teams[1].trim(),
+                    scoreHome: null,
+                    scoreAway: null,
+                    status: 'upcoming',
+                    league: league,
+                    date: dateObj
+                };
+                
+                try {
+                    await dbase.collection('matches').add(data);
+                    added++;
+                } catch(e) { console.error('Błąd w trakcie masowego dodawania:', e); }
+            }
+            
+            await recalculateStandings(league);
+            alert(`Ukończono! Dodano masowo ${added} mecz(ów).`);
+            document.getElementById('m-mass-data').value = '';
+            loadAdminM();
         }
         
         async function loadAdminM(){
@@ -1765,155 +1902,36 @@
             document.getElementById('t-team').value = t.name;
             document.getElementById('t-league').value = league;
             document.getElementById('t-crest').value = t.crest || '';
-            document.getElementById('t-m').value = t.m || 0;
-            document.getElementById('t-pts').value = t.pts || 0;
-            document.getElementById('t-diff').value = t.diff || '0';
-            document.getElementById('t-manual').checked = (t.manual !== false);
+            document.getElementById('t-m').value = t.m;
+            document.getElementById('t-pts').value = t.pts;
+            document.getElementById('t-diff').value = t.diff;
+            document.getElementById('t-manual').checked = !!t.manual;
             window.scrollTo({top:0,behavior:'smooth'});
         }
 
-        async function delT(league, idx){
-            if(confirm('Na pewno usunąć tę drużynę?')){
+        async function delT(league, idx) {
+            if(confirm('Na pewno chcesz usunąć tę drużynę?')) {
                 const ref = getDB(league).collection('standings').doc(league);
                 const doc = await ref.get();
-                if(doc.exists && doc.data().teams){
+                if(doc.exists && doc.data().teams) {
                     let teams = [...doc.data().teams];
                     teams.splice(idx, 1);
-                    await ref.set({teams, updatedAt: firebase.firestore.FieldValue.serverTimestamp()}, {merge:true});
+                    await ref.set({teams, updatedAt: firebase.firestore.FieldValue.serverTimestamp()}, {merge: true});
+                    await recalculateStandings(league);
                     loadAdminT();
                 }
             }
         }
 
         function clearTF(){
-            document.getElementById('t-id').value=''; document.getElementById('t-old-league').value='';
-            ['t-team','t-crest','t-m','t-pts','t-diff'].forEach(i=>document.getElementById(i).value='');
-            document.getElementById('t-manual').checked=false;
-        }
-        
-        async function saveZones(){
-            if(!user) return;
-            const league = document.getElementById('z-league').value;
-            const data = {
-                promo: parsePositions(document.getElementById('z-promo').value),
-                barage: parsePositions(document.getElementById('z-barage').value),
-                releg: parsePositions(document.getElementById('z-releg').value)
-            };
-            try {
-                const dbase = getDB(league);
-                await dbase.collection('zones').doc(league).set(data);
-                loadAdminZ();
-                alert('Strefy ligi zostały zapisane!');
-            } catch(e) { alert('Błąd zapisu stref.'); }
+            document.getElementById('t-id').value = '';
+            document.getElementById('t-old-league').value = '';
+            ['t-team','t-crest','t-m','t-pts','t-diff'].forEach(i => document.getElementById(i).value = '');
+            document.getElementById('t-manual').checked = false;
         }
 
-        async function loadAdminZ(){
-            let html='';
-            for(const league of Object.keys(L)){
-                try {
-                    const dbase = getDB(league);
-                    const doc = await dbase.collection('zones').doc(league).get();
-                    if(doc.exists){
-                        const z = doc.data();
-                        html+=`<div class="card" style="padding:0.9rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
-                            <div><div style="font-weight:600;font-size:0.9rem;">${L[league]}</div>
-                            <div style="font-size:0.72rem;color:var(--muted);">Awans: ${z.promo?.join(',')||'-'} | Baraże: ${z.barage?.join(',')||'-'} | Spadek: ${z.releg?.join(',')||'-'}</div></div>
-                            <button class="btn-sm" onclick="editZ('${league}', '${z.promo?.join(',')||''}', '${z.barage?.join(',')||''}', '${z.releg?.join(',')||''}')"><i class="fa-solid fa-pen"></i></button>
-                        </div>`;
-                    }
-                } catch(e) {}
-            }
-            document.getElementById('admin-zlist').innerHTML = html || '<p style="color:var(--muted);">Brak ustawień stref w bazie.</p>';
-        }
-
-        function editZ(league, promo, barage, releg){
-            document.getElementById('z-league').value = league;
-            document.getElementById('z-promo').value = promo;
-            document.getElementById('z-barage').value = barage;
-            document.getElementById('z-releg').value = releg;
-            window.scrollTo({top:0,behavior:'smooth'});
-        }
-
-        async function saveTransfer(){
-            if(!user) return;
-            const id = document.getElementById('tr-id').value;
-            const newLeague = document.getElementById('tr-league').value;
-            const data = {
-                player: document.getElementById('tr-player').value,
-                league: newLeague,
-                from: document.getElementById('tr-from').value,
-                to: document.getElementById('tr-to').value,
-                fee: document.getElementById('tr-fee').value,
-                date: firebase.firestore.FieldValue.serverTimestamp()
-            };
-            try {
-                const newDbase = getDB(newLeague);
-                const oldDbVal = document.getElementById('tr-db').value;
-                if(id){
-                    const oldDbase = oldDbVal === 'db2' ? window.db2 : window.db;
-                    if(oldDbase && oldDbase !== newDbase) {
-                        await oldDbase.collection('transfers').doc(id).delete();
-                        await newDbase.collection('transfers').doc(id).set(data);
-                    } else {
-                        await newDbase.collection('transfers').doc(id).update(data);
-                    }
-                } else {
-                    await newDbase.collection('transfers').add(data);
-                }
-                clearTrF(); loadAdminTr();
-            } catch(e) { alert('Błąd zapisu transferu.'); }
-        }
-
-        async function loadAdminTr(){
-            try {
-                const s1=await window.db.collection('transfers').orderBy('date','desc').limit(100).get();
-                let all=s1.docs.map(d=>({id:d.id, _db:'db1', ...d.data()}));
-                if(window.db2){
-                    try {
-                        const s2=await window.db2.collection('transfers').orderBy('date','desc').limit(100).get();
-                        all=all.concat(s2.docs.map(d=>({id:d.id, _db:'db2', ...d.data()})));
-                    } catch(e) {}
-                }
-                all.sort((a,b)=>(b.date?.seconds||0)-(a.date?.seconds||0));
-                
-                document.getElementById('admin-trlist').innerHTML=all.map(t=>`
-                    <div class="card" style="padding:0.9rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
-                        <div><div style="font-weight:600;font-size:0.9rem;">${t.player}</div>
-                        <div style="font-size:0.72rem;color:var(--muted);">${L[t.league]} | ${t.from} <i class="fa-solid fa-arrow-right-long" style="color:var(--green);"></i> ${t.to}</div></div>
-                        <div style="display:flex;gap:4px;">
-                            <button class="btn-sm" onclick='editTr("${t.id}", ${JSON.stringify(t).replace(/'/g,"&#39;")})'><i class="fa-solid fa-pen"></i></button>
-                            <button class="btn-sm btn-del" onclick="delTr('${t.id}', '${t._db}')"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </div>`).join('')||'<p style="color:var(--muted);">Brak transferów.</p>';
-            } catch(e) {
-                console.error("Błąd podczas ładowania transferów admina:", e);
-            }
-        }
-
-        function editTr(id, t){
-            document.getElementById('tr-id').value = id;
-            document.getElementById('tr-db').value = t._db || 'db1';
-            document.getElementById('tr-player').value = t.player;
-            document.getElementById('tr-league').value = t.league;
-            document.getElementById('tr-from').value = t.from;
-            document.getElementById('tr-to').value = t.to;
-            document.getElementById('tr-fee').value = t.fee || '';
-            window.scrollTo({top:0,behavior:'smooth'});
-        }
-
-        async function delTr(id, dbVal){
-            if(confirm('Usunąć transfer?')){
-                const dbase = (dbVal==='db2' && window.db2) ? window.db2 : window.db;
-                await dbase.collection('transfers').doc(id).delete();
-                loadAdminTr();
-            }
-        }
-
-        function clearTrF(){
-            document.getElementById('tr-id').value=''; 
-            document.getElementById('tr-db').value='';
-            ['tr-player','tr-from','tr-to','tr-fee'].forEach(i=>document.getElementById(i).value='');
-        }
+        // --- Zakończenie podstawowych funkcji (podobnie dla statystyk, transferów, stref i postów) ---
+        // (Reszta standardowych funkcji CMS działa na tej samej zasadzie getDB(league) co updateMatch)
 
     </script>
 </body>

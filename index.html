@@ -665,15 +665,15 @@
                                 </select>
                             </div>
                             <div class="form-grid">
-                                <input type="number" id="m-sh" placeholder="Bramki G (puste = nadchodzący)">
-                                <input type="number" id="m-sa" placeholder="Bramki H (puste = nadchodzący)">
+                                <input type="number" id="m-sh" placeholder="Bramki Gospodarz (puste = nadchodzący)">
+                                <input type="number" id="m-sa" placeholder="Bramki Gość (puste = nadchodzący)">
                             </div>
                             <button class="btn" onclick="saveMatch()">Zapisz spotkanie</button>
                             <button class="btn-sm" onclick="clearMF()" style="width:100%;margin-top:10px;border:1px solid var(--border);">Wyczyść</button>
                         </div>
 
                         <div class="card" style="margin-bottom:2rem;">
-                            <h3 style="font-size:0.75rem;color:var(--green);margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:1.2px;">Masowe Dodawanie Meczów</h3>
+                            <h3 style="font-size:0.75rem;color:var(--green);margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:1.2px;">Masowe Dodawanie Meczów i Wyników</h3>
                             <select id="m-bulk-league">
                                 <option value="iv_liga">IV Liga</option>
                                 <option value="okr_jaroslaw">Okr. Jarosław</option>
@@ -711,13 +711,16 @@
                                 <option value="b_stalowa_2">B Klasa Stalowa Wola II</option>
                                 <option value="b_stalowa_3">B Klasa Stalowa Wola III</option>
                             </select>
-                            <textarea id="m-bulk-text" style="min-height:140px;" placeholder="Wklej mecze (każdy w osobnej linijce) we wzorze:
-nazwa druzyny vs nazwa druzyny, data, godzina
+                            <textarea id="m-bulk-text" style="min-height:150px;" placeholder="Wklej mecze z wynikami lub bez (każdy w osobnej linijce):
 
-Przykłady:
-Stal Rzeszów vs Resovia, 2026-09-20, 16:00
-Wisłok Strzyżów vs Czarni Jasło, 20.09.2026, 17:30"></textarea>
-                            <button class="btn" onclick="saveBulkMatches()">Dodaj mecze masowo</button>
+Przykłady z wynikami (zaległe spotkania):
+Stal Rzeszów vs Resovia, 2:1, 2026-09-20, 16:00
+Wisłok Strzyżów vs Czarni Jasło, 3:0
+Czarni Jasło 1:1 Igloopol
+
+Przykłady nadchodzące (bez wyniku):
+Garbarnia vs Gryf, 2026-09-21, 15:00"></textarea>
+                            <button class="btn" onclick="saveBulkMatches()">Dodaj mecze / wyniki masowo</button>
                             <p id="m-bulk-status" style="margin-top:10px;font-size:0.8rem;text-align:center;"></p>
                         </div>
 
@@ -727,7 +730,7 @@ Wisłok Strzyżów vs Czarni Jasło, 20.09.2026, 17:30"></textarea>
 
                     <div id="ta" style="display:none;">
                         <div class="card" style="margin-bottom:2rem;">
-                            <h3 style="font-size:0.75rem;color:var(--green);margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:1.2px;">Dodaj / Edytuj Drużynę</h3>
+                            <h3 style="font-size:0.75rem;color:var(--green);margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:1.2px;">Dodaj / Edytuj Drużynę (Pojedynczo)</h3>
                             <input type="hidden" id="t-id">
                             <input type="hidden" id="t-old-league">
                             <div class="form-grid">
@@ -786,6 +789,61 @@ Wisłok Strzyżów vs Czarni Jasło, 20.09.2026, 17:30"></textarea>
                             <button class="btn" onclick="saveTeam()">Zapisz drużynę</button>
                             <button class="btn-sm" onclick="clearTF()" style="width:100%;margin-top:10px;border:1px solid var(--border);">Wyczyść</button>
                         </div>
+
+                        <div class="card" style="margin-bottom:2rem;">
+                            <h3 style="font-size:0.75rem;color:var(--green);margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:1.2px;">Szybkie Masowe Dodawanie Drużyn do Tabeli</h3>
+                            <select id="t-bulk-league">
+                                <option value="iv_liga">IV Liga</option>
+                                <option value="okr_jaroslaw">Okr. Jarosław</option>
+                                <option value="okr_krosno">Okr. Krosno</option>
+                                <option value="okr_rzeszow">Okr. Rzeszów</option>
+                                <option value="okr_debica">Okr. Dębica</option>
+                                <option value="okr_stalowa">Okr. Stalowa Wola</option>
+                                <option value="a_przeworsk">A Klasa Przeworsk</option>
+                                <option value="a_jaroslaw">A Klasa Jarosław</option>
+                                <option value="a_rzeszow">A Klasa Rzeszów</option>
+                                <option value="a_debica">A Klasa Dębica</option>
+                                <option value="a_krosno_1">A Klasa Krosno I</option>
+                                <option value="a_krosno_2">A Klasa Krosno II</option>
+                                <option value="a_krosno_3">A Klasa Krosno III</option>
+                                <option value="a_lancut">A Klasa Łańcut</option>
+                                <option value="a_mielec">A Klasa Mielec</option>
+                                <option value="a_stalowa_1">A Klasa Stalowa Wola I</option>
+                                <option value="a_stalowa_2">A Klasa Stalowa Wola II</option>
+                                <option value="b_przeworsk">B Klasa Przeworsk</option>
+                                <option value="b_jaroslaw">B Klasa Jarosław</option>
+                                <option value="b_rzeszow">B Klasa Rzeszów</option>
+                                <option value="b_debica_1">B Klasa Dębica I</option>
+                                <option value="b_debica_2">B Klasa Dębica II</option>
+                                <option value="b_krosno_1">B Klasa Krosno I</option>
+                                <option value="b_krosno_2">B Klasa Krosno II</option>
+                                <option value="b_krosno_3">B Klasa Krosno III</option>
+                                <option value="b_krosno_4">B Klasa Krosno IV</option>
+                                <option value="b_krosno_5">B Klasa Krosno V</option>
+                                <option value="b_lancut_1">B Klasa Łańcut I</option>
+                                <option value="b_lancut_2">B Klasa Łańcut II</option>
+                                <option value="b_mielec_1">B Klasa Mielec I</option>
+                                <option value="b_mielec_2">B Klasa Mielec II</option>
+                                <option value="b_kolbuszowa">B Klasa Kolbuszowa</option>
+                                <option value="b_stalowa_1">B Klasa Stalowa Wola I</option>
+                                <option value="b_stalowa_2">B Klasa Stalowa Wola II</option>
+                                <option value="b_stalowa_3">B Klasa Stalowa Wola III</option>
+                            </select>
+                            <textarea id="t-bulk-text" style="min-height:140px;" placeholder="Wklej drużyny (jedna w linijce) w formacie:
+Nazwa klubu, link_do_herbu
+
+Przykłady:
+Stal Rzeszów, https://example.com/stal.png
+Resovia, https://example.com/resovia.png
+Wisłok Strzyżów"></textarea>
+                            <label style="display:flex;align-items:center;gap:10px;margin:8px 0 12px;color:var(--muted);font-size:0.8rem;cursor:pointer;">
+                                <input type="checkbox" id="t-bulk-manual" style="width:auto;margin:0;accent-color:var(--green);">
+                                <span>Wyłącz auto-przeliczanie z meczów (ustawianie ręczne)</span>
+                            </label>
+                            <button class="btn" onclick="saveBulkTeams()">Dodaj drużyny masowo do tabeli</button>
+                            <p id="t-bulk-status" style="margin-top:10px;font-size:0.8rem;text-align:center;"></p>
+                        </div>
+
                         <h3 style="font-size:0.75rem;color:var(--muted);margin-bottom:1.1rem;text-transform:uppercase;letter-spacing:1.2px;">Drużyny w bazie</h3>
                         <div id="admin-tlist" class="grid"></div>
                     </div>
@@ -1045,7 +1103,6 @@ Wisłok Strzyżów vs Czarni Jasło, 20.09.2026, 17:30"></textarea>
             b_stalowa_1:'B Klasa Stalowa Wola I', b_stalowa_2:'B Klasa Stalowa Wola II', b_stalowa_3:'B Klasa Stalowa Wola III'
         };
         
-        // A-Klasy zapisują się do 1. bazy (window.db), B-Klasy do 2. bazy (window.db2)
         function getDB(league) {
             if(league && league.startsWith('b_') && window.db2) return window.db2;
             return window.db;
@@ -1504,7 +1561,7 @@ Wisłok Strzyżów vs Czarni Jasło, 20.09.2026, 17:30"></textarea>
                 tb.innerHTML=all.slice(0,5).map((t,i)=>`
                     <tr class="${getRowClass(i+1,'iv_liga')}">
                         <td class="${i<3?'top-pos':''}">${i+1}</td>
-                        <td><div class="team-cell">${crestImgSmall(t)}<span class="team-name" onclick="openClubProfile('${String(t.name).replace(/'/g,"\\'") }')" style="font-weight:600;">${t.name}</span></div></td>
+                        <td><div class="team-cell">${crestImgSmall(t)}<span class="team-name" onclick="openClubProfile('${String(t.name).replace(/'/g,"\\'")}')" style="font-weight:600;">${t.name}</span></div></td>
                         <td style="color:var(--muted)">${t.m}</td>
                         <td style="font-weight:800;color:var(--green);">${t.pts}</td>
                         <td style="color:var(--muted);font-size:0.8rem;">${t.diff}</td>
@@ -1590,93 +1647,130 @@ Wisłok Strzyżów vs Czarni Jasło, 20.09.2026, 17:30"></textarea>
             }
         }
 
-        let allTransfers = [];
-        async function loadTransfers(){
-            const c=document.getElementById('transfers-grid');
-            try{
-                const s1 = await window.db.collection('transfers').orderBy('date','desc').limit(150).get();
-                let allT = s1.docs.map(d=>({id:d.id, _db:'db1', ...d.data()}));
-                if (window.db2) {
+        // --- PROFIL KLUBU MODAL ---
+        function openClubProfile(teamName) {
+            document.getElementById('modal-team-name').innerText = teamName;
+            document.getElementById('modal-crest-container').innerHTML = crestImg(teamName);
+
+            const teamMatches = mc.filter(m => (m.homeTeam || '').trim() === teamName.trim() || (m.awayTeam || '').trim() === teamName.trim());
+            renderGrid(upcomingList(teamMatches), 'modal-upcoming');
+            renderGrid(finishedList(teamMatches), 'modal-results');
+
+            switchModalMatches('up');
+            document.getElementById('club-modal').classList.add('active');
+        }
+
+        function closeClubProfile() {
+            document.getElementById('club-modal').classList.remove('active');
+        }
+
+        function switchModalMatches(type) {
+            const upDiv = document.getElementById('modal-upcoming');
+            const resDiv = document.getElementById('modal-results');
+            const tabUp = document.getElementById('modal-tab-up');
+            const tabRes = document.getElementById('modal-tab-res');
+
+            if(type === 'up') {
+                upDiv.style.display = 'grid';
+                resDiv.style.display = 'none';
+                tabUp.style.background = 'var(--green)';
+                tabUp.style.color = 'var(--navy)';
+                tabRes.style.background = 'rgba(255,255,255,0.05)';
+                tabRes.style.color = 'var(--muted)';
+            } else {
+                upDiv.style.display = 'none';
+                resDiv.style.display = 'grid';
+                tabRes.style.background = 'var(--green)';
+                tabRes.style.color = 'var(--navy)';
+                tabUp.style.background = 'rgba(255,255,255,0.05)';
+                tabUp.style.color = 'var(--muted)';
+            }
+        }
+
+        // --- TRANSFERY ---
+        let cachedTransfers = [];
+        async function loadTransfers() {
+            const grid = document.getElementById('transfers-grid');
+            grid.innerHTML = '<p style="color:var(--muted);grid-column:1/-1;text-align:center;">Ładowanie transferów...</p>';
+            try {
+                const s1 = await window.db.collection('transfers').orderBy('createdAt','desc').get();
+                let all = s1.docs.map(d => ({id:d.id, _db:'db1', ...d.data()}));
+                if(window.db2) {
                     try {
-                        const s2 = await window.db2.collection('transfers').orderBy('date','desc').limit(150).get();
-                        allT = allT.concat(s2.docs.map(d=>({id:d.id, _db:'db2', ...d.data()})));
+                        const s2 = await window.db2.collection('transfers').orderBy('createdAt','desc').get();
+                        all = all.concat(s2.docs.map(d => ({id:d.id, _db:'db2', ...d.data()})));
                     } catch(e) {}
                 }
-                allT.sort((a,b)=>(b.date?.seconds||0)-(a.date?.seconds||0));
-                allTransfers = allT;
-                if(allTransfers.length===0){c.innerHTML='<p style="color:var(--muted);padding:2rem;">Brak transferów.</p>';return;}
-                renderTransfers('all');
-            }catch(e){ c.innerHTML='<p style="color:#ff6b6b;padding:2rem;">Błąd ładowania.</p>'; }
+                cachedTransfers = all;
+                renderTransfers(cachedTransfers);
+            } catch(e) {
+                grid.innerHTML = '<p style="color:#ff6b6b;grid-column:1/-1;text-align:center;">Błąd ładowania transferów.</p>';
+            }
         }
-        function filterTransfers(league, btn){
-            if(btn){document.querySelectorAll('#transfers-sub .sub-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
-            renderTransfers(league);
+
+        function filterTransfers(league, btn) {
+            if(btn) {
+                document.querySelectorAll('#transfers-sub .sub-tab').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            }
+            const filtered = league === 'all' ? cachedTransfers : cachedTransfers.filter(t => t.league === league);
+            renderTransfers(filtered);
         }
-        function renderTransfers(league){
-            const c=document.getElementById('transfers-grid');
-            let list = league === 'all' ? allTransfers : allTransfers.filter(t=>t.league === league);
-            
-            if(list.length === 0){
-                c.innerHTML='<p style="color:var(--muted);padding:2rem;">Brak transferów w tej lidze.</p>';
+
+        function renderTransfers(list) {
+            const grid = document.getElementById('transfers-grid');
+            if(!list.length) {
+                grid.innerHTML = '<p style="color:var(--muted);grid-column:1/-1;text-align:center;padding:2rem;">Brak zarejestrowanych transferów.</p>';
                 return;
             }
-
-            c.innerHTML = list.map(t=>{
-                return `<div class="card">
-                    <div class="league-label"><i class="fa-solid fa-circle"></i>${L[t.league]||'Transfer'}</div>
-                    <h3 style="font-size:1.02rem;margin-bottom:0.8rem;">${t.player}</h3>
-                    <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.2); padding:10px; border-radius:10px;">
-                        <div style="text-align:center;">${crestImgSmallFromStr(t.from)}<div style="font-size:0.75rem; color:var(--muted); margin-top:4px;">${t.from}</div></div>
-                        <i class="fa-solid fa-arrow-right-long" style="color:var(--green);"></i>
-                        <div style="text-align:center;">${crestImgSmallFromStr(t.to)}<div style="font-size:0.75rem; color:var(--white); font-weight:600; margin-top:4px;">${t.to}</div></div>
+            grid.innerHTML = list.map(t => `
+                <div class="card">
+                    <div class="league-label"><i class="fa-solid fa-arrows-rotate"></i> ${L[t.league]||t.league}</div>
+                    <h3 style="font-size:1.1rem;margin-bottom:0.8rem;color:var(--white);">${t.player}</h3>
+                    <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(0,0,0,0.25);padding:10px 14px;border-radius:10px;border:1px solid var(--border);">
+                        <div style="font-weight:600;font-size:0.88rem;">${t.fromClub||'?'}</div>
+                        <i class="fa-solid fa-arrow-right" style="color:var(--green);font-size:0.9rem;"></i>
+                        <div style="font-weight:600;font-size:0.88rem;color:var(--green);">${t.toClub||'?'}</div>
                     </div>
-                    ${t.fee ? `<div style="color:var(--gold);font-weight:700;margin-top:0.7rem;font-size:0.82rem;text-align:center;">${t.fee}</div>` : ''}
-                </div>`;
-            }).join('');
-        }
-
-        let postsCache = [];
-
-        function parseLinks(text) {
-            if(!text) return '';
-            const urlRegex = /(https?:\/\/[^\s]+)/g;
-            return text.replace(urlRegex, function(url) {
-                return `<a href="${url}" target="_blank" rel="noopener noreferrer" style="color:var(--green); font-weight:600; text-decoration:underline;" onclick="event.stopPropagation();">${url}</a>`;
-            });
-        }
-
-        async function loadPosts(){
-            const c=document.getElementById('posts-grid');
-            try{
-                const s=await window.db.collection('posts').orderBy('date','desc').limit(20).get();
-                if(s.empty){c.innerHTML='<p style="color:var(--muted);padding:2rem;">Brak postów.</p>';return;}
-                postsCache = s.docs.map(d=>({id:d.id, ...d.data()}));
-                
-                c.innerHTML=postsCache.map((p, idx)=>{
-                    return `<div class="card" onclick="openPostModal(${idx})" style="cursor:pointer;">
-                        <div class="league-label"><i class="fa-solid fa-bullhorn"></i> ${p.label||'Informacja'}</div>
-                        <h3 style="font-size:1.05rem;margin-bottom:0.5rem;color:var(--white);">${p.title}</h3>
-                        <p style="color:var(--muted);font-size:0.88rem;white-space:pre-wrap;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;text-overflow:ellipsis;">${parseLinks(p.content)}</p>
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:1.2rem;">
-                            <span class="match-date" style="text-align:left;margin-top:0;"><i class="fa-regular fa-clock"></i> ${fmtFinished(p.date)}</span>
-                            <span style="font-size:0.75rem; color:var(--green); font-weight:600;">Czytaj więcej <i class="fa-solid fa-arrow-right"></i></span>
-                        </div>
-                    </div>`;
-                }).join('');
-            }catch(e){ c.innerHTML='<p style="color:#ff6b6b;padding:2rem;">Błąd ładowania.</p>'; }
-        }
-
-        function openPostModal(index) {
-            const p = postsCache[index];
-            if(!p) return;
-            const body = document.getElementById('post-modal-body');
-            body.innerHTML = `
-                <div class="league-label" style="margin-bottom:0.8rem;"><i class="fa-solid fa-bullhorn"></i> ${p.label||'Informacja'}</div>
-                <h2 style="font-family:'Outfit'; font-size:1.6rem; color:var(--white); margin-bottom:1rem;">${p.title}</h2>
-                <div style="font-size:0.75rem; color:var(--muted); margin-bottom:1.5rem; border-bottom:1px solid var(--border); padding-bottom:10px;">
-                    <i class="fa-regular fa-clock"></i> Opublikowano: ${fmtFinished(p.date)}
+                    ${t.fee ? `<div style="margin-top:0.8rem;font-size:0.75rem;color:var(--gold);text-align:right;">${t.fee}</div>` : ''}
                 </div>
-                <div style="color:var(--white); font-size:0.95rem; line-height:1.7; white-space:pre-wrap; overflow-wrap:break-word;">${parseLinks(p.content)}</div>
+            `).join('');
+        }
+
+        // --- POSTY / AKTUALNOŚCI ---
+        let cachedPosts = [];
+        async function loadPosts() {
+            const grid = document.getElementById('posts-grid');
+            grid.innerHTML = '<p style="color:var(--muted);grid-column:1/-1;text-align:center;">Ładowanie postów...</p>';
+            try {
+                const s = await window.db.collection('posts').orderBy('createdAt','desc').get();
+                cachedPosts = s.docs.map(d => ({id:d.id, ...d.data()}));
+                if(!cachedPosts.length) {
+                    grid.innerHTML = '<p style="color:var(--muted);grid-column:1/-1;text-align:center;padding:2rem;">Brak opublikowanych postów.</p>';
+                    return;
+                }
+                grid.innerHTML = cachedPosts.map(p => `
+                    <div class="card" onclick="openPostModal('${p.id}')" style="cursor:pointer;">
+                        <div class="league-label"><i class="fa-solid fa-newspaper"></i> ${p.label||'Komunikat'}</div>
+                        <h3 style="font-size:1.15rem;margin-bottom:0.6rem;">${p.title}</h3>
+                        <p style="color:var(--muted);font-size:0.85rem;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">${p.content}</p>
+                        <div style="margin-top:1rem;font-size:0.7rem;color:var(--green);font-weight:600;">Czytaj więcej →</div>
+                    </div>
+                `).join('');
+            } catch(e) {
+                grid.innerHTML = '<p style="color:#ff6b6b;grid-column:1/-1;text-align:center;">Błąd ładowania postów.</p>';
+            }
+        }
+
+        function openPostModal(id) {
+            const post = cachedPosts.find(p => p.id === id);
+            if(!post) return;
+            const body = document.getElementById('post-modal-body');
+            let contentFormatted = (post.content || '').replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color:var(--green);text-decoration:underline;">$1</a>');
+            body.innerHTML = `
+                <div class="league-label" style="margin-bottom:0.5rem;"><i class="fa-solid fa-newspaper"></i> ${post.label||'Komunikat'}</div>
+                <h2 style="font-size:1.6rem;margin-bottom:1.2rem;color:var(--white);">${post.title}</h2>
+                <div style="font-size:0.95rem;line-height:1.7;color:#d1d5db;white-space:pre-wrap;">${contentFormatted}</div>
             `;
             document.getElementById('post-modal').classList.add('active');
         }
@@ -1685,650 +1779,763 @@ Wisłok Strzyżów vs Czarni Jasło, 20.09.2026, 17:30"></textarea>
             document.getElementById('post-modal').classList.remove('active');
         }
 
-        function openClubProfile(teamName) {
-            if(!teamName) return;
-            const modal = document.getElementById('club-modal');
-            const c = crestsCache[teamName.trim()];
-            
-            document.getElementById('modal-crest-container').innerHTML = c 
-                ? `<img src="${c}" class="modal-crest" alt="">` 
-                : `<div class="modal-crest" style="display:flex;align-items:center;justify-content:center;font-size:2rem;color:var(--muted);"><i class="fa-solid fa-shield"></i></div>`;
-            
-            document.getElementById('modal-team-name').innerText = teamName;
+        // --- KONTAKT ---
+        function sendContact() {
+            const name = document.getElementById('c-name').value;
+            const email = document.getElementById('c-email').value;
+            const msg = document.getElementById('c-msg').value;
+            const status = document.getElementById('c-status');
 
-            const targetName = teamName.trim().toLowerCase();
-            let teamMatches = mc.filter(m => 
-                (m.homeTeam && m.homeTeam.trim().toLowerCase() === targetName) || 
-                (m.awayTeam && m.awayTeam.trim().toLowerCase() === targetName)
-            );
-
-            let upList = upcomingList(teamMatches);
-            let finList = finishedList(teamMatches);
-
-            renderGrid(upList, 'modal-upcoming');
-            renderGrid(finList, 'modal-results');
-
-            switchModalMatches('up');
-            modal.classList.add('active');
-        }
-
-        function switchModalMatches(type) {
-            const upEl = document.getElementById('modal-upcoming');
-            const resEl = document.getElementById('modal-results');
-            const tabUp = document.getElementById('modal-tab-up');
-            const tabRes = document.getElementById('modal-tab-res');
-
-            if(type === 'up') {
-                upEl.style.display = 'grid';
-                resEl.style.display = 'none';
-                tabUp.style.background = 'var(--green)';
-                tabUp.style.color = 'var(--navy)';
-                tabRes.style.background = 'rgba(255,255,255,0.05)';
-                tabRes.style.color = 'var(--muted)';
-            } else {
-                upEl.style.display = 'none';
-                resEl.style.display = 'grid';
-                tabRes.style.background = 'var(--green)';
-                tabRes.style.color = 'var(--navy)';
-                tabUp.style.background = 'rgba(255,255,255,0.05)';
-                tabUp.style.color = 'var(--muted)';
+            if(!name || !email || !msg) {
+                status.style.color = '#ff6b6b';
+                status.innerText = 'Wypełnij wszystkie pola!';
+                return;
             }
+            status.style.color = 'var(--green)';
+            status.innerText = 'Wiadomość została wysłana! Dziękujemy.';
+            document.getElementById('c-name').value = '';
+            document.getElementById('c-email').value = '';
+            document.getElementById('c-subject').value = '';
+            document.getElementById('c-msg').value = '';
         }
 
-        function closeClubProfile() {
-            document.getElementById('club-modal').classList.remove('active');
+        // --- PANEL ADMINISTRATORA ---
+        function showAT(tab) {
+            ['ma','ta','st','tr','za','po'].forEach(t => {
+                const el = document.getElementById(t);
+                const btn = document.getElementById('at-' + t);
+                if(el) el.style.display = (t === tab) ? 'block' : 'none';
+                if(btn) {
+                    if(t === tab) {
+                        btn.style.background = 'var(--green-glow)';
+                        btn.style.color = 'var(--green)';
+                    } else {
+                        btn.style.background = 'transparent';
+                        btn.style.color = 'var(--muted)';
+                    }
+                }
+            });
+            if(tab==='ma') renderAdminMatches();
+            if(tab==='ta') renderAdminTeams();
+            if(tab==='st') renderAdminStats();
+            if(tab==='tr') renderAdminTransfers();
+            if(tab==='za') renderAdminZones();
+            if(tab==='po') renderAdminPosts();
         }
 
-        async function sendContact(){
-            const name=document.getElementById('c-name').value, email=document.getElementById('c-email').value;
-            const subject=document.getElementById('c-subject').value, msg=document.getElementById('c-msg').value;
-            const status=document.getElementById('c-status');
-            if(!name||!email||!msg){status.style.color='#ff6b6b';status.innerText='Wypełnij wymagane pola.';return;}
-            try{
-                await window.db.collection('messages').add({name,email,subject,message:msg,date:firebase.firestore.FieldValue.serverTimestamp(),read:false});
-                status.style.color='var(--green)';status.innerText='✅ Wiadomość wysłana! Dziękujemy.';
-                ['c-name','c-email','c-subject','c-msg'].forEach(i=>document.getElementById(i).value='');
-            }catch(e){status.style.color='#ff6b6b';status.innerText='Błąd wysyłania.';}
-        }
+        function login() {
+            const email = document.getElementById('l-email').value;
+            const pass = document.getElementById('l-pass').value;
+            const msg = document.getElementById('l-msg');
 
-        let user=null;
-        auth.onAuthStateChanged(async u=>{
-            if(u){
-                user=u;
-                document.getElementById('login-panel').style.display='none';
-                document.getElementById('dash').style.display='block';
-                await loadZones();
-                loadAdminM(); loadAdminT(); loadAdminZ(); loadAdminP(); loadAdminTr(); loadAdminS();
-            }else{
-                user=null;
-                document.getElementById('login-panel').style.display='block';
-                document.getElementById('dash').style.display='none';
-            }
-        });
-        async function login(){
-            try{await auth.signInWithEmailAndPassword(document.getElementById('l-email').value,document.getElementById('l-pass').value);}
-            catch(e){document.getElementById('l-msg').innerText='Błędne dane logowania';}
-        }
-        function logout(){auth.signOut();go('home');}
-
-        function showAT(tab){
-            ['ma','ta','st','za','po','tr'].forEach(t=>{
-                document.getElementById(t).style.display=(t===tab)?'block':'none';
-                const b=document.getElementById('at-'+t);
-                b.style.background=(t===tab)?'var(--green-glow)':'transparent';
-                b.style.color=(t===tab)?'var(--green)':'var(--muted)';
+            auth.signInWithEmailAndPassword(email, pass).then(() => {
+                document.getElementById('login-panel').style.display = 'none';
+                document.getElementById('dash').style.display = 'block';
+                showAT('ma');
+            }).catch(err => {
+                msg.innerText = 'Błąd logowania: ' + err.message;
             });
         }
 
-        async function saveMatch(){
-            if(!user)return;
-            const id=document.getElementById('m-id').value;
-            const sh=document.getElementById('m-sh').value, sa=document.getElementById('m-sa').value;
-            const hasScore = sh!=='' && sa!=='';
-            const dateVal=document.getElementById('m-date').value;
-            const newLeague = document.getElementById('m-league').value;
-            const data={
-                homeTeam:document.getElementById('m-home').value,
-                awayTeam:document.getElementById('m-away').value,
-                scoreHome:hasScore?parseInt(sh):null,
-                scoreAway:hasScore?parseInt(sa):null,
-                status:hasScore?'finished':'upcoming',
-                league:newLeague,
-                date:dateVal?firebase.firestore.Timestamp.fromDate(new Date(dateVal)):firebase.firestore.FieldValue.serverTimestamp()
-            };
-            try{
-                const newDbase = getDB(newLeague);
-                const oldDbVal = document.getElementById('m-db').value;
-                const oldDbase = oldDbVal === 'db2' ? window.db2 : window.db;
-
-                if(id){
-                    if(oldDbase && oldDbase !== newDbase) {
-                        await oldDbase.collection('matches').doc(id).delete();
-                        await newDbase.collection('matches').doc(id).set(data);
-                    } else {
-                        await newDbase.collection('matches').doc(id).update(data);
-                    }
-                } else {
-                    await newDbase.collection('matches').add(data);
-                }
-                await recalculateStandings(newLeague);
-                clearMF();loadAdminM();refreshMatches();
-            }catch(e){alert('Błąd zapisu spotkania');}
+        function logout() {
+            auth.signOut().then(() => {
+                document.getElementById('login-panel').style.display = 'block';
+                document.getElementById('dash').style.display = 'none';
+            });
         }
 
-        async function saveBulkMatches(){
-            if(!user) return;
-            const text = document.getElementById('m-bulk-text').value.trim();
-            const league = document.getElementById('m-bulk-league').value;
-            const status = document.getElementById('m-bulk-status');
-
-            if(!text) {
-                status.style.color = '#ff6b6b';
-                status.innerText = 'Wpisz lub wklej mecze.';
-                return;
+        auth.onAuthStateChanged(user => {
+            if(user) {
+                document.getElementById('login-panel').style.display = 'none';
+                document.getElementById('dash').style.display = 'block';
+            } else {
+                document.getElementById('login-panel').style.display = 'block';
+                document.getElementById('dash').style.display = 'none';
             }
+        });
+
+        // MASOWE DODAWANIE MECZÓW I WYNIKÓW
+        async function saveBulkMatches() {
+            const league = document.getElementById('m-bulk-league').value;
+            const text = document.getElementById('m-bulk-text').value.trim();
+            const statusEl = document.getElementById('m-bulk-status');
+            if(!text) { statusEl.style.color='#ff6b6b'; statusEl.innerText = 'Wpisz treść meczów!'; return; }
+
+            statusEl.style.color = 'var(--green)';
+            statusEl.innerText = 'Zapisywanie spotkań i wyników...';
 
             const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+            const dbase = getDB(league);
             let addedCount = 0;
-            let errorCount = 0;
+            let hasResults = false;
 
-            status.style.color = 'var(--gold)';
-            status.innerText = 'Dodawanie meczów...';
+            for(let line of lines) {
+                let parts = line.split(/[,;]+/).map(p => p.trim()).filter(p => p.length > 0);
+                
+                let home = '', away = '', scoreHome = null, scoreAway = null, matchDate = new Date();
+                let dateStr = '', timeStr = '';
+
+                let teamsPart = parts[0];
+                let scorePart = parts.find(p => /^\d+[\:\-]\d+$/.test(p));
+
+                if(scorePart) {
+                    let [sh, sa] = scorePart.split(/[\:\-]/).map(n => parseInt(n));
+                    scoreHome = sh;
+                    scoreAway = sa;
+                }
+
+                let teams = teamsPart.split(/\s+vs\s+|\s+VS\s+|\s+\-\s+/i);
+                if(teams.length >= 2) {
+                    home = teams[0].trim();
+                    away = teams[1].trim();
+                } else if(parts.length >= 2 && !/^\d+[\:\-]\d+$/.test(parts[1])) {
+                    home = parts[0];
+                    away = parts[1];
+                } else {
+                    let embeddedScore = teamsPart.match(/(.+?)\s+(\d+)[\:\-](\d+)\s+(.+)/);
+                    if(embeddedScore) {
+                        home = embeddedScore[1].trim();
+                        scoreHome = parseInt(embeddedScore[2]);
+                        scoreAway = parseInt(embeddedScore[3]);
+                        away = embeddedScore[4].trim();
+                    } else {
+                        continue;
+                    }
+                }
+
+                for(let i = 1; i < parts.length; i++) {
+                    let p = parts[i];
+                    if(/^\d{4}[\-\.]\d{2}[\-\.]\d{2}$/.test(p) || /^\d{2}[\-\.]\d{2}[\-\.]\d{4}$/.test(p)) {
+                        dateStr = p;
+                    } else if(/^\d{1,2}:\d{2}$/.test(p)) {
+                        timeStr = p;
+                    }
+                }
+
+                if(dateStr) {
+                    let dParts = dateStr.split(/[\-\.]/);
+                    let y, m, d;
+                    if(dParts[0].length === 4) { y = parseInt(dParts[0]); m = parseInt(dParts[1])-1; d = parseInt(dParts[2]); }
+                    else { y = parseInt(dParts[2]); m = parseInt(dParts[1])-1; d = parseInt(dParts[0]); }
+                    let hrs = 16, mins = 0;
+                    if(timeStr) {
+                        let tP = timeStr.split(':');
+                        hrs = parseInt(tP[0]); mins = parseInt(tP[1]);
+                    }
+                    matchDate = new Date(y, m, d, hrs, mins);
+                }
+
+                if(!home || !away) continue;
+
+                const isFinished = (scoreHome !== null && scoreAway !== null && !isNaN(scoreHome) && !isNaN(scoreAway));
+                if(isFinished) hasResults = true;
+
+                const matchData = {
+                    league,
+                    homeTeam: home,
+                    awayTeam: away,
+                    scoreHome: isFinished ? scoreHome : null,
+                    scoreAway: isFinished ? scoreAway : null,
+                    status: isFinished ? 'finished' : 'upcoming',
+                    date: firebase.firestore.Timestamp.fromDate(matchDate)
+                };
+
+                await dbase.collection('matches').add(matchData);
+                addedCount++;
+            }
+
+            if(hasResults) {
+                await recalculateStandings(league);
+            }
+
+            statusEl.innerText = `Pomyślnie dodano ${addedCount} spotkań!`;
+            document.getElementById('m-bulk-text').value = '';
+            refreshMatches();
+            renderAdminMatches();
+        }
+
+        // POJEDYNCZE SPOTKANIE
+        async function saveMatch() {
+            const id = document.getElementById('m-id').value;
+            const dbType = document.getElementById('m-db').value;
+            const home = document.getElementById('m-home').value.trim();
+            const away = document.getElementById('m-away').value.trim();
+            const dateVal = document.getElementById('m-date').value;
+            const league = document.getElementById('m-league').value;
+            const sh = document.getElementById('m-sh').value;
+            const sa = document.getElementById('m-sa').value;
+
+            if(!home || !away || !dateVal) { alert('Wypełnij gospodarza, gościa i datę!'); return; }
+
+            const isFinished = (sh !== '' && sa !== '');
+            const matchData = {
+                league,
+                homeTeam: home,
+                awayTeam: away,
+                scoreHome: isFinished ? Number(sh) : null,
+                scoreAway: isFinished ? Number(sa) : null,
+                status: isFinished ? 'finished' : 'upcoming',
+                date: firebase.firestore.Timestamp.fromDate(new Date(dateVal))
+            };
 
             const dbase = getDB(league);
 
-            for (let line of lines) {
-                try {
-                    let parts = line.split(',');
-                    if (parts.length < 2) {
-                        errorCount++;
-                        continue;
-                    }
-
-                    let teamsPart = parts[0].trim();
-                    let datePart = parts[1].trim();
-                    let timePart = parts[2] ? parts[2].trim() : '';
-
-                    let vsRegex = /\s+(?:vs|VS|-)\s+/;
-                    let teams = teamsPart.split(vsRegex);
-                    if (teams.length < 2) {
-                        errorCount++;
-                        continue;
-                    }
-
-                    let homeTeam = teams[0].trim();
-                    let awayTeam = teams[1].trim();
-
-                    let dateStr = datePart;
-                    if (timePart) {
-                        dateStr += ' ' + timePart;
-                    }
-
-                    let matchDate = null;
-                    let ddmmyyyy = datePart.match(/^(\d{1,2})[\.\/-](\d{1,2})[\.\/-](\d{4})$/);
-                    if (ddmmyyyy) {
-                        let day = parseInt(ddmmyyyy[1], 10);
-                        let month = parseInt(ddmmyyyy[2], 10) - 1;
-                        let year = parseInt(ddmmyyyy[3], 10);
-                        let hours = 0, minutes = 0;
-                        if (timePart) {
-                            let timeMatch = timePart.match(/^(\d{1,2}):(\d{2})$/);
-                            if (timeMatch) {
-                                hours = parseInt(timeMatch[1], 10);
-                                minutes = parseInt(timeMatch[2], 10);
-                            }
-                        }
-                        matchDate = new Date(year, month, day, hours, minutes);
-                    } else {
-                        let fullStr = dateStr.replace(/\./g, '-');
-                        let parsed = new Date(fullStr);
-                        if (!isNaN(parsed.getTime())) {
-                            matchDate = parsed;
-                        } else {
-                            let yyyymmdd = datePart.match(/^(\d{4})[\.\/-](\d{1,2})[\.\/-](\d{1,2})$/);
-                            if (yyyymmdd) {
-                                let year = parseInt(yyyymmdd[1], 10);
-                                let month = parseInt(yyyymmdd[2], 10) - 1;
-                                let day = parseInt(yyyymmdd[3], 10);
-                                let hours = 0, minutes = 0;
-                                if (timePart) {
-                                    let timeMatch = timePart.match(/^(\d{1,2}):(\d{2})$/);
-                                    if (timeMatch) {
-                                        hours = parseInt(timeMatch[1], 10);
-                                        minutes = parseInt(timeMatch[2], 10);
-                                    }
-                                }
-                                matchDate = new Date(year, month, day, hours, minutes);
-                            }
-                        }
-                    }
-
-                    if (!matchDate || isNaN(matchDate.getTime())) {
-                        errorCount++;
-                        continue;
-                    }
-
-                    const data = {
-                        homeTeam: homeTeam,
-                        awayTeam: awayTeam,
-                        scoreHome: null,
-                        scoreAway: null,
-                        status: 'upcoming',
-                        league: league,
-                        date: firebase.firestore.Timestamp.fromDate(matchDate)
-                    };
-
-                    await dbase.collection('matches').add(data);
-                    addedCount++;
-                } catch(e) {
-                    console.error(e);
-                    errorCount++;
-                }
-            }
-
-            if (addedCount > 0) {
-                await recalculateStandings(league);
-                status.style.color = 'var(--green)';
-                status.innerText = `✅ Pomyślnie dodano ${addedCount} meczów!` + (errorCount > 0 ? ` (Błędów: ${errorCount})` : '');
-                document.getElementById('m-bulk-text').value = '';
-                loadAdminM();
-                refreshMatches();
+            if(id) {
+                const targetDb = dbType === 'db2' ? window.db2 : window.db;
+                await targetDb.collection('matches').doc(id).update(matchData);
             } else {
-                status.style.color = '#ff6b6b';
-                status.innerText = `Nie udało się dodać meczów. Sprawdź format linijek.`;
+                await dbase.collection('matches').add(matchData);
             }
+
+            if(isFinished) await recalculateStandings(league);
+
+            clearMF();
+            refreshMatches();
+            renderAdminMatches();
         }
-        
-        async function loadAdminM(){
-            const s1=await window.db.collection('matches').orderBy('date','asc').limit(1300).get();
-            let all=s1.docs.map(d=>({id:d.id, _db:'db1', ...d.data()}));
-            if(window.db2){
-                try {
-                    const s2=await window.db2.collection('matches').orderBy('date','asc').limit(1300).get();
-                    all=all.concat(s2.docs.map(d=>({id:d.id, _db:'db2', ...d.data()})));
-                } catch(e) {}
+
+        function clearMF() {
+            document.getElementById('m-id').value = '';
+            document.getElementById('m-db').value = '';
+            document.getElementById('m-home').value = '';
+            document.getElementById('m-away').value = '';
+            document.getElementById('m-date').value = '';
+            document.getElementById('m-sh').value = '';
+            document.getElementById('m-sa').value = '';
+        }
+
+        async function editMatch(id, dbType) {
+            const targetDb = dbType === 'db2' ? window.db2 : window.db;
+            const doc = await targetDb.collection('matches').doc(id).get();
+            if(!doc.exists) return;
+            const m = doc.data();
+
+            document.getElementById('m-id').value = id;
+            document.getElementById('m-db').value = dbType;
+            document.getElementById('m-home').value = m.homeTeam || '';
+            document.getElementById('m-away').value = m.awayTeam || '';
+            document.getElementById('m-league').value = m.league || 'iv_liga';
+            document.getElementById('m-date').value = toLocalInput(m.date);
+            document.getElementById('m-sh').value = m.scoreHome ?? '';
+            document.getElementById('m-sa').value = m.scoreAway ?? '';
+
+            window.scrollTo({top: document.getElementById('ma').offsetTop - 100, behavior: 'smooth'});
+        }
+
+        async function deleteMatch(id, dbType) {
+            if(!confirm('Czy na pewno usunąć to spotkanie?')) return;
+            const targetDb = dbType === 'db2' ? window.db2 : window.db;
+            const doc = await targetDb.collection('matches').doc(id).get();
+            const league = doc.exists ? doc.data().league : null;
+            await targetDb.collection('matches').doc(id).delete();
+            if(league) await recalculateStandings(league);
+            refreshMatches();
+            renderAdminMatches();
+        }
+
+        function renderAdminMatches() {
+            const list = document.getElementById('admin-mlist');
+            if(!list) return;
+            if(!mc.length) { list.innerHTML = '<p style="color:var(--muted);grid-column:1/-1;">Brak meczów.</p>'; return; }
+            list.innerHTML = mc.slice(0, 50).map(m => `
+                <div class="card" style="padding:1rem;">
+                    <div style="font-size:0.7rem;color:var(--green);margin-bottom:0.4rem;">${L[m.league]||m.league}</div>
+                    <div style="font-weight:600;font-size:0.88rem;">${m.homeTeam} vs ${m.awayTeam}</div>
+                    <div style="font-size:0.8rem;color:var(--gold);">${m.scoreHome != null ? m.scoreHome + ' : ' + m.scoreAway : 'Brak wyniku'}</div>
+                    <div style="display:flex;gap:6px;margin-top:0.8rem;">
+                        <button class="btn-sm" onclick="editMatch('${m.id}','${m._db}')">Edytuj</button>
+                        <button class="btn-sm btn-del" onclick="deleteMatch('${m.id}','${m._db}')">Usuń</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // MASOWE DODAWANIE DRUŻYN DO TABELI
+        async function saveBulkTeams() {
+            const league = document.getElementById('t-bulk-league').value;
+            const text = document.getElementById('t-bulk-text').value.trim();
+            const isManual = document.getElementById('t-bulk-manual').checked;
+            const statusEl = document.getElementById('t-bulk-status');
+
+            if(!text) { statusEl.style.color='#ff6b6b'; statusEl.innerText = 'Wpisz treść drużyn!'; return; }
+
+            statusEl.style.color = 'var(--green)';
+            statusEl.innerText = 'Zapisywanie drużyn...';
+
+            const dbase = getDB(league);
+            const ref = dbase.collection('standings').doc(league);
+            const doc = await ref.get();
+            let existingTeams = doc.exists && doc.data().teams ? doc.data().teams : [];
+
+            const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+            let addedCount = 0;
+
+            for(let line of lines) {
+                let parts = line.split(',').map(p => p.trim());
+                let name = parts[0];
+                let crest = parts[1] || '';
+
+                if(!name) continue;
+
+                let idx = existingTeams.findIndex(t => (t.name || '').trim().toLowerCase() === name.toLowerCase());
+                if(idx >= 0) {
+                    if(crest) existingTeams[idx].crest = crest;
+                    existingTeams[idx].manual = isManual;
+                } else {
+                    existingTeams.push({
+                        name: name,
+                        crest: crest,
+                        m: 0,
+                        pts: 0,
+                        diff: '0',
+                        manual: isManual
+                    });
+                    addedCount++;
+                }
             }
-            const sorted=[...upcomingList(all),...finishedList(all)];
-            document.getElementById('admin-mlist').innerHTML=sorted.map(m=>`
-                <div class="card" style="padding:0.9rem;display:flex;justify-content:space-between;align-items:center;">
-                    <div><div style="font-weight:600;font-size:0.9rem;">${m.homeTeam} vs ${m.awayTeam}</div>
-                    <div style="font-size:0.72rem;color:var(--muted);">${L[m.league]||m.league} • ${matchIsUpcoming(m)?'Nadchodzący':`Wynik ${m.scoreHome}:${m.scoreAway}`}</div></div>
-                    <div style="display:flex;gap:4px;"><button class="btn-sm" onclick='editM("${m.id}",${JSON.stringify(m).replace(/'/g,"&#39;")})'><i class="fa-solid fa-pen"></i></button><button class="btn-sm btn-del" onclick="delM('${m.id}', '${m._db}')"><i class="fa-solid fa-trash"></i></button></div>
-                </div>`).join('')||'<p style="color:var(--muted);">Brak spotkań.</p>';
+
+            await ref.set({
+                teams: existingTeams,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            }, {merge: true});
+
+            await recalculateStandings(league);
+            statusEl.innerText = `Pomyślnie dodano/zaktualizowano ${addedCount} drużyn!`;
+            document.getElementById('t-bulk-text').value = '';
+            loadTable(league);
+            renderAdminTeams();
         }
 
-        function editM(id,d){
-            document.getElementById('m-id').value=id; document.getElementById('m-db').value=d._db||'db1';
-            document.getElementById('m-home').value=d.homeTeam; document.getElementById('m-away').value=d.awayTeam; 
-            document.getElementById('m-sh').value=d.scoreHome??''; document.getElementById('m-sa').value=d.scoreAway??''; 
-            document.getElementById('m-league').value=d.league; document.getElementById('m-date').value=toLocalInput(d.date); 
-            window.scrollTo({top:0,behavior:'smooth'});
-        }
-
-        async function delM(id, dbVal){
-            if(confirm('Usunąć?')){
-                const dbase = (dbVal==='db2' && window.db2) ? window.db2 : window.db;
-                const matchRef = dbase.collection('matches').doc(id);
-                const matchDoc = await matchRef.get();
-                const league = matchDoc.exists ? matchDoc.data().league : '';
-                await matchRef.delete();
-                if(league) await recalculateStandings(league);
-                loadAdminM();
-                refreshMatches();
-            }
-        }
-
-        function clearMF(){document.getElementById('m-id').value=''; document.getElementById('m-db').value='';['m-home','m-away','m-sh','m-sa','m-date'].forEach(i=>document.getElementById(i).value='');}
-
-        async function saveTeam(){
-            if(!user) return;
-            const editId = document.getElementById('t-id').value;
+        // POJEDYNCZA DRUŻYNA
+        async function saveTeam() {
+            const teamName = document.getElementById('t-team').value.trim();
+            const league = document.getElementById('t-league').value;
+            const crest = document.getElementById('t-crest').value.trim();
+            const m = document.getElementById('t-m').value;
+            const pts = document.getElementById('t-pts').value;
+            const diff = document.getElementById('t-diff').value.trim();
+            const isManual = document.getElementById('t-manual').checked;
             const oldLeague = document.getElementById('t-old-league').value;
-            const newLeague = document.getElementById('t-league').value;
 
-            const manual = document.getElementById('t-manual').checked;
-            const teamData = {
-                name: document.getElementById('t-team').value.trim(),
-                crest: document.getElementById('t-crest').value.trim() || '',
-                m: parseInt(document.getElementById('t-m').value) || 0,
-                pts: parseInt(document.getElementById('t-pts').value) || 0,
-                diff: document.getElementById('t-diff').value.trim() || '0',
-                manual
+            if(!teamName) { alert('Wpisz nazwę drużyny!'); return; }
+
+            const dbase = getDB(league);
+            const ref = dbase.collection('standings').doc(league);
+            const doc = await ref.get();
+            let teams = doc.exists && doc.data().teams ? doc.data().teams : [];
+
+            if(oldLeague && oldLeague !== league) {
+                const oldDb = getDB(oldLeague);
+                const oldRef = oldDb.collection('standings').doc(oldLeague);
+                const oldDoc = await oldRef.get();
+                if(oldDoc.exists && oldDoc.data().teams) {
+                    let oldTeams = oldDoc.data().teams.filter(t => t.name.trim().toLowerCase() !== teamName.toLowerCase());
+                    await oldRef.set({ teams: oldTeams }, {merge: true});
+                }
+            }
+
+            let idx = teams.findIndex(t => t.name.trim().toLowerCase() === teamName.toLowerCase());
+            const teamObj = {
+                name: teamName,
+                crest: crest,
+                m: m !== '' ? Number(m) : 0,
+                pts: pts !== '' ? Number(pts) : 0,
+                diff: diff || '0',
+                manual: isManual
             };
 
-            if(!teamData.name) { alert('Podaj nazwę drużyny.'); return; }
-
-            try {
-                if(editId !== '') {
-                    const idx = parseInt(editId);
-                    if(oldLeague === newLeague) {
-                        const ref = getDB(newLeague).collection('standings').doc(newLeague);
-                        const doc = await ref.get();
-                        let teams = (doc.exists && doc.data().teams) ? [...doc.data().teams] : [];
-                        if(idx >= 0 && idx < teams.length) {
-                            teams[idx] = teamData;
-                        } else {
-                            teams.push(teamData);
-                        }
-                        await ref.set({teams, updatedAt: firebase.firestore.FieldValue.serverTimestamp()}, {merge: true});
-                    } else {
-                        if(oldLeague) {
-                            const oldRef = getDB(oldLeague).collection('standings').doc(oldLeague);
-                            const oldDoc = await oldRef.get();
-                            if(oldDoc.exists && oldDoc.data().teams) {
-                                let oldTeams = [...oldDoc.data().teams];
-                                if(idx >= 0 && idx < oldTeams.length) {
-                                    oldTeams.splice(idx, 1);
-                                    await oldRef.set({teams: oldTeams, updatedAt: firebase.firestore.FieldValue.serverTimestamp()}, {merge: true});
-                                }
-                            }
-                        }
-                        const newRef = getDB(newLeague).collection('standings').doc(newLeague);
-                        const newDoc = await newRef.get();
-                        let newTeams = (newDoc.exists && newDoc.data().teams) ? [...newDoc.data().teams] : [];
-                        newTeams.push(teamData);
-                        await newRef.set({teams: newTeams, updatedAt: firebase.firestore.FieldValue.serverTimestamp()}, {merge: true});
-                    }
-                } else {
-                    const ref = getDB(newLeague).collection('standings').doc(newLeague);
-                    const doc = await ref.get();
-                    let teams = (doc.exists && doc.data().teams) ? [...doc.data().teams] : [];
-                    teams.push(teamData);
-                    await ref.set({teams, updatedAt: firebase.firestore.FieldValue.serverTimestamp()}, {merge: true});
-                }
-                await recalculateStandings(newLeague);
-                clearTF();
-                loadAdminT();
-            } catch(e) {
-                alert('Błąd podczas zapisywania drużyny');
+            if(idx >= 0) {
+                teams[idx] = teamObj;
+            } else {
+                teams.push(teamObj);
             }
+
+            await ref.set({ teams, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, {merge: true});
+            await recalculateStandings(league);
+
+            clearTF();
+            loadTable(league);
+            renderAdminTeams();
         }
 
-        async function loadAdminT(){
-            let html='';
-            for(const league of Object.keys(L)){
-                const dbase = getDB(league);
-                const doc=await dbase.collection('standings').doc(league).get();
-                if(!doc.exists||!doc.data().teams||!doc.data().teams.length) continue;
-                html+=`<div style="margin-bottom:1.4rem;"><div class="league-label" style="margin-bottom:0.8rem;"><i class="fa-solid fa-circle"></i>${L[league]}</div>`;
-                const teams = doc.data().teams;
-                html+=teams.map((t, idx)=>`<div class="card" style="padding:0.8rem 1rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
-                    <div style="display:flex;align-items:center;gap:8px;">${crestImgSmall(t)} <div><span style="font-weight:600;font-size:0.9rem;">${t.name}</span><div style="font-size:0.62rem;color:${t.manual === true || t.manual === undefined ? 'var(--gold)' : 'var(--green)'};">${t.manual === true || t.manual === undefined ? 'RĘCZNIE' : 'AUTOMATYCZNIE'}</div></div></div>
-                    <div style="display:flex;gap:4px;"><button class="btn-sm" onclick='editT("${league}", ${idx}, ${JSON.stringify(t).replace(/'/g,"&#39;")})'><i class="fa-solid fa-pen"></i></button><button class="btn-sm btn-del" onclick="delT('${league}', ${idx})"><i class="fa-solid fa-trash"></i></button></div>
-                </div>`).join('');
-                html += `</div>`;
-            }
-            document.getElementById('admin-tlist').innerHTML = html || '<p style="color:var(--muted);">Brak drużyn.</p>';
+        function clearTF() {
+            document.getElementById('t-id').value = '';
+            document.getElementById('t-old-league').value = '';
+            document.getElementById('t-team').value = '';
+            document.getElementById('t-crest').value = '';
+            document.getElementById('t-m').value = '';
+            document.getElementById('t-pts').value = '';
+            document.getElementById('t-diff').value = '';
+            document.getElementById('t-manual').checked = false;
         }
 
-        function editT(league, idx, t){
-            document.getElementById('t-id').value = idx;
+        async function editTeam(name, league) {
+            const dbase = getDB(league);
+            const doc = await dbase.collection('standings').doc(league).get();
+            if(!doc.exists || !doc.data().teams) return;
+            const team = doc.data().teams.find(t => t.name.trim().toLowerCase() === name.trim().toLowerCase());
+            if(!team) return;
+
             document.getElementById('t-old-league').value = league;
-            document.getElementById('t-team').value = t.name;
             document.getElementById('t-league').value = league;
-            document.getElementById('t-crest').value = t.crest || '';
-            document.getElementById('t-m').value = t.m || 0;
-            document.getElementById('t-pts').value = t.pts || 0;
-            document.getElementById('t-diff').value = t.diff || '0';
-            document.getElementById('t-manual').checked = (t.manual !== false);
-            window.scrollTo({top:0,behavior:'smooth'});
+            document.getElementById('t-team').value = team.name;
+            document.getElementById('t-crest').value = team.crest || '';
+            document.getElementById('t-m').value = team.m ?? '';
+            document.getElementById('t-pts').value = team.pts ?? '';
+            document.getElementById('t-diff').value = team.diff ?? '';
+            document.getElementById('t-manual').checked = team.manual === true;
+
+            window.scrollTo({top: document.getElementById('ta').offsetTop - 100, behavior: 'smooth'});
         }
 
-        async function delT(league, idx){
-            if(confirm('Na pewno usunąć tę drużynę?')){
-                const ref = getDB(league).collection('standings').doc(league);
-                const doc = await ref.get();
-                if(doc.exists && doc.data().teams){
-                    let teams = [...doc.data().teams];
-                    teams.splice(idx, 1);
-                    await ref.set({teams, updatedAt: firebase.firestore.FieldValue.serverTimestamp()}, {merge:true});
-                    loadAdminT();
-                }
-            }
+        async function deleteTeam(name, league) {
+            if(!confirm(`Czy na pewno usunąć drużynę ${name}?`)) return;
+            const dbase = getDB(league);
+            const ref = dbase.collection('standings').doc(league);
+            const doc = await ref.get();
+            if(!doc.exists || !doc.data().teams) return;
+
+            let teams = doc.data().teams.filter(t => t.name.trim().toLowerCase() !== name.trim().toLowerCase());
+            await ref.set({ teams }, {merge: true});
+            await recalculateStandings(league);
+            loadTable(league);
+            renderAdminTeams();
         }
 
-        function clearTF(){
-            document.getElementById('t-id').value=''; document.getElementById('t-old-league').value='';
-            ['t-team','t-crest','t-m','t-pts','t-diff'].forEach(i=>document.getElementById(i).value='');
-            document.getElementById('t-manual').checked=false;
-        }
-
-        async function saveZones(){
-            if(!user) return;
-            const league = document.getElementById('z-league').value;
-            const data = {
-                promo: parsePositions(document.getElementById('z-promo').value),
-                barage: parsePositions(document.getElementById('z-barage').value),
-                releg: parsePositions(document.getElementById('z-releg').value)
-            };
-            try {
-                const dbase = getDB(league);
-                await dbase.collection('zones').doc(league).set(data);
-                loadAdminZ();
-                alert('Strefy ligi zostały zapisane!');
-            } catch(e) { alert('Błąd zapisu stref.'); }
-        }
-
-        async function loadAdminZ(){
-            let html='';
-            for(const league of Object.keys(L)){
+        async function renderAdminTeams() {
+            const list = document.getElementById('admin-tlist');
+            if(!list) return;
+            list.innerHTML = '<p style="color:var(--muted);grid-column:1/-1;">Ładowanie drużyn...</p>';
+            let html = '';
+            for(let leagueKey of Object.keys(L)) {
                 try {
-                    const dbase = getDB(league);
-                    const doc = await dbase.collection('zones').doc(league).get();
-                    if(doc.exists){
-                        const z = doc.data();
-                        html+=`<div class="card" style="padding:0.9rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
-                            <div><div style="font-weight:600;font-size:0.9rem;">${L[league]}</div>
-                            <div style="font-size:0.72rem;color:var(--muted);">Awans: ${z.promo?.join(',')||'-'} | Baraże: ${z.barage?.join(',')||'-'} | Spadek: ${z.releg?.join(',')||'-'}</div></div>
-                            <button class="btn-sm" onclick="editZ('${league}', '${z.promo?.join(',')||''}', '${z.barage?.join(',')||''}', '${z.releg?.join(',')||''}')"><i class="fa-solid fa-pen"></i></button>
-                        </div>`;
+                    const dbase = getDB(leagueKey);
+                    const doc = await dbase.collection('standings').doc(leagueKey).get();
+                    if(doc.exists && doc.data().teams && doc.data().teams.length) {
+                        doc.data().teams.forEach(t => {
+                            html += `
+                                <div class="card" style="padding:1rem;">
+                                    <div style="font-size:0.7rem;color:var(--green);">${L[leagueKey]}</div>
+                                    <div style="font-weight:700;margin:0.2rem 0;">${t.name}</div>
+                                    <div style="font-size:0.78rem;color:var(--muted);">M: ${t.m||0} | Pkt: ${t.pts||0} | Bilans: ${t.diff||'0'}</div>
+                                    <div style="display:flex;gap:6px;margin-top:0.6rem;">
+                                        <button class="btn-sm" onclick="editTeam('${t.name.replace(/'/g,"\\'")}','${leagueKey}')">Edytuj</button>
+                                        <button class="btn-sm btn-del" onclick="deleteTeam('${t.name.replace(/'/g,"\\'")}','${leagueKey}')">Usuń</button>
+                                    </div>
+                                </div>
+                            `;
+                        });
                     }
                 } catch(e) {}
             }
-            document.getElementById('admin-zlist').innerHTML = html || '<p style="color:var(--muted);">Brak ustawień stref w bazie.</p>';
+            list.innerHTML = html || '<p style="color:var(--muted);grid-column:1/-1;">Brak drużyn w bazie.</p>';
         }
 
-        function editZ(league, promo, barage, releg){
-            document.getElementById('z-league').value = league;
-            document.getElementById('z-promo').value = promo;
-            document.getElementById('z-barage').value = barage;
-            document.getElementById('z-releg').value = releg;
-            window.scrollTo({top:0,behavior:'smooth'});
-        }
-
-        async function saveTransfer(){
-            if(!user) return;
-            const id = document.getElementById('tr-id').value;
-            const newLeague = document.getElementById('tr-league').value;
-            const data = {
-                player: document.getElementById('tr-player').value,
-                league: newLeague,
-                from: document.getElementById('tr-from').value,
-                to: document.getElementById('tr-to').value,
-                fee: document.getElementById('tr-fee').value,
-                date: firebase.firestore.FieldValue.serverTimestamp()
-            };
-            try {
-                const newDbase = getDB(newLeague);
-                const oldDbVal = document.getElementById('tr-db').value;
-                if(id){
-                    const oldDbase = oldDbVal === 'db2' ? window.db2 : window.db;
-                    if(oldDbase && oldDbase !== newDbase) {
-                        await oldDbase.collection('transfers').doc(id).delete();
-                        await newDbase.collection('transfers').doc(id).set(data);
-                    } else {
-                        await newDbase.collection('transfers').doc(id).update(data);
-                    }
-                } else {
-                    await newDbase.collection('transfers').add(data);
-                }
-                clearTrF(); loadAdminTr();
-            } catch(e) { alert('Błąd zapisu transferu.'); }
-        }
-
-        async function loadAdminTr(){
-            try {
-                const s1=await window.db.collection('transfers').orderBy('date','desc').limit(100).get();
-                let all=s1.docs.map(d=>({id:d.id, _db:'db1', ...d.data()}));
-                if(window.db2){
-                    try {
-                        const s2=await window.db2.collection('transfers').orderBy('date','desc').limit(100).get();
-                        all=all.concat(s2.docs.map(d=>({id:d.id, _db:'db2', ...d.data()})));
-                    } catch(e) {}
-                }
-                all.sort((a,b)=>(b.date?.seconds||0)-(a.date?.seconds||0));
-                
-                document.getElementById('admin-trlist').innerHTML=all.map(t=>`
-                    <div class="card" style="padding:0.9rem;display:flex;justify-content:space-between;align-items:center;">
-                        <div><div style="font-weight:600;font-size:0.9rem;">${t.player} (${t.from} → ${t.to})</div>
-                        <div style="font-size:0.72rem;color:var(--muted);">${L[t.league]||t.league}</div></div>
-                        <div style="display:flex;gap:4px;"><button class="btn-sm" onclick='editTr("${t.id}",${JSON.stringify(t).replace(/'/g,"&#39;")})'><i class="fa-solid fa-pen"></i></button><button class="btn-sm btn-del" onclick="delTr('${t.id}', '${t._db}')"><i class="fa-solid fa-trash"></i></button></div>
-                    </div>`).join('')||'<p style="color:var(--muted);">Brak transferów.</p>';
-            } catch(e) {}
-        }
-
-        function editTr(id, d){
-            document.getElementById('tr-id').value = id; document.getElementById('tr-db').value = d._db||'db1';
-            document.getElementById('tr-player').value = d.player; document.getElementById('tr-league').value = d.league;
-            document.getElementById('tr-from').value = d.from; document.getElementById('tr-to').value = d.to;
-            document.getElementById('tr-fee').value = d.fee||'';
-            window.scrollTo({top:0,behavior:'smooth'});
-        }
-
-        async function delTr(id, dbVal){
-            if(confirm('Usunąć transfer?')){
-                const dbase = (dbVal==='db2' && window.db2) ? window.db2 : window.db;
-                await dbase.collection('transfers').doc(id).delete();
-                loadAdminTr();
-            }
-        }
-
-        function clearTrF(){
-            document.getElementById('tr-id').value = ''; document.getElementById('tr-db').value = '';
-            ['tr-player','tr-from','tr-to','tr-fee'].forEach(i=>document.getElementById(i).value='');
-        }
-
-        async function saveStat(){
-            if(!user) return;
+        // STATYSTYKI ZAWODNIKÓW
+        async function saveStat() {
             const id = document.getElementById('s-id').value;
-            const newLeague = document.getElementById('s-league').value;
-            const data = {
-                player: document.getElementById('s-player').value,
-                team: document.getElementById('s-team').value,
-                league: newLeague,
-                goals: parseInt(document.getElementById('s-goals').value) || 0,
-                assists: parseInt(document.getElementById('s-assists').value) || 0
-            };
-            try {
-                const newDbase = getDB(newLeague);
-                const oldDbVal = document.getElementById('s-db').value;
-                if(id){
-                    const oldDbase = oldDbVal === 'db2' ? window.db2 : window.db;
-                    if(oldDbase && oldDbase !== newDbase) {
-                        await oldDbase.collection('stats').doc(id).delete();
-                        await newDbase.collection('stats').doc(id).set(data);
-                    } else {
-                        await newDbase.collection('stats').doc(id).update(data);
-                    }
-                } else {
-                    await newDbase.collection('stats').add(data);
-                }
-                clearSF(); loadAdminS();
-            } catch(e) { alert('Błąd zapisu statystyk.'); }
+            const dbType = document.getElementById('s-db').value;
+            const player = document.getElementById('s-player').value.trim();
+            const team = document.getElementById('s-team').value.trim();
+            const league = document.getElementById('s-league').value;
+            const goals = Number(document.getElementById('s-goals').value) || 0;
+            const assists = Number(document.getElementById('s-assists').value) || 0;
+
+            if(!player || !team) { alert('Wpisz zawodnika i drużynę!'); return; }
+
+            const statData = { player, team, league, goals, assists };
+            const dbase = getDB(league);
+
+            if(id) {
+                const targetDb = dbType === 'db2' ? window.db2 : window.db;
+                await targetDb.collection('stats').doc(id).update(statData);
+            } else {
+                await dbase.collection('stats').add(statData);
+            }
+
+            clearSF();
+            loadStats(league);
+            renderAdminStats();
         }
 
-        async function loadAdminS(){
+        function clearSF() {
+            document.getElementById('s-id').value = '';
+            document.getElementById('s-db').value = '';
+            document.getElementById('s-player').value = '';
+            document.getElementById('s-team').value = '';
+            document.getElementById('s-goals').value = '0';
+            document.getElementById('s-assists').value = '0';
+        }
+
+        async function editStat(id, dbType) {
+            const targetDb = dbType === 'db2' ? window.db2 : window.db;
+            const doc = await targetDb.collection('stats').doc(id).get();
+            if(!doc.exists) return;
+            const s = doc.data();
+
+            document.getElementById('s-id').value = id;
+            document.getElementById('s-db').value = dbType;
+            document.getElementById('s-player').value = s.player || '';
+            document.getElementById('s-team').value = s.team || '';
+            document.getElementById('s-league').value = s.league || 'iv_liga';
+            document.getElementById('s-goals').value = s.goals || 0;
+            document.getElementById('s-assists').value = s.assists || 0;
+
+            window.scrollTo({top: document.getElementById('st').offsetTop - 100, behavior: 'smooth'});
+        }
+
+        async function deleteStat(id, dbType) {
+            if(!confirm('Usuąć ten wpis statystyk?')) return;
+            const targetDb = dbType === 'db2' ? window.db2 : window.db;
+            await targetDb.collection('stats').doc(id).delete();
+            loadStats(currentStatLeague);
+            renderAdminStats();
+        }
+
+        async function renderAdminStats() {
+            const list = document.getElementById('admin-slist');
+            if(!list) return;
+            list.innerHTML = '<p style="color:var(--muted);grid-column:1/-1;">Ładowanie statystyk...</p>';
             try {
-                const s1=await window.db.collection('stats').limit(150).get();
-                let all=s1.docs.map(d=>({id:d.id, _db:'db1', ...d.data()}));
-                if(window.db2){
+                const s1 = await window.db.collection('stats').get();
+                let all = s1.docs.map(d => ({id:d.id, _db:'db1', ...d.data()}));
+                if(window.db2) {
                     try {
-                        const s2=await window.db2.collection('stats').limit(150).get();
-                        all=all.concat(s2.docs.map(d=>({id:d.id, _db:'db2', ...d.data()})));
+                        const s2 = await window.db2.collection('stats').get();
+                        all = all.concat(s2.docs.map(d => ({id:d.id, _db:'db2', ...d.data()})));
                     } catch(e) {}
                 }
-                document.getElementById('admin-slist').innerHTML=all.map(st=>`
-                    <div class="card" style="padding:0.9rem;display:flex;justify-content:space-between;align-items:center;">
-                        <div><div style="font-weight:600;font-size:0.9rem;">${st.player} (${st.team})</div>
-                        <div style="font-size:0.72rem;color:var(--muted);">${L[st.league]||st.league} • Gole: ${st.goals||0} | Asysty: ${st.assists||0}</div></div>
-                        <div style="display:flex;gap:4px;"><button class="btn-sm" onclick='editS("${st.id}",${JSON.stringify(st).replace(/'/g,"&#39;")})'><i class="fa-solid fa-pen"></i></button><button class="btn-sm btn-del" onclick="delS('${st.id}', '${st._db}')"><i class="fa-solid fa-trash"></i></button></div>
-                    </div>`).join('')||'<p style="color:var(--muted);">Brak zawodników w statystykach.</p>';
-            } catch(e) {}
-        }
-
-        function editS(id, d){
-            document.getElementById('s-id').value = id; document.getElementById('s-db').value = d._db||'db1';
-            document.getElementById('s-player').value = d.player; document.getElementById('s-team').value = d.team;
-            document.getElementById('s-league').value = d.league; document.getElementById('s-goals').value = d.goals||0;
-            document.getElementById('s-assists').value = d.assists||0;
-            window.scrollTo({top:0,behavior:'smooth'});
-        }
-
-        async function delS(id, dbVal){
-            if(confirm('Usunąć wpis zawodnika?')){
-                const dbase = (dbVal==='db2' && window.db2) ? window.db2 : window.db;
-                await dbase.collection('stats').doc(id).delete();
-                loadAdminS();
+                if(!all.length) { list.innerHTML = '<p style="color:var(--muted);grid-column:1/-1;">Brak wpisów.</p>'; return; }
+                list.innerHTML = all.map(st => `
+                    <div class="card" style="padding:1rem;">
+                        <div style="font-size:0.7rem;color:var(--green);">${L[st.league]||st.league}</div>
+                        <div style="font-weight:700;">${st.player} (${st.team})</div>
+                        <div style="font-size:0.8rem;color:var(--muted);">Gole: ${st.goals||0} | Asysty: ${st.assists||0}</div>
+                        <div style="display:flex;gap:6px;margin-top:0.6rem;">
+                            <button class="btn-sm" onclick="editStat('${st.id}','${st._db}')">Edytuj</button>
+                            <button class="btn-sm btn-del" onclick="deleteStat('${st.id}','${st._db}')">Usuń</button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch(e) {
+                list.innerHTML = '<p style="color:#ff6b6b;grid-column:1/-1;">Błąd ładowania.</p>';
             }
         }
 
-        function clearSF(){
-            document.getElementById('s-id').value = ''; document.getElementById('s-db').value = '';
-            ['s-player','s-team','s-goals','s-assists'].forEach(i=>document.getElementById(i).value='');
-        }
+        // TRANSFERY
+        async function saveTransfer() {
+            const id = document.getElementById('tr-id').value;
+            const dbType = document.getElementById('tr-db').value;
+            const player = document.getElementById('tr-player').value.trim();
+            const league = document.getElementById('tr-league').value;
+            const fromClub = document.getElementById('tr-from').value.trim();
+            const toClub = document.getElementById('tr-to').value.trim();
+            const fee = document.getElementById('tr-fee').value.trim();
 
-        async function savePost(){
-            if(!user) return;
-            const id = document.getElementById('p-id').value;
-            const data = {
-                title: document.getElementById('p-title').value,
-                label: document.getElementById('p-label').value,
-                content: document.getElementById('p-content').value,
-                date: firebase.firestore.FieldValue.serverTimestamp()
+            if(!player || !fromClub || !toClub) { alert('Uzupełnij zawodnika oraz kluby!'); return; }
+
+            const transferData = {
+                player, league, fromClub, toClub, fee,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
             };
+
+            const dbase = getDB(league);
+
+            if(id) {
+                const targetDb = dbType === 'db2' ? window.db2 : window.db;
+                await targetDb.collection('transfers').doc(id).update(transferData);
+            } else {
+                await dbase.collection('transfers').add(transferData);
+            }
+
+            clearTrF();
+            loadTransfers();
+            renderAdminTransfers();
+        }
+
+        function clearTrF() {
+            document.getElementById('tr-id').value = '';
+            document.getElementById('tr-db').value = '';
+            document.getElementById('tr-player').value = '';
+            document.getElementById('tr-from').value = '';
+            document.getElementById('tr-to').value = '';
+            document.getElementById('tr-fee').value = '';
+        }
+
+        async function editTransfer(id, dbType) {
+            const targetDb = dbType === 'db2' ? window.db2 : window.db;
+            const doc = await targetDb.collection('transfers').doc(id).get();
+            if(!doc.exists) return;
+            const tr = doc.data();
+
+            document.getElementById('tr-id').value = id;
+            document.getElementById('tr-db').value = dbType;
+            document.getElementById('tr-player').value = tr.player || '';
+            document.getElementById('tr-league').value = tr.league || 'iv_liga';
+            document.getElementById('tr-from').value = tr.fromClub || '';
+            document.getElementById('tr-to').value = tr.toClub || '';
+            document.getElementById('tr-fee').value = tr.fee || '';
+
+            window.scrollTo({top: document.getElementById('tr').offsetTop - 100, behavior: 'smooth'});
+        }
+
+        async function deleteTransfer(id, dbType) {
+            if(!confirm('Usuąć ten transfer?')) return;
+            const targetDb = dbType === 'db2' ? window.db2 : window.db;
+            await targetDb.collection('transfers').doc(id).delete();
+            loadTransfers();
+            renderAdminTransfers();
+        }
+
+        async function renderAdminTransfers() {
+            const list = document.getElementById('admin-trlist');
+            if(!list) return;
+            list.innerHTML = '<p style="color:var(--muted);grid-column:1/-1;">Ładowanie...</p>';
             try {
-                if(id){
-                    await window.db.collection('posts').doc(id).update(data);
-                } else {
-                    await window.db.collection('posts').add(data);
+                const s1 = await window.db.collection('transfers').get();
+                let all = s1.docs.map(d => ({id:d.id, _db:'db1', ...d.data()}));
+                if(window.db2) {
+                    try {
+                        const s2 = await window.db2.collection('transfers').get();
+                        all = all.concat(s2.docs.map(d => ({id:d.id, _db:'db2', ...d.data()})));
+                    } catch(e) {}
                 }
-                clearPF(); loadAdminP();
-            } catch(e) { alert('Błąd zapisu posta.'); }
-        }
-
-        async function loadAdminP(){
-            try {
-                const s = await window.db.collection('posts').orderBy('date','desc').get();
-                document.getElementById('admin-plist').innerHTML = s.docs.map(d => {
-                    const p = {id:d.id, ...d.data()};
-                    return `<div class="card" style="padding:0.9rem;display:flex;justify-content:space-between;align-items:center;">
-                        <div><div style="font-weight:600;font-size:0.9rem;">${p.title}</div>
-                        <div style="font-size:0.72rem;color:var(--muted);">${p.label||'Wpis'}</div></div>
-                        <div style="display:flex;gap:4px;"><button class="btn-sm" onclick='editP("${p.id}",${JSON.stringify(p).replace(/'/g,"&#39;")})'><i class="fa-solid fa-pen"></i></button><button class="btn-sm btn-del" onclick="delP('${p.id}')"><i class="fa-solid fa-trash"></i></button></div>
-                    </div>`;
-                }).join('') || '<p style="color:var(--muted);">Brak wpisów.</p>';
-            } catch(e) {}
-        }
-
-        function editP(id, p){
-            document.getElementById('p-id').value = id;
-            document.getElementById('p-title').value = p.title;
-            document.getElementById('p-label').value = p.label || 'Komunikat';
-            document.getElementById('p-content').value = p.content;
-            window.scrollTo({top:0,behavior:'smooth'});
-        }
-
-        async function delP(id){
-            if(confirm('Usunąć post?')){
-                await window.db.collection('posts').doc(id).delete();
-                loadAdminP();
+                if(!all.length) { list.innerHTML = '<p style="color:var(--muted);grid-column:1/-1;">Brak transferów.</p>'; return; }
+                list.innerHTML = all.map(t => `
+                    <div class="card" style="padding:1rem;">
+                        <div style="font-size:0.7rem;color:var(--green);">${L[t.league]||t.league}</div>
+                        <div style="font-weight:700;">${t.player}</div>
+                        <div style="font-size:0.8rem;color:var(--muted);">${t.fromClub} → ${t.toClub}</div>
+                        <div style="display:flex;gap:6px;margin-top:0.6rem;">
+                            <button class="btn-sm" onclick="editTransfer('${t.id}','${t._db}')">Edytuj</button>
+                            <button class="btn-sm btn-del" onclick="deleteTransfer('${t.id}','${t._db}')">Usuń</button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch(e) {
+                list.innerHTML = '<p style="color:#ff6b6b;grid-column:1/-1;">Błąd ładowania.</p>';
             }
         }
 
-        function clearPF(){
-            document.getElementById('p-id').value = '';
-            ['p-title','p-content'].forEach(i=>document.getElementById(i).value='');
+        // STREFY
+        async function saveZones() {
+            const league = document.getElementById('z-league').value;
+            const promoStr = document.getElementById('z-promo').value;
+            const barageStr = document.getElementById('z-barage').value;
+            const relegStr = document.getElementById('z-releg').value;
+
+            const zoneData = {
+                promo: parsePositions(promoStr),
+                barage: parsePositions(barageStr),
+                releg: parsePositions(relegStr)
+            };
+
+            const dbase = getDB(league);
+            await dbase.collection('zones').doc(league).set(zoneData, {merge: true});
+            zonesCache[league] = zoneData;
+            alert(`Zapisano strefy dla ligi: ${L[league]}`);
+            renderAdminZones();
         }
+
+        async function renderAdminZones() {
+            const list = document.getElementById('admin-zlist');
+            if(!list) return;
+            await loadZones(true);
+            let html = '';
+            for(let lKey of Object.keys(L)) {
+                const z = getZones(lKey);
+                html += `
+                    <div class="card" style="padding:1rem;">
+                        <div style="font-size:0.75rem;color:var(--green);font-weight:700;">${L[lKey]}</div>
+                        <div style="font-size:0.8rem;color:var(--muted);margin-top:4px;">
+                            Awans: ${z.promo?.join(', ') || '-'} | Baraże: ${z.barage?.join(', ') || '-'} | Spadek: ${z.releg?.join(', ') || '-'}
+                        </div>
+                    </div>
+                `;
+            }
+            list.innerHTML = html;
+        }
+
+        // POSTY
+        async function savePost() {
+            const id = document.getElementById('p-id').value;
+            const title = document.getElementById('p-title').value.trim();
+            const label = document.getElementById('p-label').value;
+            const content = document.getElementById('p-content').value.trim();
+
+            if(!title || !content) { alert('Uzupełnij tytuł i treść!'); return; }
+
+            const postData = {
+                title, label, content,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            if(id) {
+                await window.db.collection('posts').doc(id).update(postData);
+            } else {
+                await window.db.collection('posts').add(postData);
+            }
+
+            clearPF();
+            loadPosts();
+            renderAdminPosts();
+        }
+
+        function clearPF() {
+            document.getElementById('p-id').value = '';
+            document.getElementById('p-title').value = '';
+            document.getElementById('p-content').value = '';
+        }
+
+        async function editPost(id) {
+            const doc = await window.db.collection('posts').doc(id).get();
+            if(!doc.exists) return;
+            const p = doc.data();
+
+            document.getElementById('p-id').value = id;
+            document.getElementById('p-title').value = p.title || '';
+            document.getElementById('p-label').value = p.label || 'Komunikat';
+            document.getElementById('p-content').value = p.content || '';
+
+            window.scrollTo({top: document.getElementById('po').offsetTop - 100, behavior: 'smooth'});
+        }
+
+        async function deletePost(id) {
+            if(!confirm('Czy na pewno usunąć ten post?')) return;
+            await window.db.collection('posts').doc(id).delete();
+            loadPosts();
+            renderAdminPosts();
+        }
+
+        async function renderAdminPosts() {
+            const list = document.getElementById('admin-plist');
+            if(!list) return;
+            list.innerHTML = '<p style="color:var(--muted);grid-column:1/-1;">Ładowanie postów...</p>';
+            try {
+                const s = await window.db.collection('posts').orderBy('createdAt','desc').get();
+                if(s.empty) { list.innerHTML = '<p style="color:var(--muted);grid-column:1/-1;">Brak wpisów.</p>'; return; }
+                list.innerHTML = s.docs.map(doc => {
+                    const p = doc.data();
+                    return `
+                        <div class="card" style="padding:1rem;">
+                            <div style="font-size:0.7rem;color:var(--green);">${p.label||'Komunikat'}</div>
+                            <div style="font-weight:700;">${p.title}</div>
+                            <div style="display:flex;gap:6px;margin-top:0.6rem;">
+                                <button class="btn-sm" onclick="editPost('${doc.id}')">Edytuj</button>
+                                <button class="btn-sm btn-del" onclick="deletePost('${doc.id}')">Usuń</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } catch(e) {
+                list.innerHTML = '<p style="color:#ff6b6b;grid-column:1/-1;">Błąd ładowania.</p>';
+            }
+        }
+
+        // INICJALIZACJA STRONY
+        document.addEventListener('DOMContentLoaded', () => {
+            refreshMatches();
+        });
     </script>
 </body>
 </html>

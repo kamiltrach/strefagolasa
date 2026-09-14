@@ -1754,12 +1754,54 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
         }
 
         function parseBulkDate(dateText,timeText){
-            const d=(dateText||'').trim(), t=(timeText||'').trim();
-            if(!/^\d{4}-\d{2}-\d{2}$/.test(d) || !/^\d{1,2}:\d{2}$/.test(t)) return null;
-            const [y,mo,da]=d.split('-').map(Number), [hh,mm]=t.split(':').map(Number);
+            const d=(dateText||'').trim().replace(/\s+/g,''), t=(timeText||'').trim().replace(/\s+/g,'');
+            if(!d || !t || !/^\d{1,2}:\d{2}$/.test(t)) return null;
+            let y,mo,da;
+            let m;
+            if((m=d.match(/^(\d{4})[-./](\d{1,2})[-./](\d{1,2})$/))){
+                y=Number(m[1]); mo=Number(m[2]); da=Number(m[3]);
+            }else if((m=d.match(/^(\d{1,2})[-./](\d{1,2})[-./](\d{4})$/))){
+                da=Number(m[1]); mo=Number(m[2]); y=Number(m[3]);
+            }else{
+                return null;
+            }
+            const [hh,mm]=t.split(':').map(Number);
             const date=new Date(y,mo-1,da,hh,mm,0,0);
-            if(Number.isNaN(date.getTime())) return null;
+            if(Number.isNaN(date.getTime()) || date.getFullYear()!==y || date.getMonth()!==mo-1 || date.getDate()!==da || date.getHours()!==hh || date.getMinutes()!==mm) return null;
             return date;
+        }
+
+        function parseBulkResultLine(line){
+            const raw=(line||'').trim();
+            if(!raw) return null;
+
+            const scoreMatch=raw.match(/(?:,|;|\s+)(\d+)\s*[:\-]\s*(\d+)\s*$/i);
+            if(!scoreMatch) return null;
+            const scoreHome=Number(scoreMatch[1]), scoreAway=Number(scoreMatch[2]);
+            const beforeScore=raw.slice(0,scoreMatch.index).trim().replace(/[;,\s]+$/,'');
+
+            const dateTimeParts=beforeScore.split(/\s*,\s*|\s*;\s*/).map(x=>x.trim()).filter(Boolean);
+            let homeAwayPart='', dateText='', timeText='';
+
+            if(dateTimeParts.length>=3){
+                homeAwayPart=dateTimeParts[0];
+                dateText=dateTimeParts[1];
+                timeText=dateTimeParts[2];
+            }else if(dateTimeParts.length===2){
+                homeAwayPart=dateTimeParts[0];
+                const dt=dateTimeParts[1].match(/^(\S+)\s+(\d{1,2}:\d{2})$/);
+                if(!dt) return null;
+                dateText=dt[1]; timeText=dt[2];
+            }else{
+                return null;
+            }
+
+            const vsMatch=homeAwayPart.match(/^(.+?)\s+vs\s+(.+)$/i);
+            if(!vsMatch) return null;
+            const home=vsMatch[1].trim(), away=vsMatch[2].trim();
+            const date=parseBulkDate(dateText,timeText);
+            if(!home || !away || !date) return null;
+            return {home,away,date,scoreHome,scoreAway};
         }
 
         function parseBulkTeams(text){
@@ -1797,15 +1839,18 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
             const dbase=getDB(league);
             let added=0, errors=[];
             for(const item of lines){
-                const parts=item.line.split(',').map(x=>x.trim());
-                const vsIndex=parts.length ? parts[0].toLowerCase().indexOf(' vs ') : -1;
-                if(vsIndex<0 || parts.length!==4){errors.push(`Linia ${item.number}`);continue;}
-                const home=parts[0].slice(0,vsIndex).trim(), away=parts[0].slice(vsIndex+4).trim();
-                const date=parseBulkDate(parts[1],parts[2]);
-                const scoreMatch=parts[3].match(/^(\d+)\s*[:\-]\s*(\d+)$/);
-                if(!home||!away||!date||!scoreMatch){errors.push(`Linia ${item.number}`);continue;}
+                const parsed=parseBulkResultLine(item.line);
+                if(!parsed){errors.push(`Linia ${item.number}`);continue;}
                 try{
-                    await dbase.collection('matches').add({homeTeam:home,awayTeam:away,scoreHome:Number(scoreMatch[1]),scoreAway:Number(scoreMatch[2]),status:'finished',league,date:firebase.firestore.Timestamp.fromDate(date)});
+                    await dbase.collection('matches').add({
+                        homeTeam:parsed.home,
+                        awayTeam:parsed.away,
+                        scoreHome:parsed.scoreHome,
+                        scoreAway:parsed.scoreAway,
+                        status:'finished',
+                        league,
+                        date:firebase.firestore.Timestamp.fromDate(parsed.date)
+                    });
                     added++;
                 }catch(e){errors.push(`Linia ${item.number}`);}
             }

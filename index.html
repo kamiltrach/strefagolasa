@@ -1007,9 +1007,10 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
         const B_LEAGUES = [
             'b_przeworsk','b_jaroslaw','b_rzeszow','b_debica_1','b_debica_2','b_krosno_1','b_krosno_2','b_krosno_3','b_krosno_4','b_krosno_5','b_lancut_1','b_lancut_2','b_mielec_1','b_mielec_2','b_kolbuszowa','b_stalowa_1','b_stalowa_2','b_stalowa_3'
         ];
+        const DB2_A_LEAGUES = ['a_przeworsk','a_jaroslaw','a_rzeszow'];
         const NEW_LEAGUES = [...A_LEAGUES, ...B_LEAGUES];
         function getDB(league) {
-            if(league && B_LEAGUES.includes(league) && window.db2) return window.db2;
+            if(league && (B_LEAGUES.includes(league) || DB2_A_LEAGUES.includes(league)) && window.db2) return window.db2;
             return window.db;
         }
 

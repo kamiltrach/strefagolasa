@@ -681,6 +681,15 @@ Orzeł vs Wisłoka, 2026-09-21, 17:00"></textarea>
                             <p style="font-size:0.72rem;color:var(--muted);margin-top:0.8rem;">Dla spotkań bez wyniku zostaną dodane mecze nadchodzące.</p>
                         </div>
                         <div class="card" style="margin-bottom:2rem;">
+                            <h3 style="font-size:0.75rem;color:var(--green);margin-bottom:0.7rem;text-transform:uppercase;letter-spacing:1.2px;">Masowa aktualizacja wyników istniejących meczów</h3>
+                            <p style="font-size:0.72rem;color:var(--muted);margin-bottom:1rem;">Wzór — <strong>Nazwa drużyny vs Nazwa drużyny, 2026-09-14, 18:00, 2:1</strong>. Funkcja szuka już istniejącego meczu po drużynach i dacie. Jeśli mecz istnieje i nie ma wyniku — zaktualizuje go. Jeśli nie istnieje — nic nie doda. Jeśli wynik jest już ustawiony — nie nadpisze go.</p>
+                            <select id="mbru-league"></select>
+                            <textarea id="mbru-lines" placeholder="Legia II vs Stal, 2026-09-14, 18:00, 2:1
+Orzeł vs Wisłoka, 2026-09-21, 17:00, 0:0"></textarea>
+                            <button class="btn" onclick="updateResultsBulkExisting()">Aktualizuj wyniki istniejących meczów</button>
+                            <p style="font-size:0.72rem;color:var(--muted);margin-top:0.8rem;">Nie tworzy nowych meczów i nie zmienia już zakończonych spotkań.</p>
+                        </div>
+                        <div class="card" style="margin-bottom:2rem;">
                             <h3 style="font-size:0.75rem;color:var(--green);margin-bottom:0.7rem;text-transform:uppercase;letter-spacing:1.2px;">Masowe dodawanie wyników</h3>
                             <p style="font-size:0.72rem;color:var(--muted);margin-bottom:1rem;">Wzór — jeden wynik w jednej linii: <strong>Nazwa drużyny vs Nazwa drużyny, 2026-09-14, 18:00, 2:1</strong><br>Możesz też dodać zaległy mecz bez wcześniejszego meczu nadchodzącego: <strong>Nazwa drużyny vs Nazwa drużyny, 2:1</strong></p>
                             <select id="mbr-league"></select>
@@ -1745,7 +1754,7 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
         }
 
         function populateBulkLeagueSelectors(){
-            const ids=['mb-league','mbr-league','tb-league'];
+            const ids=['mb-league','mbr-league','mbru-league','tb-league'];
             ids.forEach(id=>{
                 const el=document.getElementById(id);
                 if(!el) return;
@@ -1864,6 +1873,91 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
             }
             await loadAdminM();
             if(errors.length) alert(`Dodano ${added}. Pominięto: ${errors.join(', ')}.`); else {document.getElementById('mb-lines').value='';alert(`Dodano ${added} meczów.`);}
+        }
+
+        function bulkDateKey(date){
+            if(!(date instanceof Date) || Number.isNaN(date.getTime())) return '';
+            return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+        }
+
+        function normalizeTeamName(name){
+            return String(name||'').trim().replace(/\s+/g,' ').toLowerCase();
+        }
+
+        async function updateResultsBulkExisting(){
+            if(!user) return;
+            const league=document.getElementById('mbru-league').value;
+            const lines=parseBulkTeams(document.getElementById('mbru-lines').value);
+            if(!lines.length){alert('Wklej przynajmniej jeden wynik.');return;}
+
+            const dbase=getDB(league);
+            let updated=0, notFound=[], alreadySet=[], invalid=[];
+
+            try{
+                const snap=await dbase.collection('matches').limit(2000).get();
+                const matches=snap.docs.map(d=>({id:d.id,...d.data()}));
+
+                for(const item of lines){
+                    const parsed=parseBulkResultLine(item.line);
+                    if(!parsed){invalid.push(`Linia ${item.number}`);continue;}
+
+                    const targetHome=normalizeTeamName(parsed.home);
+                    const targetAway=normalizeTeamName(parsed.away);
+                    const targetDate=bulkDateKey(parsed.date);
+
+                    const candidates=matches.filter(m=>{
+                        if(m.league!==league) return false;
+                        if(normalizeTeamName(m.homeTeam)!==targetHome || normalizeTeamName(m.awayTeam)!==targetAway) return false;
+                        if(!m.date) return false;
+                        let md=null;
+                        try{ md=new Date((m.date.seconds||0)*1000); }catch(e){ return false; }
+                        return bulkDateKey(md)===targetDate;
+                    });
+
+                    if(!candidates.length){
+                        notFound.push(`Linia ${item.number}`);
+                        continue;
+                    }
+
+                    const existing=candidates.find(m=>m.status==='finished' || (m.scoreHome!=null && m.scoreAway!=null));
+                    if(existing){
+                        alreadySet.push(`Linia ${item.number}`);
+                        continue;
+                    }
+
+                    const target=candidates[0];
+                    const updateData={
+                        homeTeam:target.homeTeam,
+                        awayTeam:target.awayTeam,
+                        scoreHome:parsed.scoreHome,
+                        scoreAway:parsed.scoreAway,
+                        status:'finished',
+                        league,
+                        date:target.date || firebase.firestore.Timestamp.fromDate(parsed.date)
+                    };
+
+                    await dbase.collection('matches').doc(target.id).update(updateData);
+                    const matchRef=matches.find(m=>m.id===target.id);
+                    if(matchRef){
+                        Object.assign(matchRef,updateData);
+                    }
+                    updated++;
+                }
+
+                await recalculateStandings(league);
+                await loadAdminM();
+
+                const summary=[`Zaktualizowano: ${updated}`];
+                if(notFound.length) summary.push(`Nie istnieje: ${notFound.join(', ')}`);
+                if(alreadySet.length) summary.push(`Już ustawiony wynik: ${alreadySet.join(', ')}`);
+                if(invalid.length) summary.push(`Nieprawidłowy format: ${invalid.join(', ')}`);
+                alert(summary.join('\n'));
+
+                if(updated>0) document.getElementById('mbru-lines').value='';
+            }catch(e){
+                console.error(e);
+                alert('Błąd aktualizacji wyników istniejących meczów.');
+            }
         }
 
         async function saveResultsBulk(){

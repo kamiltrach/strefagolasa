@@ -282,8 +282,8 @@
             </div>
 
             <div class="stats-row anim d1">
-                <div class="stat-item"><span class="stat-num">32</span><span class="stat-label">Lig</span></div>
-                <div class="stat-item"><span class="stat-num">300+</span><span class="stat-label">Drużyn</span></div>
+                <div class="stat-item"><span class="stat-num">12</span><span class="stat-label">Lig</span></div>
+                <div class="stat-item"><span class="stat-num">150+</span><span class="stat-label">Drużyn</span></div>
                 <div class="stat-item"><span class="stat-num">Bieżąco</span><span class="stat-label">Aktualizacje</span></div>
                 <div class="stat-item"><span class="stat-num">Podkarpacie</span><span class="stat-label">Okręg</span></div>
             </div>
@@ -1228,11 +1228,11 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
             if(!c1) return;
             try{
                 await loadCrests();
-                const s1 = await window.db.collection('matches').orderBy('date','asc').limit(1111500).get();
+                const s1 = await window.db.collection('matches').orderBy('date','asc').limit(500).get();
                 let allM = s1.docs.map(d=>({id:d.id, _db:'db1', ...d.data()}));
                 if (window.db2) {
                     try {
-                        const s2 = await window.db2.collection('matches').orderBy('date','asc').limit(1111500).get();
+                        const s2 = await window.db2.collection('matches').orderBy('date','asc').limit(500).get();
                         allM = allM.concat(s2.docs.map(d=>({id:d.id, _db:'db2', ...d.data()})));
                     } catch(e) {}
                 }
@@ -1608,11 +1608,11 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
         async function loadTransfers(){
             const c=document.getElementById('transfers-grid');
             try{
-                const s1 = await window.db.collection('transfers').orderBy('date','desc').limit(1111500).get();
+                const s1 = await window.db.collection('transfers').orderBy('date','desc').limit(150).get();
                 let allT = s1.docs.map(d=>({id:d.id, _db:'db1', ...d.data()}));
                 if (window.db2) {
                     try {
-                        const s2 = await window.db2.collection('transfers').orderBy('date','desc').limit(1111500).get();
+                        const s2 = await window.db2.collection('transfers').orderBy('date','desc').limit(150).get();
                         allT = allT.concat(s2.docs.map(d=>({id:d.id, _db:'db2', ...d.data()})));
                     } catch(e) {}
                 }
@@ -1662,7 +1662,7 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
         async function loadPosts(){
             const c=document.getElementById('posts-grid');
             try{
-                const s=await window.db.collection('posts').orderBy('date','desc').limit(1111500).get();
+                const s=await window.db.collection('posts').orderBy('date','desc').limit(20).get();
                 if(s.empty){c.innerHTML='<p style="color:var(--muted);padding:2rem;">Brak postów.</p>';return;}
                 postsCache = s.docs.map(d=>({id:d.id, ...d.data()}));
                 
@@ -1935,7 +1935,7 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
             let updated=0, notFound=[], alreadySet=[], invalid=[];
 
             try{
-                const snap=await dbase.collection('matches').limit(1111500).get();
+                const snap=await dbase.collection('matches').limit(2000).get();
                 const matches=snap.docs.map(d=>({id:d.id,...d.data()}));
 
                 for(const item of lines){
@@ -2092,7 +2092,7 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
         }
         
         async function loadAdminM(){
-            const s1=await window.db.collection('matches').orderBy('date','asc').limit(1111500).get();
+            const s1=await window.db.collection('matches').orderBy('date','asc').limit(1300).get();
             let all=s1.docs.map(d=>({id:d.id, _db:'db1', ...d.data()}));
             if(window.db2){
                 try {

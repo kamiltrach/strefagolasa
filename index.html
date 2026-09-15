@@ -50,19 +50,22 @@
         .section{display:none;}.section.active{display:block;}
 
         .sub-nav-container{margin-bottom:2.2rem;}
-        .group-toggle{display:flex;gap:8px;margin-bottom:0.8rem;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;}
+        .group-toggle{display:inline-flex;gap:4px;margin-bottom:0.9rem;max-width:100%;overflow-x:auto;scrollbar-width:none;padding:4px;background:rgba(0,0,0,0.22);border:1px solid var(--border);border-radius:13px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.03),0 8px 24px rgba(0,0,0,0.12);contain:layout paint;}
         .group-toggle::-webkit-scrollbar{display:none;}
-        .grp-tab{padding:0.4rem 0.9rem;border-radius:8px;font-size:0.75rem;font-weight:700;color:var(--muted);background:rgba(255,255,255,0.05);border:1px solid var(--border);transition:all .2s var(--ease);white-space:nowrap;cursor:pointer;}
-        .grp-tab:hover{color:var(--white);background:rgba(255,255,255,0.1);}
-        .grp-tab.active{color:var(--navy);background:var(--green);border-color:var(--green);box-shadow:0 0 12px var(--green-glow);}
+        .grp-tab{position:relative;padding:0.5rem 1rem;border-radius:9px;font-size:0.75rem;font-weight:700;color:var(--muted);background:transparent;border:1px solid transparent;transition:color .22s var(--ease),background .22s var(--ease),box-shadow .22s var(--ease),transform .22s var(--ease);white-space:nowrap;cursor:pointer;will-change:background-color,transform;}
+        .grp-tab:hover{color:var(--white);background:rgba(255,255,255,0.06);transform:translateY(-1px);}
+        .grp-tab.active{color:var(--navy);background:linear-gradient(135deg,var(--green),#a7ef62);border-color:rgba(255,255,255,0.08);box-shadow:0 5px 16px var(--green-glow),inset 0 1px 0 rgba(255,255,255,0.28);}
 
-        .sub-nav{display:flex;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;padding-bottom:2px;}
+        .sub-nav{display:flex;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;padding:2px 0 3px;scroll-behavior:smooth;contain:layout paint;}
         .sub-nav::-webkit-scrollbar{display:none;}
-        .sub-tab{padding:0.9rem 1.4rem;font-size:0.8rem;font-weight:600;color:var(--muted);position:relative;white-space:nowrap;flex-shrink:0;}
-        .sub-tab::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:3px;background:var(--green);transform:scaleX(0);transition:transform .3s var(--ease);box-shadow:0 0 14px var(--green-glow);}
-        .sub-tab:hover{color:var(--white);}
-        .sub-tab.active{color:var(--green);}
+        .sub-tab{padding:0.78rem 1.15rem;font-size:0.8rem;font-weight:600;color:var(--muted);position:relative;white-space:nowrap;flex-shrink:0;border-radius:9px 9px 0 0;transition:color .2s var(--ease),background .2s var(--ease);will-change:color,background-color;}
+        .sub-tab::after{content:'';position:absolute;bottom:-1px;left:10px;right:10px;height:3px;border-radius:3px 3px 0 0;background:linear-gradient(90deg,var(--green),#a7ef62);transform:scaleX(0);transform-origin:center;transition:transform .26s var(--ease);box-shadow:0 0 14px var(--green-glow);}
+        .sub-tab:hover{color:var(--white);background:rgba(255,255,255,0.035);}
+        .sub-tab.active{color:var(--green);background:linear-gradient(180deg,rgba(126,211,33,0.10),rgba(126,211,33,0.02));}
         .sub-tab.active::after{transform:scaleX(1);}
+
+        .table-wrap{contain:layout paint;isolation:isolate;}
+        .table-wrap table{content-visibility:auto;}
 
         .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.4rem;}
         .card{background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius);padding:1.8rem;transition:all .35s var(--ease);position:relative;overflow:hidden;}
@@ -1156,26 +1159,29 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
         }
 
         let zonesCache={};
-        let zonesLoadPromise=null;
-        async function loadZones(force=false){
-            if(!force && Object.keys(zonesCache).length) return zonesCache;
-            if(!force && zonesLoadPromise) return zonesLoadPromise;
-
-            zonesLoadPromise=(async()=>{
-                const nextCache={};
-                await Promise.all(Object.keys(L).map(async league=>{
+        const zonesLoadPromises=new Map();
+        async function loadZones(force=false, league=null){
+            if(league){
+                if(!force && zonesCache[league]) return zonesCache[league];
+                if(!force && zonesLoadPromises.has(league)) return zonesLoadPromises.get(league);
+                const promise=(async()=>{
                     try{
                         const dbase=getDB(league);
                         const doc=await dbase.collection('zones').doc(league).get();
-                        if(doc.exists) nextCache[league]=doc.data();
-                    }catch(e){}
-                }));
-                zonesCache=nextCache;
-                return zonesCache;
-            })();
+                        zonesCache[league]=doc.exists ? doc.data() : DEFAULT_ZONES;
+                    }catch(e){
+                        zonesCache[league]=DEFAULT_ZONES;
+                    }
+                    return zonesCache[league];
+                })();
+                zonesLoadPromises.set(league,promise);
+                try{return await promise;}
+                finally{zonesLoadPromises.delete(league);}
+            }
 
-            try{return await zonesLoadPromise;}
-            finally{zonesLoadPromise=null;}
+            if(!force && Object.keys(zonesCache).length) return zonesCache;
+            await Promise.all(Object.keys(L).map(l=>loadZones(force,l)));
+            return zonesCache;
         }
         function getZones(league){ return zonesCache[league] || DEFAULT_ZONES; }
         function parsePositions(str){ return (str||'').split(',').map(s=>parseInt(s.trim())).filter(n=>!isNaN(n)&&n>0); }
@@ -1309,70 +1315,89 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
             applyFilter();
         }
 
+        const calculatedTeamsCache = new Map();
+        const calculatedTeamsPromises = new Map();
+        function invalidateLeagueCache(league){
+            if(!league) return;
+            calculatedTeamsCache.delete(league);
+        }
+
         async function getCalculatedTeams(league){
-            const dbase = getDB(league);
-            const standingsRef = dbase.collection('standings').doc(league);
-            const [standingsDoc, matchesSnap] = await Promise.all([
-                standingsRef.get(),
-                dbase.collection('matches').get()
-            ]);
+            if(calculatedTeamsCache.has(league)) return calculatedTeamsCache.get(league).map(t=>({...t}));
+            if(calculatedTeamsPromises.has(league)) return (await calculatedTeamsPromises.get(league)).map(t=>({...t}));
 
-            if(!standingsDoc.exists || !standingsDoc.data().teams) return [];
+            const promise=(async()=>{
+                const dbase = getDB(league);
+                const standingsRef = dbase.collection('standings').doc(league);
+                const [standingsDoc, matchesSnap] = await Promise.all([
+                    standingsRef.get(),
+                    dbase.collection('matches').where('league','==',league).get()
+                ]);
 
-            const teams = (standingsDoc.data().teams || []).map(t => ({
-                ...t,
-                m: Number(t.m) || 0,
-                pts: Number(t.pts) || 0,
-                diff: t.diff ?? '0',
-                manual: t.manual === true
-            }));
+                if(!standingsDoc.exists || !standingsDoc.data().teams) return [];
 
-            const stats = {};
-            teams.forEach(t => {
-                if(!t.manual){
-                    stats[t.name.trim().toLowerCase()] = {m:0, pts:0, gf:0, ga:0};
-                }
-            });
-
-            matchesSnap.forEach(doc => {
-                const m = doc.data();
-                if(m.league !== league || m.status !== 'finished') return;
-                if(!Number.isFinite(Number(m.scoreHome)) || !Number.isFinite(Number(m.scoreAway))) return;
-
-                const home = (m.homeTeam || '').trim().toLowerCase();
-                const away = (m.awayTeam || '').trim().toLowerCase();
-                const sh = Number(m.scoreHome);
-                const sa = Number(m.scoreAway);
-
-                if(stats[home]){
-                    stats[home].m++;
-                    stats[home].gf += sh;
-                    stats[home].ga += sa;
-                    stats[home].pts += sh > sa ? 3 : (sh === sa ? 1 : 0);
-                }
-                if(stats[away]){
-                    stats[away].m++;
-                    stats[away].gf += sa;
-                    stats[away].ga += sh;
-                    stats[away].pts += sa > sh ? 3 : (sa === sh ? 1 : 0);
-                }
-            });
-
-            return teams.map(t => {
-                if(t.manual) return t;
-                const s = stats[t.name.trim().toLowerCase()] || {m:0,pts:0,gf:0,ga:0};
-                return {
+                const teams = (standingsDoc.data().teams || []).map(t => ({
                     ...t,
-                    m: s.m,
-                    pts: s.pts,
-                    diff: s.gf - s.ga >= 0 ? `+${s.gf - s.ga}` : `${s.gf - s.ga}`,
-                    gf: s.gf,
-                    ga: s.ga
-                };
-            });
+                    m: Number(t.m) || 0,
+                    pts: Number(t.pts) || 0,
+                    diff: t.diff ?? '0',
+                    manual: t.manual === true
+                }));
+
+                const stats = {};
+                teams.forEach(t => {
+                    if(!t.manual){
+                        stats[t.name.trim().toLowerCase()] = {m:0, pts:0, gf:0, ga:0};
+                    }
+                });
+
+                matchesSnap.forEach(doc => {
+                    const m = doc.data();
+                    if(m.status !== 'finished') return;
+                    if(!Number.isFinite(Number(m.scoreHome)) || !Number.isFinite(Number(m.scoreAway))) return;
+
+                    const home = (m.homeTeam || '').trim().toLowerCase();
+                    const away = (m.awayTeam || '').trim().toLowerCase();
+                    const sh = Number(m.scoreHome);
+                    const sa = Number(m.scoreAway);
+
+                    if(stats[home]){
+                        stats[home].m++;
+                        stats[home].gf += sh;
+                        stats[home].ga += sa;
+                        stats[home].pts += sh > sa ? 3 : (sh === sa ? 1 : 0);
+                    }
+                    if(stats[away]){
+                        stats[away].m++;
+                        stats[away].gf += sa;
+                        stats[away].ga += sh;
+                        stats[away].pts += sa > sh ? 3 : (sa === sh ? 1 : 0);
+                    }
+                });
+
+                const result = teams.map(t => {
+                    if(t.manual) return t;
+                    const s = stats[t.name.trim().toLowerCase()] || {m:0,pts:0,gf:0,ga:0};
+                    return {
+                        ...t,
+                        m: s.m,
+                        pts: s.pts,
+                        diff: s.gf - s.ga >= 0 ? `+${s.gf - s.ga}` : `${s.gf - s.ga}`,
+                        gf: s.gf,
+                        ga: s.ga
+                    };
+                });
+                calculatedTeamsCache.set(league,result);
+                return result;
+            })();
+
+            calculatedTeamsPromises.set(league,promise);
+            try{return (await promise).map(t=>({...t}));}
+            finally{calculatedTeamsPromises.delete(league);}
         }
 
         async function recalculateStandings(league){
+            invalidateLeagueCache(league);
             try{
                 const dbase = getDB(league);
                 const ref = dbase.collection('standings').doc(league);
@@ -1440,7 +1465,7 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
             const tb=document.getElementById('tb');
             tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:2rem;">Ładowanie...</td></tr>';
             try{
-                await loadZones();
+                await loadZones(false, league);
                 const teams = await getCalculatedTeams(league);
 
                 if(!teams.length){
@@ -1469,7 +1494,7 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
         async function loadHomeTable(){
             const tb=document.getElementById('home-tb');
             try{
-                await loadZones();
+                await loadZones(false, 'iv_liga');
                 const all=await getCalculatedTeams('iv_liga');
                 all.sort((a,b)=>Number(b.pts)-Number(a.pts)||evalGoalDiff(b.diff)-evalGoalDiff(a.diff));
 
@@ -1488,6 +1513,8 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
         let currentStatLeague = 'iv_liga';
         let currentStatType = 'goals';
         let cachedStats = [];
+        const statsCache = new Map();
+        const statsPromises = new Map();
 
         function switchStatType(type) {
             currentStatType = type;
@@ -1516,9 +1543,24 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
             const tb = document.getElementById('stats-tb');
             tb.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:2rem;">Ładowanie...</td></tr>';
             try {
-                const dbase = getDB(league);
-                const s = await dbase.collection('stats').where('league', '==', league).get();
-                cachedStats = s.empty ? [] : s.docs.map(d=>d.data());
+                if(statsCache.has(league)){
+                    cachedStats = statsCache.get(league);
+                } else {
+                    if(statsPromises.has(league)) {
+                        cachedStats = await statsPromises.get(league);
+                    } else {
+                        const promise=(async()=>{
+                            const dbase = getDB(league);
+                            const s = await dbase.collection('stats').where('league', '==', league).get();
+                            const data = s.empty ? [] : s.docs.map(d=>d.data());
+                            statsCache.set(league,data);
+                            return data;
+                        })();
+                        statsPromises.set(league,promise);
+                        try{ cachedStats = await promise; }
+                        finally{ statsPromises.delete(league); }
+                    }
+                }
                 renderStatsTable();
             } catch(e) {
                 tb.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#ff6b6b;padding:2rem;">Błąd ładowania statystyk.</td></tr>';
@@ -1729,7 +1771,6 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
                 user=u;
                 document.getElementById('login-panel').style.display='none';
                 document.getElementById('dash').style.display='block';
-                await loadZones();
                 populateBulkLeagueSelectors();
                 loadAdminM(); loadAdminT(); loadAdminZ(); loadAdminP(); loadAdminTr(); loadAdminS();
             }else{
@@ -2213,6 +2254,7 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
             try {
                 const dbase = getDB(league);
                 await dbase.collection('zones').doc(league).set(data);
+                zonesCache[league]=data;
                 loadAdminZ();
                 alert('Strefy ligi zostały zapisane!');
             } catch(e) { alert('Błąd zapisu stref.'); }
@@ -2348,6 +2390,8 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
                 } else {
                     await newDbase.collection('stats').add(data);
                 }
+                statsCache.delete(newLeague);
+                if(id && oldDbVal && oldDbVal !== (getDB(newLeague) === window.db2 ? 'db2' : 'db1')) statsCache.clear();
                 clearSF(); loadAdminS();
             } catch(e) { alert('Błąd zapisu statystyk.'); }
         }
@@ -2388,7 +2432,9 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
         async function delS(id, dbVal){
             if(confirm('Usunąć te statystyki?')){
                 const dbase = (dbVal==='db2' && window.db2) ? window.db2 : window.db;
+                const snap=await dbase.collection('stats').doc(id).get();
                 await dbase.collection('stats').doc(id).delete();
+                if(snap.exists && snap.data().league) statsCache.delete(snap.data().league);
                 loadAdminS();
             }
         }
@@ -2464,7 +2510,6 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
             // Start loading immediately on page entry.
             Promise.allSettled([
                 loadCrests(),
-                loadZones(),
                 refreshMatches(),
                 loadHomeTable()
             ]);

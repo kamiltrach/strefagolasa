@@ -1238,7 +1238,7 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
                 }
                 allM.sort((a,b)=>(a.date?.seconds||0)-(b.date?.seconds||0));
                 mc = allM;
-                renderGrid(upcomingList(mc).slice(0,6),'home-upcoming');
+                renderGrid(upcomingList(mc),'home-upcoming');
                 renderGrid(finishedList(mc).slice(0,6),'home-grid');
                 applyFilter();
             }catch(e){ c1.innerHTML='<p style="color:#ff6b6b;">Błąd bazy.</p>'; }

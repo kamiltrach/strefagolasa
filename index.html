@@ -1228,17 +1228,17 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
             if(!c1) return;
             try{
                 await loadCrests();
-                const s1 = await window.db.collection('matches').orderBy('date','asc').limit(500).get();
+                const s1 = await window.db.collection('matches').orderBy('date','asc').limit(1300).get();
                 let allM = s1.docs.map(d=>({id:d.id, _db:'db1', ...d.data()}));
                 if (window.db2) {
                     try {
-                        const s2 = await window.db2.collection('matches').orderBy('date','asc').limit(500).get();
+                        const s2 = await window.db2.collection('matches').orderBy('date','asc').limit(1300).get();
                         allM = allM.concat(s2.docs.map(d=>({id:d.id, _db:'db2', ...d.data()})));
                     } catch(e) {}
                 }
                 allM.sort((a,b)=>(a.date?.seconds||0)-(b.date?.seconds||0));
                 mc = allM;
-                renderGrid(upcomingList(mc),'home-upcoming');
+                renderGrid(upcomingList(mc).slice(0,6),'home-upcoming');
                 renderGrid(finishedList(mc).slice(0,6),'home-grid');
                 applyFilter();
             }catch(e){ c1.innerHTML='<p style="color:#ff6b6b;">Błąd bazy.</p>'; }

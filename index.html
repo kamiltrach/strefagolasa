@@ -2092,11 +2092,11 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
         }
         
         async function loadAdminM(){
-            const s1=await window.db.collection('matches').orderBy('date','asc').limit(1300).get();
+            const s1=await window.db.collection('matches').orderBy('date','asc').limit(3300).get();
             let all=s1.docs.map(d=>({id:d.id, _db:'db1', ...d.data()}));
             if(window.db2){
                 try {
-                    const s2=await window.db2.collection('matches').orderBy('date','asc').limit(1300).get();
+                    const s2=await window.db2.collection('matches').orderBy('date','asc').limit(3300).get();
                     all=all.concat(s2.docs.map(d=>({id:d.id, _db:'db2', ...d.data()})));
                 } catch(e) {}
             }

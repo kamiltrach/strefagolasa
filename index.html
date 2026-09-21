@@ -677,7 +677,9 @@
                         <div class="card" style="margin-bottom:2rem;">
                             <h3 style="font-size:0.75rem;color:#ff6b6b;margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:1.2px;">Szybkie usuwanie meczu</h3>
                             <p style="color:var(--muted);font-size:0.78rem;margin-bottom:1rem;">Wpisz dokładnie: Gospodarz vs Gość, RRRR-MM-DD, GG:MM</p>
-                            <input type="text" id="quick-delete-match" placeholder="Tanew Harasiuki vs PUKS Francesco Jelna, 2026-09-26, 13:00">
+                            <textarea id="quick-delete-match" placeholder="Tanew Harasiuki vs PUKS Francesco Jelna, 2026-09-26, 13:00
+Orzeł vs Wisłoka, 2026-09-27, 17:00
+Legia II vs Stal, 2026-09-28, 18:00" rows="5"></textarea>
                             <button class="btn" onclick="quickDeleteMatch()" style="background:#ff6b6b;color:#fff;">Usuń mecz</button>
                             <p id="quick-delete-status" style="margin-top:0.8rem;font-size:0.78rem;text-align:center;"></p>
                         </div>
@@ -2141,18 +2143,38 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
             status.textContent='';
             status.style.color='';
 
-            const match=raw.match(/^(.+?)\\s+vs\\s+(.+?),\\s*(\\d{4}-\\d{2}-\\d{2}),\\s*(\\d{2}:\\d{2})$/);
-            if(!match){
-                status.textContent='Nieprawidłowy format. Użyj: Gospodarz vs Gość, 2026-09-26, 13:00';
+            if(!raw){
+                status.textContent='Wpisz co najmniej jeden mecz.';
                 status.style.color='#ff6b6b';
                 return;
             }
 
-            const home=match[1].trim();
-            const away=match[2].trim();
-            const targetMs=new Date(match[3]+'T'+match[4]).getTime();
+            const lines=raw.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+            const parsed=[];
+            const errors=[];
+            lines.forEach((line,i)=>{
+                const match=line.match(/^(.+?)\s+vs\s+(.+?),\s*(\d{4}-\d{2}-\d{2}),\s*(\d{2}:\d{2})$/);
+                if(!match){
+                    errors.push(`Linia ${i+1}`);
+                    return;
+                }
+                parsed.push({
+                    line,
+                    home:match[1].trim(),
+                    away:match[2].trim(),
+                    date:match[3],
+                    time:match[4],
+                    targetMs:new Date(match[3]+'T'+match[4]).getTime()
+                });
+            });
 
-            if(!confirm(`Usunąć mecz: ${home} vs ${away}, ${match[3]}, ${match[4]}?`)) return;
+            if(errors.length){
+                status.textContent=`Nieprawidłowy format w: ${errors.join(', ')}. Każdy mecz wpisz w osobnej linii: Gospodarz vs Gość, 2026-09-26, 13:00`;
+                status.style.color='#ff6b6b';
+                return;
+            }
+
+            if(!confirm(`Usunąć ${parsed.length} ${parsed.length===1?'mecz':'mecze'}?`)) return;
 
             try{
                 const refs=[];
@@ -2165,32 +2187,46 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
                     }catch(e){}
                 }
 
-                const matches=refs.filter(x=>{
-                    const d=x.data;
-                    if((d.homeTeam||'').trim()!==home || (d.awayTeam||'').trim()!==away || !d.date) return false;
-                    const ms=d.date.toDate ? d.date.toDate().getTime() : new Date(d.date).getTime();
-                    return Math.abs(ms-targetMs)<=60000;
-                });
+                const toDelete=[];
+                const leagues=new Set();
+                const notFound=[];
+                const duplicates=[];
 
-                if(matches.length!==1){
-                    status.textContent=matches.length===0
-                        ? 'Nie znaleziono meczu z dokładnie takimi informacjami.'
-                        : `Znaleziono ${matches.length} meczów. Usuwanie zatrzymane, aby nie usunąć niewłaściwego.`;
+                for(const item of parsed){
+                    const matches=refs.filter(x=>{
+                        const d=x.data;
+                        if((d.homeTeam||'').trim()!==item.home || (d.awayTeam||'').trim()!==item.away || !d.date) return false;
+                        const ms=d.date.toDate ? d.date.toDate().getTime() : new Date(d.date).getTime();
+                        return Math.abs(ms-item.targetMs)<=60000;
+                    });
+
+                    if(matches.length===0) notFound.push(item.line);
+                    else if(matches.length>1) duplicates.push(item.line);
+                    else {
+                        toDelete.push(matches[0]);
+                        if(matches[0].data.league) leagues.add(matches[0].data.league);
+                    }
+                }
+
+                if(notFound.length || duplicates.length){
+                    let msg=[];
+                    if(notFound.length) msg.push(`Nie znaleziono: ${notFound.length}`);
+                    if(duplicates.length) msg.push(`Nie jednoznaczne: ${duplicates.length}`);
+                    status.textContent=msg.join(' • ')+'. Żaden mecz nie został usunięty.';
                     status.style.color='#ff6b6b';
                     return;
                 }
 
-                const league=matches[0].data.league||'';
-                await matches[0].ref.delete();
-                if(league) await recalculateStandings(league);
+                for(const item of toDelete) await item.ref.delete();
+                for(const league of leagues) await recalculateStandings(league);
 
                 input.value='';
-                status.textContent='Mecz został usunięty.';
+                status.textContent=`Usunięto ${toDelete.length} ${toDelete.length===1?'mecz':'mecze'}.`;
                 status.style.color='var(--green)';
                 await loadAdminM();
             }catch(e){
                 console.error(e);
-                status.textContent='Błąd podczas usuwania meczu.';
+                status.textContent='Błąd podczas usuwania meczów.';
                 status.style.color='#ff6b6b';
             }
         }

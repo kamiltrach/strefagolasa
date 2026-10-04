@@ -1159,6 +1159,9 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
             const v=String(url).trim().toLowerCase();
             if(!v || v==='brak linku do herbu' || v==='brak linku' || v==='brak') return true;
             if(!/^https?:\/\//i.test(v)) return true;
+            // Facebook/Meta CDN często zwraca 403 dla obrazów użytych jako hotlink.
+            // Nie renderujemy takich adresów, żeby przeglądarka nie generowała błędów 403.
+            if(/(^|\.)fbcdn\.net($|\/)/i.test(v) || /(^|\.)facebook\.com($|\/)/i.test(v)) return true;
             return false;
         }
 

@@ -2078,7 +2078,10 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
                 scoreAway:hasScore?parseInt(sa):null,
                 status:hasScore?'finished':'upcoming',
                 league:newLeague,
-                date:dateVal?firebase.firestore.Timestamp.fromDate(new Date(dateVal)):firebase.firestore.FieldValue.serverTimestamp()
+                date:dateVal?firebase.firestore.Timestamp.fromDate(new Date(dateVal)):firebase.firestore.FieldValue.serverTimestamp(),
+                // Każda ręczna zmiana chroni spotkanie przed nadpisaniem przez importer.
+                manualOverride:true,
+                manualUpdatedAt:firebase.firestore.FieldValue.serverTimestamp()
             };
             try{
                 const newDbase = getDB(newLeague);

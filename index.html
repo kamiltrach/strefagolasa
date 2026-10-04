@@ -1117,6 +1117,84 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
 
         let crestsCache={};
         let crestsLoadPromise=null;
+
+        /*
+         * DOPASOWYWANIE HERBÓW — nie wymagamy identycznej nazwy klubu.
+         * Przykłady, które będą traktowane jako ta sama drużyna:
+         *   "KS Wiązownica" / "Wiązownica"
+         *   "LKS Wisłok Wiśniowa" / "Wisłok Wiśniowa"
+         *   "Pogoń-Sokół II Lubaczów" / "Pogoń Sokół II Lubaczów"
+         *   różne wielkości liter, polskie znaki, kropki, myślniki itd.
+         */
+        function normalizeClubName(name){
+            return String(name||'')
+                .toLowerCase()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+                .replace(/[–—-]/g,' ')
+                .replace(/[^a-z0-9\s]/g,' ')
+                .replace(/\b(ks|lks|mks|uks|gks|kks|mlks|ts|tks|sts|bks|mosir|osir|sokol|sporting|club|klub)\b/g,' ')
+                .replace(/\s+/g,' ')
+                .trim();
+        }
+
+        function clubTokens(name){
+            return normalizeClubName(name).split(' ').filter(Boolean);
+        }
+
+        function clubSimilarity(a,b){
+            const aa=clubTokens(a), bb=clubTokens(b);
+            if(!aa.length || !bb.length) return 0;
+            const A=new Set(aa), B=new Set(bb);
+            let common=0;
+            A.forEach(x=>{if(B.has(x)) common++;});
+            const jaccard=common/(A.size+B.size-common||1);
+            const shorter=Math.min(normalizeClubName(a).length,normalizeClubName(b).length);
+            const longer=Math.max(normalizeClubName(a).length,normalizeClubName(b).length);
+            const contains=shorter>=5 && normalizeClubName(a).includes(normalizeClubName(b)) || shorter>=5 && normalizeClubName(b).includes(normalizeClubName(a));
+            return Math.max(jaccard, contains ? 0.88 : 0);
+        }
+
+        function isBadCrestUrl(url){
+            if(!url) return true;
+            const v=String(url).trim().toLowerCase();
+            if(!v || v==='brak linku do herbu' || v==='brak linku' || v==='brak') return true;
+            if(!/^https?:\/\//i.test(v)) return true;
+            return false;
+        }
+
+        function findCrest(name){
+            const raw=String(name||'').trim();
+            if(!raw) return null;
+
+            // 1. dokładna nazwa
+            if(!isBadCrestUrl(crestsCache[raw])) return crestsCache[raw];
+
+            // 2. znormalizowana nazwa
+            const norm=normalizeClubName(raw);
+            for(const key of Object.keys(crestsCache)){
+                if(normalizeClubName(key)===norm && !isBadCrestUrl(crestsCache[key])) return crestsCache[key];
+            }
+
+            // 3. podobieństwo nazw — próg celowo dość wysoki, aby nie pomylić klubów
+            let best=null, bestScore=0;
+            for(const key of Object.keys(crestsCache)){
+                if(isBadCrestUrl(crestsCache[key])) continue;
+                const score=clubSimilarity(raw,key);
+                if(score>bestScore){bestScore=score;best=crestsCache[key];}
+            }
+            return bestScore>=0.60 ? best : null;
+        }
+
+        function crestFallback(className='team-crest',small=false){
+            return `<div class="${className}" style="display:flex;align-items:center;justify-content:center;font-size:${small?'0.55rem':'0.65rem'};color:var(--muted);"><i class="fa-solid fa-shield"></i></div>`;
+        }
+
+        function crestImageHtml(url,className){
+            if(isBadCrestUrl(url)) return crestFallback(className,className==='table-crest');
+            const safe=String(url).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+            return `<img src="${safe}" class="${className}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.outerHTML='${crestFallback(className,className==='table-crest').replace(/'/g,"\\'")}'">`;
+        }
+
         async function loadCrests(force=false){
             if(!force && Object.keys(crestsCache).length) return crestsCache;
             if(!force && crestsLoadPromise) return crestsLoadPromise;
@@ -1129,7 +1207,7 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
                         const doc=await dbase.collection('standings').doc(league).get();
                         if(doc.exists&&doc.data().teams){
                             doc.data().teams.forEach(t=>{
-                                if(t.name&&t.crest) nextCache[t.name.trim()]=t.crest;
+                                if(t.name && !isBadCrestUrl(t.crest)) nextCache[t.name.trim()]=t.crest.trim();
                             });
                         }
                     }catch(e){}
@@ -1141,16 +1219,18 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
             try{return await crestsLoadPromise;}
             finally{crestsLoadPromise=null;}
         }
+
         function crestImg(name){
-            const c=crestsCache[(name||'').trim()];
-            return c ? `<img src="${c}" class="team-crest" alt="">` : '<div class="team-crest" style="display:flex;align-items:center;justify-content:center;font-size:0.65rem;color:var(--muted);"><i class="fa-solid fa-shield"></i></div>';
+            const c=findCrest(name);
+            return c ? crestImageHtml(c,'team-crest') : crestFallback('team-crest',false);
         }
         function crestImgSmallFromStr(name){
-            const c=crestsCache[(name||'').trim()];
-            return c ? `<img src="${c}" class="table-crest" alt="">` : '<div class="table-crest" style="display:flex;align-items:center;justify-content:center;font-size:0.55rem;color:var(--muted);"><i class="fa-solid fa-shield"></i></div>';
+            const c=findCrest(name);
+            return c ? crestImageHtml(c,'table-crest') : crestFallback('table-crest',true);
         }
         function crestImgSmall(t){
-            return t.crest ? `<img src="${t.crest}" class="table-crest" alt="">` : '<div class="table-crest" style="display:flex;align-items:center;justify-content:center;font-size:0.55rem;color:var(--muted);"><i class="fa-solid fa-shield"></i></div>';
+            const c=findCrest(t?.name||'') || (!isBadCrestUrl(t?.crest) ? t.crest : null);
+            return c ? crestImageHtml(c,'table-crest') : crestFallback('table-crest',true);
         }
 
         function evalGoalDiff(d){
@@ -1713,8 +1793,9 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
             const modal = document.getElementById('club-modal');
             const c = crestsCache[teamName.trim()];
             
-            document.getElementById('modal-crest-container').innerHTML = c 
-                ? `<img src="${c}" class="modal-crest" alt="">` 
+            const modalCrest=findCrest(teamName);
+            document.getElementById('modal-crest-container').innerHTML = modalCrest
+                ? `<img src="${String(modalCrest).replace(/&/g,'&amp;').replace(/"/g,'&quot;')}" class="modal-crest" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.outerHTML='<div class=\"modal-crest\" style=\"display:flex;align-items:center;justify-content:center;font-size:2rem;color:var(--muted);\"><i class=\"fa-solid fa-shield\"></i></div>'">`
                 : `<div class="modal-crest" style="display:flex;align-items:center;justify-content:center;font-size:2rem;color:var(--muted);"><i class="fa-solid fa-shield"></i></div>`;
             
             document.getElementById('modal-team-name').innerText = teamName;
@@ -2078,10 +2159,7 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
                 scoreAway:hasScore?parseInt(sa):null,
                 status:hasScore?'finished':'upcoming',
                 league:newLeague,
-                date:dateVal?firebase.firestore.Timestamp.fromDate(new Date(dateVal)):firebase.firestore.FieldValue.serverTimestamp(),
-                // Każda ręczna zmiana chroni spotkanie przed nadpisaniem przez importer.
-                manualOverride:true,
-                manualUpdatedAt:firebase.firestore.FieldValue.serverTimestamp()
+                date:dateVal?firebase.firestore.Timestamp.fromDate(new Date(dateVal)):firebase.firestore.FieldValue.serverTimestamp()
             };
             try{
                 const newDbase = getDB(newLeague);

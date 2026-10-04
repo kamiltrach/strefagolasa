@@ -1211,6 +1211,28 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
             finally{crestsLoadPromise=null;}
         }
 
+        // Dodatkowe zabezpieczenie: nawet gdy gdzieś indziej w kodzie trafi się stary
+        // link z Facebooka/Meta albo tekst "brak linku do herbu", przeglądarka nie
+        // dostanie takiego adresu jako src obrazka i nie wygeneruje 403/404.
+        function sanitizeCrestElements(root=document){
+            try{
+                root.querySelectorAll('img').forEach(img=>{
+                    const src=img.getAttribute('src')||'';
+                    if(isBadCrestUrl(src)){
+                        const cls=img.classList.contains('table-crest')?'table-crest':(img.classList.contains('modal-crest')?'modal-crest':'team-crest');
+                        const fb=crestFallback(cls,cls==='table-crest');
+                        img.outerHTML=fb;
+                    }
+                });
+            }catch(e){}
+        }
+
+        if(!window.__crestSanitizerInstalled){
+            window.__crestSanitizerInstalled=true;
+            new MutationObserver(()=>sanitizeCrestElements(document)).observe(document.documentElement,{subtree:true,childList:true});
+            document.addEventListener('DOMContentLoaded',()=>sanitizeCrestElements(document));
+        }
+
         function crestImg(name){
             const c=findCrest(name);
             return c ? crestImageHtml(c,'team-crest') : crestFallback('team-crest',false);
@@ -1284,6 +1306,199 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
 
         let mc=[], curFilter='all', curMatchType='all';
 
+        // ================================================================
+        // AUTOMATYCZNA SYNCHRONIZACJA WYNIKÓW Z PODKARPACIELIVE
+        // ================================================================
+        // PodkarpacieLIVE publikuje bieżące wyniki także dla IV ligi i lig
+        // okręgowych/klasowych. Sama aplikacja wcześniej czytała wyłącznie
+        // Firestore, dlatego mecz pozostawał jako "Nadchodzący" mimo że
+        // wynik był już dostępny na stronie źródłowej.
+        const PCLIVE_RESULTS_URL='https://www.podkarpacielive.pl/wyniki';
+        const PCLIVE_READERS=[
+            target=>'https://r.jina.ai/https://www.podkarpacielive.pl'+target,
+            target=>'https://api.allorigins.win/raw?url='+encodeURIComponent('https://www.podkarpacielive.pl'+target)
+        ];
+        let remoteResultsSyncPromise=null;
+        let remoteResultsLastMs=0;
+        const REMOTE_RESULTS_MIN_INTERVAL=120000;
+
+        const PL_MONTHS={
+            'stycznia':0,'lutego':1,'marca':2,'kwietnia':3,'maja':4,'czerwca':5,
+            'lipca':6,'sierpnia':7,'września':8,'pazdziernika':9,'października':9,
+            'listopada':10,'grudnia':11
+        };
+
+        function cleanRemoteTeamName(name){
+            return String(name||'')
+                .replace(/^image\s+/i,'')
+                .replace(/^\s*(?:●|•)\s*/,'')
+                .replace(/\s+/g,' ')
+                .trim();
+        }
+
+        function normalizeMatchTeam(name){
+            return String(name||'')
+                .toLowerCase()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+                .replace(/[–—-]/g,' ')
+                .replace(/[^a-z0-9\s]/g,' ')
+                .replace(/\b(ks|lks|mks|uks|gks|kks|mlks|ts|tks|sts|bks|mosir|osir|club|klub)\b/g,' ')
+                .replace(/\s+/g,' ')
+                .trim();
+        }
+
+        function teamsMatchForSync(a,b){
+            const na=normalizeMatchTeam(a), nb=normalizeMatchTeam(b);
+            if(!na||!nb) return false;
+            if(na===nb) return true;
+            const aa=na.split(' ').filter(Boolean), bb=nb.split(' ').filter(Boolean);
+            const A=new Set(aa), B=new Set(bb);
+            let common=0; A.forEach(x=>{if(B.has(x)) common++;});
+            const j=common/(A.size+B.size-common||1);
+            const shorter=Math.min(na.length,nb.length);
+            return shorter>=7 && (na.includes(nb)||nb.includes(na)) || j>=0.78;
+        }
+
+        function remoteDateFromLine(line){
+            const m=String(line||'').toLowerCase().match(/(?:^|[(,]\s*)(\d{1,2})\s+([a-ząćęłńóśźż]+)\s+(\d{4})(?:\s*[),]|$)/i);
+            if(!m) return null;
+            const month=PL_MONTHS[m[2]];
+            if(month==null) return null;
+            const d=new Date(Number(m[3]),month,Number(m[1]),12,0,0,0);
+            return d.getDate()===Number(m[1]) && d.getMonth()===month ? d : null;
+        }
+
+        function matchDateKeyFromDate(d){
+            if(!(d instanceof Date)||Number.isNaN(d.getTime())) return '';
+            return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        }
+
+        function matchDateKey(m){
+            const ms=matchTimeMs(m);
+            return ms ? matchDateKeyFromDate(new Date(ms)) : '';
+        }
+
+        function parsePodkarpacieLiveResults(text){
+            const lines=String(text||'').split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+            const found=[];
+            let currentDate=null;
+            for(let i=0;i<lines.length;i++){
+                const maybeDate=remoteDateFromLine(lines[i]);
+                if(maybeDate) currentDate=maybeDate;
+                if(lines[i]!=='FT' || !currentDate) continue;
+
+                const names=[]; const scores=[];
+                for(let j=i+1;j<Math.min(lines.length,i+14);j++){
+                    let v=lines[j].replace(/^[-*•]\s*/,'').trim();
+                    if(!v) continue;
+                    if(v==='FT') break;
+                    if(/^TV$/i.test(v) || /^TABELA$/i.test(v) || /^TWK$/i.test(v)) continue;
+                    v=cleanRemoteTeamName(v);
+                    if(/^\d{1,3}$/.test(v)){
+                        if(names.length>=2) scores.push(Number(v));
+                    }else if(!scores.length && names.length<2){
+                        names.push(v);
+                    }
+                    if(names.length===2 && scores.length===2) break;
+                }
+                if(names.length===2 && scores.length===2 && scores.every(Number.isFinite)){
+                    found.push({home:names[0],away:names[1],scoreHome:scores[0],scoreAway:scores[1],date:new Date(currentDate.getTime())});
+                }
+            }
+            return found;
+        }
+
+        async function fetchRemoteResultsText(){
+            const target='/wyniki';
+            let lastError=null;
+            for(const makeUrl of PCLIVE_READERS){
+                try{
+                    const url=makeUrl(target)+(makeUrl===PCLIVE_READERS[0]?'?v='+Date.now():'');
+                    const response=await fetch(url,{cache:'no-store'});
+                    if(!response.ok) throw new Error('HTTP '+response.status);
+                    const text=await response.text();
+                    if(text && text.length>300) return text;
+                }catch(e){ lastError=e; }
+            }
+            throw lastError||new Error('Nie udało się pobrać wyników');
+        }
+
+        async function syncResultsFromPodkarpacieLive(localMatches,force=false){
+            const now=Date.now();
+            if(!force && now-remoteResultsLastMs<REMOTE_RESULTS_MIN_INTERVAL) return 0;
+            if(remoteResultsSyncPromise) return remoteResultsSyncPromise;
+
+            remoteResultsSyncPromise=(async()=>{
+                try{
+                    const sourceText=await fetchRemoteResultsText();
+                    const remote=parsePodkarpacieLiveResults(sourceText);
+                    if(!remote.length){ remoteResultsLastMs=Date.now(); return 0; }
+
+                    const updates=[];
+                    const used=new Set();
+                    for(const rr of remote){
+                        const rkey=matchDateKeyFromDate(rr.date);
+                        let best=null;
+                        for(const m of localMatches){
+                            if(used.has(m.id)) continue;
+                            if(matchDateKey(m)!==rkey) continue;
+                            if(!teamsMatchForSync(m.homeTeam,rr.home)) continue;
+                            if(!teamsMatchForSync(m.awayTeam,rr.away)) continue;
+                            best=m; break;
+                        }
+                        if(!best) continue;
+                        const changed=Number(best.scoreHome)!==rr.scoreHome || Number(best.scoreAway)!==rr.scoreAway || best.status!=='finished';
+                        if(!changed) continue;
+                        used.add(best.id);
+                        updates.push({match:best,scoreHome:rr.scoreHome,scoreAway:rr.scoreAway});
+                    }
+
+                    if(!updates.length){ remoteResultsLastMs=Date.now(); return 0; }
+
+                    const grouped={db1:[],db2:[]};
+                    for(const u of updates) grouped[u.match._db==='db2'?'db2':'db1'].push(u);
+
+                    for(const dbKey of Object.keys(grouped)){
+                        const items=grouped[dbKey];
+                        if(!items.length) continue;
+                        const dbase=dbKey==='db2' ? window.db2 : window.db;
+                        if(!dbase) continue;
+                        let batch=dbase.batch(), count=0;
+                        for(const u of items){
+                            const ref=dbase.collection('matches').doc(u.match.id);
+                            batch.update(ref,{
+                                scoreHome:u.scoreHome,
+                                scoreAway:u.scoreAway,
+                                status:'finished',
+                                resultSource:'PodkarpacieLIVE',
+                                resultSyncedAt:firebase.firestore.FieldValue.serverTimestamp()
+                            });
+                            u.match.scoreHome=u.scoreHome;
+                            u.match.scoreAway=u.scoreAway;
+                            u.match.status='finished';
+                            u.match.resultSource='PodkarpacieLIVE';
+                            count++;
+                            if(count===450){ await batch.commit(); batch=dbase.batch(); count=0; }
+                        }
+                        if(count) await batch.commit();
+                    }
+
+                    const leagues=[...new Set(updates.map(u=>u.match.league).filter(Boolean))];
+                    for(const league of leagues) invalidateLeagueCache(league);
+                    remoteResultsLastMs=Date.now();
+                    console.info('[PodkarpacieLIVE] zaktualizowano wyników:',updates.length);
+                    return updates.length;
+                }catch(e){
+                    console.warn('[PodkarpacieLIVE] synchronizacja wyników niedostępna:',e?.message||e);
+                    remoteResultsLastMs=Date.now();
+                    return 0;
+                }finally{
+                    remoteResultsSyncPromise=null;
+                }
+            })();
+            return remoteResultsSyncPromise;
+        }
+
         function matchTimeMs(m){
             const ts=m?.date;
             if(!ts) return 0;
@@ -1336,6 +1551,12 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
                         allM = allM.concat(s2.docs.map(d=>({id:d.id, _db:'db2', ...d.data()})));
                     } catch(e) {}
                 }
+
+                // Najpierw pobieramy rzeczywiste wyniki, które PodkarpacieLIVE już opublikowało,
+                // a dopiero potem budujemy widoki "Nadchodzące" i "Wyniki". Aktualizujemy tylko
+                // istniejące mecze — niczego nowego automatycznie nie dopisujemy do Firestore.
+                await syncResultsFromPodkarpacieLive(allM);
+
                 allM.sort((a,b)=>matchTimeMs(a)-matchTimeMs(b));
                 mc = allM;
                 renderGrid(upcomingList(mc).slice(0,6),'home-upcoming');
@@ -1359,7 +1580,10 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
 
         function renderGrid(data,cid){
             const c=document.getElementById(cid);
-            if(c) c.innerHTML = data.length ? data.map(matchCard).join('') : '<p style="color:var(--muted);text-align:center;padding:1.5rem;">Brak danych.</p>';
+            if(c) {
+                c.innerHTML = data.length ? data.map(matchCard).join('') : '<p style="color:var(--muted);text-align:center;padding:1.5rem;">Brak danych.</p>';
+                sanitizeCrestElements(c);
+            }
         }
 
         function setMatchType(type) {
@@ -1802,11 +2026,11 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
         function openClubProfile(teamName) {
             if(!teamName) return;
             const modal = document.getElementById('club-modal');
-            const c = crestsCache[teamName.trim()];
-            
-            document.getElementById('modal-crest-container').innerHTML = c 
-                ? `<img src="${c}" class="modal-crest" alt="">` 
+            const c = findCrest(teamName);
+            document.getElementById('modal-crest-container').innerHTML = c && !isBadCrestUrl(c)
+                ? crestImageHtml(c,'modal-crest')
                 : `<div class="modal-crest" style="display:flex;align-items:center;justify-content:center;font-size:2rem;color:var(--muted);"><i class="fa-solid fa-shield"></i></div>`;
+            sanitizeCrestElements(document.getElementById('modal-crest-container'));
             
             document.getElementById('modal-team-name').innerText = teamName;
 

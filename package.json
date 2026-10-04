@@ -1,7 +1,16 @@
 {
-  "name":"strefa-gola-podkarpacielive-sync",
-  "private":true,
-  "type":"module",
-  "engines":{"node":">=20"},
-  "dependencies":{"cheerio":"^1.1.2","firebase-admin":"^13.5.0"}
+  "name": "podkarpacielive-firestore-sync",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Server-side synchronizacja meczów Strefa Gola z PodkarpacieLIVE.",
+  "scripts": {
+    "sync": "node podkarpacielive-sync.mjs",
+    "sync:results": "node podkarpacielive-sync.mjs --mode=results",
+    "sync:round": "node podkarpacielive-sync.mjs --mode=round"
+  },
+  "dependencies": {
+    "cheerio": "^1.1.2",
+    "firebase-admin": "^13.5.0"
+  }
 }

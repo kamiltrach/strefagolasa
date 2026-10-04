@@ -1,28 +1,33 @@
-name: PodkarpacieLIVE sync
+name: PodkarpacieLIVE → Firestore
 
 on:
-  schedule:
-    - cron: '*/5 * * * *'
   workflow_dispatch:
+  schedule:
+    # Wyniki: co 5 minut.
+    - cron: '*/5 * * * *'
+    # Próba importu najbliższej kolejki: poniedziałek 03:10 UTC.
+    - cron: '10 3 * * 1'
 
 jobs:
   sync:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
     permissions:
       contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
-      - name: Install
+
+      - name: Install dependencies
         run: npm ci
-      - name: Sync PodkarpacieLIVE -> Firestore
+
+      - name: Sync PodkarpacieLIVE
         env:
-          FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
-          FIREBASE_DB2_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_DB2_SERVICE_ACCOUNT_JSON }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          FIREBASE2_SERVICE_ACCOUNT: ${{ secrets.FIREBASE2_SERVICE_ACCOUNT }}
         run: node podkarpacielive-sync.mjs

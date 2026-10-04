@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2714%27 fill=%27%230b1325%27/%3E%3Ccircle cx=%2732%27 cy=%2732%27 r=%2718%27 fill=%27none%27 stroke=%27%2349e68b%27 stroke-width=%274%27/%3E%3Cpath d=%27M32 14v36M14 32h36%27 stroke=%27%2349e68b%27 stroke-width=%272%27/%3E%3C/svg%3E">
+
     <title>Strefa Gola - Podkarpacie</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
@@ -223,6 +225,7 @@
     </style>
 </head>
 <body>
+<script>console.info('[Strefa Gola] PC-LIVE-SYNC v3 — plik z synchronizacją wyników i blokadą niedostępnych herbów');</script>
 
     <nav>
         <div class="logo-wrap">
@@ -1307,16 +1310,21 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
         let mc=[], curFilter='all', curMatchType='all';
 
         // ================================================================
+        // ================================================================
         // AUTOMATYCZNA SYNCHRONIZACJA WYNIKÓW Z PODKARPACIELIVE
         // ================================================================
-        // PodkarpacieLIVE publikuje bieżące wyniki także dla IV ligi i lig
-        // okręgowych/klasowych. Sama aplikacja wcześniej czytała wyłącznie
-        // Firestore, dlatego mecz pozostawał jako "Nadchodzący" mimo że
-        // wynik był już dostępny na stronie źródłowej.
-        const PCLIVE_RESULTS_URL='https://www.podkarpacielive.pl/wyniki';
+        // Ważne: /wyniki pokazuje głównie wybór rozgrywek. Faktyczne wyniki
+        // znajdują się na /wyniki-na-zywo, dlatego synchronizujemy właśnie
+        // z tej strony.
+        const PCLIVE_RESULTS_URLS=[
+            'https://www.podkarpacielive.pl/wyniki-na-zywo',
+            'https://www.podkarpacielive.pl/wyniki'
+        ];
         const PCLIVE_READERS=[
             target=>'https://r.jina.ai/https://www.podkarpacielive.pl'+target,
-            target=>'https://api.allorigins.win/raw?url='+encodeURIComponent('https://www.podkarpacielive.pl'+target)
+            target=>'https://r.jina.ai/http://www.podkarpacielive.pl'+target,
+            target=>'https://api.allorigins.win/raw?url='+encodeURIComponent('https://www.podkarpacielive.pl'+target),
+            target=>'https://api.codetabs.com/v1/proxy?quest='+encodeURIComponent('https://www.podkarpacielive.pl'+target)
         ];
         let remoteResultsSyncPromise=null;
         let remoteResultsLastMs=0;
@@ -1324,14 +1332,14 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
 
         const PL_MONTHS={
             'stycznia':0,'lutego':1,'marca':2,'kwietnia':3,'maja':4,'czerwca':5,
-            'lipca':6,'sierpnia':7,'września':8,'pazdziernika':9,'października':9,
+            'lipca':6,'sierpnia':7,'września':8,'wrzesnia':8,'października':9,'pazdziernika':9,
             'listopada':10,'grudnia':11
         };
 
         function cleanRemoteTeamName(name){
             return String(name||'')
-                .replace(/^image\s+/i,'')
-                .replace(/^\s*(?:●|•)\s*/,'')
+                .replace(/^\s*(?:image\s+|obraz\s+)/i,'')
+                .replace(/^\s*(?:●|•|-|–|—)\s*/,'')
                 .replace(/\s+/g,' ')
                 .trim();
         }
@@ -1356,16 +1364,30 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
             let common=0; A.forEach(x=>{if(B.has(x)) common++;});
             const j=common/(A.size+B.size-common||1);
             const shorter=Math.min(na.length,nb.length);
-            return shorter>=7 && (na.includes(nb)||nb.includes(na)) || j>=0.78;
+            if(shorter>=6 && (na.includes(nb)||nb.includes(na))) return true;
+            if(j>=0.78) return true;
+            // Typowy zapis z łącznikiem / bez łącznika.
+            if(na.replace(/\s+/g,'')===nb.replace(/\s+/g,'')) return true;
+            return false;
         }
 
         function remoteDateFromLine(line){
-            const m=String(line||'').toLowerCase().match(/(?:^|[(,]\s*)(\d{1,2})\s+([a-ząćęłńóśźż]+)\s+(\d{4})(?:\s*[),]|$)/i);
-            if(!m) return null;
-            const month=PL_MONTHS[m[2]];
+            const txt=String(line||'').replace(/\s+/g,' ').trim().toLowerCase();
+
+            // Format używany przez część sekcji PodkarpacieLIVE: 03.10.2026
+            let n=txt.match(/(?:^|[,(]\s*)(?:poniedziałek|wtorek|środa|czwartek|piątek|sobota|niedziela|poniedzialek|sroda|piatek)?\s*,?\s*(\d{1,2})\.(\d{1,2})\.(\d{4})(?:\s*[),]|$)/i);
+            if(n){
+                const d=new Date(Number(n[3]),Number(n[2])-1,Number(n[1]),12,0,0,0);
+                if(d.getDate()===Number(n[1]) && d.getMonth()===Number(n[2])-1 && d.getFullYear()===Number(n[3])) return d;
+            }
+
+            // Format słowny: sobota, 3 października 2026
+            n=txt.match(/(?:^|[,(]\s*)(?:poniedziałek|wtorek|środa|czwartek|piątek|sobota|niedziela|poniedzialek|sroda|piatek)?\s*,?\s*(\d{1,2})\s+([a-ząćęłńóśźż]+)\s+(\d{4})(?:\s*[),]|$)/i);
+            if(!n) return null;
+            const month=PL_MONTHS[n[2]];
             if(month==null) return null;
-            const d=new Date(Number(m[3]),month,Number(m[1]),12,0,0,0);
-            return d.getDate()===Number(m[1]) && d.getMonth()===month ? d : null;
+            const d=new Date(Number(n[3]),month,Number(n[1]),12,0,0,0);
+            return d.getDate()===Number(n[1]) && d.getMonth()===month && d.getFullYear()===Number(n[3]) ? d : null;
         }
 
         function matchDateKeyFromDate(d){
@@ -1378,49 +1400,128 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
             return ms ? matchDateKeyFromDate(new Date(ms)) : '';
         }
 
+        function isRemoteNoiseLine(v){
+            const x=String(v||'').trim();
+            if(!x) return true;
+            if(/^\[?button:/i.test(x)) return true;
+            if(/^(?:tv|tabela|twk|odw\.)$/i.test(x)) return true;
+            if(/^(?:ft|ht)$/i.test(x)) return true;
+            if(/^\?$/.test(x)) return true;
+            if(/^image$/i.test(x)) return true;
+            return false;
+        }
+
+        function isScoreLine(v){
+            const x=String(v||'').trim();
+            if(/^\d{1,3}\s*[-:]\s*\d{1,3}$/.test(x)) return true;
+            return /^\d{1,3}$/.test(x);
+        }
+
+        function parseRemoteScoreParts(a,b){
+            const aa=String(a||'').trim();
+            const bb=String(b||'').trim();
+            if(/^\d{1,3}\s*[-:]\s*\d{1,3}$/.test(aa)){
+                const m=aa.match(/^(\d{1,3})\s*[-:]\s*(\d{1,3})$/);
+                return m ? [Number(m[1]),Number(m[2])] : null;
+            }
+            if(/^\d{1,3}$/.test(aa) && /^\d{1,3}$/.test(bb)) return [Number(aa),Number(bb)];
+            return null;
+        }
+
         function parsePodkarpacieLiveResults(text){
-            const lines=String(text||'').split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+            const lines=String(text||'')
+                .split(/\r?\n/)
+                .map(x=>x.replace(/^[>\-*•]+\s*/,'').trim())
+                .filter(Boolean);
             const found=[];
             let currentDate=null;
+            let pending=[];
+
+            function flushPending(date){
+                if(!date || !pending.length) return;
+                for(const item of pending){
+                    item.date=new Date(date.getTime());
+                    found.push(item);
+                }
+                pending=[];
+            }
+
             for(let i=0;i<lines.length;i++){
                 const maybeDate=remoteDateFromLine(lines[i]);
-                if(maybeDate) currentDate=maybeDate;
-                if(lines[i]!=='FT' || !currentDate) continue;
-
-                const names=[]; const scores=[];
-                for(let j=i+1;j<Math.min(lines.length,i+14);j++){
-                    let v=lines[j].replace(/^[-*•]\s*/,'').trim();
-                    if(!v) continue;
-                    if(v==='FT') break;
-                    if(/^TV$/i.test(v) || /^TABELA$/i.test(v) || /^TWK$/i.test(v)) continue;
-                    v=cleanRemoteTeamName(v);
-                    if(/^\d{1,3}$/.test(v)){
-                        if(names.length>=2) scores.push(Number(v));
-                    }else if(!scores.length && names.length<2){
-                        names.push(v);
-                    }
-                    if(names.length===2 && scores.length===2) break;
+                if(maybeDate){
+                    // Na stronie nagłówek daty może pojawić się po kilku meczach.
+                    flushPending(maybeDate);
+                    currentDate=maybeDate;
+                    continue;
                 }
-                if(names.length===2 && scores.length===2 && scores.every(Number.isFinite)){
-                    found.push({home:names[0],away:names[1],scoreHome:scores[0],scoreAway:scores[1],date:new Date(currentDate.getTime())});
+
+                if(!/^FT\b/i.test(lines[i])) continue;
+
+                const names=[];
+                let scoreParts=[];
+                for(let j=i+1;j<Math.min(lines.length,i+22);j++){
+                    let v=cleanRemoteTeamName(lines[j]);
+                    if(!v || isRemoteNoiseLine(v)) continue;
+                    if(/^FT\b/i.test(v)) break;
+
+                    if(isScoreLine(v)){
+                        // Wynik bywa jako „1”, „5”, albo „1-5”.
+                        if(/^\d{1,3}\s*[-:]\s*\d{1,3}$/.test(v)){
+                            const p=parseRemoteScoreParts(v,'');
+                            if(p) scoreParts=p;
+                        }else if(names.length>=2){
+                            scoreParts.push(Number(v));
+                        }
+                        if(names.length===2 && scoreParts.length>=2) break;
+                        continue;
+                    }
+
+                    // W Jina/tekście strony nazwy są zwykle poprzedzone „Image ”.
+                    // Jeśli nie są, bierzemy tylko pierwsze dwie linie po FT.
+                    if(names.length<2 && !/^\[?button:/i.test(v)) names.push(v);
+                }
+
+                if(names.length===2 && scoreParts.length>=2 && scoreParts.every(Number.isFinite)){
+                    const item={home:names[0],away:names[1],scoreHome:Number(scoreParts[0]),scoreAway:Number(scoreParts[1]),date:null};
+                    if(currentDate){
+                        item.date=new Date(currentDate.getTime());
+                        found.push(item);
+                    }else{
+                        pending.push(item);
+                    }
                 }
             }
-            return found;
+
+            if(currentDate && pending.length) flushPending(currentDate);
+
+            // Usuń duplikaty tej samej pary/daty/wyniku.
+            const uniq=new Map();
+            for(const r of found){
+                if(!r.date) continue;
+                const key=`${matchDateKeyFromDate(r.date)}|${normalizeMatchTeam(r.home)}|${normalizeMatchTeam(r.away)}|${r.scoreHome}:${r.scoreAway}`;
+                if(!uniq.has(key)) uniq.set(key,r);
+            }
+            return [...uniq.values()];
         }
 
         async function fetchRemoteResultsText(){
-            const target='/wyniki';
-            let lastError=null;
-            for(const makeUrl of PCLIVE_READERS){
-                try{
-                    const url=makeUrl(target)+(makeUrl===PCLIVE_READERS[0]?'?v='+Date.now():'');
-                    const response=await fetch(url,{cache:'no-store'});
-                    if(!response.ok) throw new Error('HTTP '+response.status);
-                    const text=await response.text();
-                    if(text && text.length>300) return text;
-                }catch(e){ lastError=e; }
+            const attempts=[];
+            for(const target of PCLIVE_RESULTS_URLS){
+                for(const makeUrl of PCLIVE_READERS){
+                    try{
+                        const url=makeUrl(target)+(makeUrl.toString().includes('jina.ai')?'?v='+Date.now():'');
+                        attempts.push(url);
+                        const response=await fetch(url,{cache:'no-store'});
+                        if(!response.ok) continue;
+                        const text=await response.text();
+                        if(text && text.length>300){
+                            // /wyniki-na-zywo musi zawierać przynajmniej FT lub znak „?”.
+                            if(/\bFT\b/i.test(text) || /wyniki na żywo/i.test(text)) return text;
+                        }
+                    }catch(e){}
+                }
             }
-            throw lastError||new Error('Nie udało się pobrać wyników');
+            throw new Error('Nie udało się pobrać danych PodkarpacieLIVE');
         }
 
         async function syncResultsFromPodkarpacieLive(localMatches,force=false){
@@ -1432,28 +1533,42 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
                 try{
                     const sourceText=await fetchRemoteResultsText();
                     const remote=parsePodkarpacieLiveResults(sourceText);
-                    if(!remote.length){ remoteResultsLastMs=Date.now(); return 0; }
+                    if(!remote.length){
+                        remoteResultsLastMs=Date.now();
+                        console.info('[PodkarpacieLIVE] brak rozpoznanych wyników');
+                        return 0;
+                    }
 
                     const updates=[];
                     const used=new Set();
                     for(const rr of remote){
                         const rkey=matchDateKeyFromDate(rr.date);
                         let best=null;
+                        let bestScore=-1;
                         for(const m of localMatches){
                             if(used.has(m.id)) continue;
                             if(matchDateKey(m)!==rkey) continue;
-                            if(!teamsMatchForSync(m.homeTeam,rr.home)) continue;
-                            if(!teamsMatchForSync(m.awayTeam,rr.away)) continue;
-                            best=m; break;
+                            const homeOk=teamsMatchForSync(m.homeTeam,rr.home);
+                            const awayOk=teamsMatchForSync(m.awayTeam,rr.away);
+                            if(!homeOk||!awayOk) continue;
+
+                            // Preferuj mecz z najbliższą godziną i istniejącym wynikiem.
+                            const score=(m.scoreHome!=null&&m.scoreAway!=null?2:0);
+                            if(score>bestScore){bestScore=score;best=m;}
                         }
                         if(!best) continue;
+
                         const changed=Number(best.scoreHome)!==rr.scoreHome || Number(best.scoreAway)!==rr.scoreAway || best.status!=='finished';
                         if(!changed) continue;
                         used.add(best.id);
                         updates.push({match:best,scoreHome:rr.scoreHome,scoreAway:rr.scoreAway});
                     }
 
-                    if(!updates.length){ remoteResultsLastMs=Date.now(); return 0; }
+                    if(!updates.length){
+                        remoteResultsLastMs=Date.now();
+                        console.info('[PodkarpacieLIVE] brak nowych wyników do zapisania');
+                        return 0;
+                    }
 
                     const grouped={db1:[],db2:[]};
                     for(const u of updates) grouped[u.match._db==='db2'?'db2':'db1'].push(u);
@@ -1463,16 +1578,19 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
                         if(!items.length) continue;
                         const dbase=dbKey==='db2' ? window.db2 : window.db;
                         if(!dbase) continue;
+
                         let batch=dbase.batch(), count=0;
                         for(const u of items){
                             const ref=dbase.collection('matches').doc(u.match.id);
-                            batch.update(ref,{
+                            // set(..., {merge:true}) zamiast update(), żeby brak dokumentu
+                            // po równoczesnej operacji nie kończył całej synchronizacji błędem.
+                            batch.set(ref,{
                                 scoreHome:u.scoreHome,
                                 scoreAway:u.scoreAway,
                                 status:'finished',
                                 resultSource:'PodkarpacieLIVE',
                                 resultSyncedAt:firebase.firestore.FieldValue.serverTimestamp()
-                            });
+                            },{merge:true});
                             u.match.scoreHome=u.scoreHome;
                             u.match.scoreAway=u.scoreAway;
                             u.match.status='finished';
@@ -1485,6 +1603,10 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
 
                     const leagues=[...new Set(updates.map(u=>u.match.league).filter(Boolean))];
                     for(const league of leagues) invalidateLeagueCache(league);
+                    for(const league of leagues){
+                        try{ await recalculateStandings(league); }catch(e){ console.warn('[PodkarpacieLIVE] tabela:',league,e?.message||e); }
+                    }
+
                     remoteResultsLastMs=Date.now();
                     console.info('[PodkarpacieLIVE] zaktualizowano wyników:',updates.length);
                     return updates.length;
@@ -1513,10 +1635,12 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
         // w "Nadchodzących", nawet jeśli automat nie zmienił pola status na "finished".
         function matchIsUpcoming(m){
             if(!m) return false;
-            if(m.status==='finished') return false;
             const t=matchTimeMs(m);
+            if(m.status==='finished') return false;
+            // Tylko mecze, których termin jeszcze nie minął, są „Nadchodzące”.
+            // Wynik zostanie zapisany osobno, gdy znajdziemy go na PodkarpacieLIVE.
             if(t>0) return t>Date.now();
-            return m.status==='upcoming' && (m.scoreHome==null || m.scoreAway==null);
+            return m.status==='upcoming';
         }
 
         function upcomingList(list){ return list.filter(matchIsUpcoming).sort((a,b)=>matchTimeMs(a)-matchTimeMs(b)); }
@@ -1563,6 +1687,15 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
                 renderGrid(finishedList(mc).slice(0,6),'home-grid');
                 applyFilter();
             }catch(e){ c1.innerHTML='<p style="color:#ff6b6b;">Błąd bazy.</p>'; }
+        }
+
+        if(!window.__matchRefreshTimer){
+            window.__matchRefreshTimer=setInterval(()=>{
+                refreshMatches();
+            },120000);
+            document.addEventListener('visibilitychange',()=>{
+                if(!document.hidden) refreshMatches();
+            });
         }
 
         function matchCard(m){

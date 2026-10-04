@@ -1118,74 +1118,60 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
         let crestsCache={};
         let crestsLoadPromise=null;
 
-        /*
-         * DOPASOWYWANIE HERBÓW — nie wymagamy identycznej nazwy klubu.
-         * Przykłady, które będą traktowane jako ta sama drużyna:
-         *   "KS Wiązownica" / "Wiązownica"
-         *   "LKS Wisłok Wiśniowa" / "Wisłok Wiśniowa"
-         *   "Pogoń-Sokół II Lubaczów" / "Pogoń Sokół II Lubaczów"
-         *   różne wielkości liter, polskie znaki, kropki, myślniki itd.
-         */
+        // Nie próbujemy ładować uszkodzonych / niedostępnych adresów jako herbów.
+        function isBadCrestUrl(url){
+            if(!url) return true;
+            const v=String(url).trim().toLowerCase();
+            if(!v || v==='brak linku do herbu' || v==='brak linku' || v==='brak') return true;
+            if(!/^https?:\/\//i.test(v)) return true;
+            // Facebook/Meta CDN zwraca dla tych hotlinkowanych obrazów 403.
+            if(/(^|\.)fbcdn\.net($|\/)/i.test(v) || /(^|\.)facebook\.com($|\/)/i.test(v)) return true;
+            return false;
+        }
+
         function normalizeClubName(name){
             return String(name||'')
                 .toLowerCase()
                 .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
                 .replace(/[–—-]/g,' ')
                 .replace(/[^a-z0-9\s]/g,' ')
-                .replace(/\b(ks|lks|mks|uks|gks|kks|mlks|ts|tks|sts|bks|mosir|osir|sokol|sporting|club|klub)\b/g,' ')
+                .replace(/\b(ks|lks|mks|uks|gks|kks|mlks|ts|tks|sts|bks|mosir|osir|sporting|club|klub)\b/g,' ')
                 .replace(/\s+/g,' ')
                 .trim();
         }
 
-        function clubTokens(name){
-            return normalizeClubName(name).split(' ').filter(Boolean);
-        }
-
         function clubSimilarity(a,b){
-            const aa=clubTokens(a), bb=clubTokens(b);
+            const aa=normalizeClubName(a).split(' ').filter(Boolean);
+            const bb=normalizeClubName(b).split(' ').filter(Boolean);
             if(!aa.length || !bb.length) return 0;
             const A=new Set(aa), B=new Set(bb);
             let common=0;
             A.forEach(x=>{if(B.has(x)) common++;});
             const jaccard=common/(A.size+B.size-common||1);
-            const shorter=Math.min(normalizeClubName(a).length,normalizeClubName(b).length);
-            const longer=Math.max(normalizeClubName(a).length,normalizeClubName(b).length);
-            const contains=shorter>=5 && normalizeClubName(a).includes(normalizeClubName(b)) || shorter>=5 && normalizeClubName(b).includes(normalizeClubName(a));
-            return Math.max(jaccard, contains ? 0.88 : 0);
-        }
-
-        function isBadCrestUrl(url){
-            if(!url) return true;
-            const v=String(url).trim().toLowerCase();
-            if(!v || v==='brak linku do herbu' || v==='brak linku' || v==='brak') return true;
-            if(!/^https?:\/\//i.test(v)) return true;
-            // Facebook/Meta CDN często zwraca 403 dla obrazów użytych jako hotlink.
-            // Nie renderujemy takich adresów, żeby przeglądarka nie generowała błędów 403.
-            if(/(^|\.)fbcdn\.net($|\/)/i.test(v) || /(^|\.)facebook\.com($|\/)/i.test(v)) return true;
-            return false;
+            const na=normalizeClubName(a), nb=normalizeClubName(b);
+            const shorter=Math.min(na.length,nb.length);
+            const contains=shorter>=6 && (na.includes(nb)||nb.includes(na));
+            return Math.max(jaccard,contains?0.88:0);
         }
 
         function findCrest(name){
             const raw=String(name||'').trim();
             if(!raw) return null;
 
-            // 1. dokładna nazwa
             if(!isBadCrestUrl(crestsCache[raw])) return crestsCache[raw];
 
-            // 2. znormalizowana nazwa
             const norm=normalizeClubName(raw);
             for(const key of Object.keys(crestsCache)){
                 if(normalizeClubName(key)===norm && !isBadCrestUrl(crestsCache[key])) return crestsCache[key];
             }
 
-            // 3. podobieństwo nazw — próg celowo dość wysoki, aby nie pomylić klubów
-            let best=null, bestScore=0;
+            let best=null,bestScore=0;
             for(const key of Object.keys(crestsCache)){
                 if(isBadCrestUrl(crestsCache[key])) continue;
                 const score=clubSimilarity(raw,key);
                 if(score>bestScore){bestScore=score;best=crestsCache[key];}
             }
-            return bestScore>=0.60 ? best : null;
+            return bestScore>=0.70 ? best : null;
         }
 
         function crestFallback(className='team-crest',small=false){
@@ -1195,7 +1181,8 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
         function crestImageHtml(url,className){
             if(isBadCrestUrl(url)) return crestFallback(className,className==='table-crest');
             const safe=String(url).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
-            return `<img src="${safe}" class="${className}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.outerHTML='${crestFallback(className,className==='table-crest').replace(/'/g,"\\'")}'">`;
+            const fallback=crestFallback(className,className==='table-crest').replace(/'/g,"\\'");
+            return `<img src="${safe}" class="${className}" alt="" loading="lazy" onerror="this.onerror=null;this.outerHTML='${fallback}'">`;
         }
 
         async function loadCrests(force=false){
@@ -1210,7 +1197,8 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
                         const doc=await dbase.collection('standings').doc(league).get();
                         if(doc.exists&&doc.data().teams){
                             doc.data().teams.forEach(t=>{
-                                if(t.name && !isBadCrestUrl(t.crest)) nextCache[t.name.trim()]=t.crest.trim();
+                                // Nie zapisuj do cache adresów, które i tak kończą się 403/404.
+                                if(t.name && !isBadCrestUrl(t.crest)) nextCache[t.name.trim()]=String(t.crest).trim();
                             });
                         }
                     }catch(e){}
@@ -1295,9 +1283,29 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
         }
 
         let mc=[], curFilter='all', curMatchType='all';
-        function matchIsUpcoming(m){ return (m.status==='upcoming' || (m.scoreHome==null||m.scoreAway==null)) && m.status!=='finished'; }
-        function upcomingList(list){ return list.filter(matchIsUpcoming).sort((a,b)=>(a.date?.seconds||0)-(b.date?.seconds||0)); }
-        function finishedList(list){ return list.filter(m=>!matchIsUpcoming(m)).sort((a,b)=>(b.date?.seconds||0)-(a.date?.seconds||0)); }
+
+        function matchTimeMs(m){
+            const ts=m?.date;
+            if(!ts) return 0;
+            if(typeof ts.toMillis==='function') return ts.toMillis();
+            if(typeof ts.seconds==='number') return ts.seconds*1000 + Math.floor((ts.nanoseconds||0)/1000000);
+            if(ts instanceof Date) return ts.getTime();
+            const n=Date.parse(ts);
+            return Number.isFinite(n) ? n : 0;
+        }
+
+        // Najważniejsza zmiana: po upływie terminu meczu nie może on dalej wisieć
+        // w "Nadchodzących", nawet jeśli automat nie zmienił pola status na "finished".
+        function matchIsUpcoming(m){
+            if(!m) return false;
+            if(m.status==='finished') return false;
+            const t=matchTimeMs(m);
+            if(t>0) return t>Date.now();
+            return m.status==='upcoming' && (m.scoreHome==null || m.scoreAway==null);
+        }
+
+        function upcomingList(list){ return list.filter(matchIsUpcoming).sort((a,b)=>matchTimeMs(a)-matchTimeMs(b)); }
+        function finishedList(list){ return list.filter(m=>!matchIsUpcoming(m)).sort((a,b)=>matchTimeMs(b)-matchTimeMs(a)); }
 
         const DAYS=['niedziela','poniedziałek','wtorek','środa','czwartek','piątek','sobota'];
         function fmtUpcoming(ts){
@@ -1328,7 +1336,7 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
                         allM = allM.concat(s2.docs.map(d=>({id:d.id, _db:'db2', ...d.data()})));
                     } catch(e) {}
                 }
-                allM.sort((a,b)=>(a.date?.seconds||0)-(b.date?.seconds||0));
+                allM.sort((a,b)=>matchTimeMs(a)-matchTimeMs(b));
                 mc = allM;
                 renderGrid(upcomingList(mc).slice(0,6),'home-upcoming');
                 renderGrid(finishedList(mc).slice(0,6),'home-grid');
@@ -1796,9 +1804,8 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
             const modal = document.getElementById('club-modal');
             const c = crestsCache[teamName.trim()];
             
-            const modalCrest=findCrest(teamName);
-            document.getElementById('modal-crest-container').innerHTML = modalCrest
-                ? `<img src="${String(modalCrest).replace(/&/g,'&amp;').replace(/"/g,'&quot;')}" class="modal-crest" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.outerHTML='<div class=\"modal-crest\" style=\"display:flex;align-items:center;justify-content:center;font-size:2rem;color:var(--muted);\"><i class=\"fa-solid fa-shield\"></i></div>'">`
+            document.getElementById('modal-crest-container').innerHTML = c 
+                ? `<img src="${c}" class="modal-crest" alt="">` 
                 : `<div class="modal-crest" style="display:flex;align-items:center;justify-content:center;font-size:2rem;color:var(--muted);"><i class="fa-solid fa-shield"></i></div>`;
             
             document.getElementById('modal-team-name').innerText = teamName;

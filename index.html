@@ -1045,7 +1045,10 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <script src="firebase-config.js"></script>
-    <script src="artykuly.js"></script>
+    <script>window.ARTYKULY_FILE_LOADED = false;</script>
+    <script src="./artykuly.js"
+            onload="window.ARTYKULY_FILE_LOADED = Array.isArray(window.ARTYKULY);"
+            onerror="(function(){var fallback=document.createElement('script');fallback.src='./StrefaGola-artykuly.js';fallback.onload=function(){window.ARTYKULY_FILE_LOADED=Array.isArray(window.ARTYKULY);};fallback.onerror=function(){window.ARTYKULY_FILE_LOADED=false;};document.head.appendChild(fallback);})()"></script>
 
     <script>
         // PAMIĘTAJ: Aby dane A-klas i B-klas zapisywały się w drugiej bazie danych Firebase, 
@@ -1778,9 +1781,15 @@ Klub B, https://example.com/herb-b.png, ręcznie, 5, 12, +4"></textarea>
         }
         function loadArticles(){
             const c=document.getElementById('articles-grid');
-            articlesCache=Array.isArray(window.ARTYKULY)?window.ARTYKULY.map((p,i)=>({...p,id:p.id||`local-${i}`,source:'js'})):[];
+            if(!window.ARTYKULY_FILE_LOADED || !Array.isArray(window.ARTYKULY)){
+                articlesCache=[];
+                c.innerHTML='<div class="news-empty"><strong>Nie udało się wczytać pliku artykuly.js.</strong><br>Umieść plik <strong>artykuly.js</strong> w tym samym folderze co index.html i sprawdź, czy nazwa pliku jest dokładnie taka sama (małe litery). Następnie odśwież stronę kombinacją Ctrl + F5.</div>';
+                console.error('Strefa Gola: nie wczytano artykuly.js. Sprawdź ścieżkę i nazwę pliku.');
+                return;
+            }
+            articlesCache=window.ARTYKULY.map((p,i)=>({...p,id:p.id||`local-${i}`,source:'js'}));
             articlesCache.sort((a,b)=>new Date(b.date||0).getTime()-new Date(a.date||0).getTime());
-            if(!articlesCache.length){c.innerHTML='<div class="news-empty">Nie dodano jeszcze artykułów. Dodaj pierwszy wpis w pliku <strong>artykuly.js</strong>.</div>';return;}
+            if(!articlesCache.length){c.innerHTML='<div class="news-empty">Plik <strong>artykuly.js</strong> został poprawnie wczytany, ale nie zawiera jeszcze żadnych artykułów.</div>';return;}
             const lead=articlesCache.findIndex(p=>p.featured);
             const first=lead>=0?lead:0;
             const ordered=[first,...articlesCache.map((p,i)=>i).filter(i=>i!==first)];

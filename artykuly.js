@@ -1,3 +1,4 @@
+
 /*
   STREFA GOLA – BAZA ARTYKUŁÓW
   Artykuły z tego pliku są wyświetlane w zakładce „Artykuły”.
@@ -13,10 +14,8 @@ window.ARTYKULY = [
     excerpt: "Biało-czerwoni efektownie rozpoczęli walkę o awans na Mistrzostwa Europy U-19. Na Stadionie Miejskim w Przeworsku pokonali Andorę aż 5:0.",
     author: "Redakcja Strefy Gola",
 
-    // Zdjęcie główne
     image: "https://przeworsk.um.gov.pl/wp-content/uploads/2026/11/x24.jpg.pagespeed.ic.d7_TSmlhoQ.jpg",
 
-    // Galeria zdjęć artykułu
     images: [
       "https://przeworsk.um.gov.pl/wp-content/uploads/2026/11/x24.jpg.pagespeed.ic.d7_TSmlhoQ.jpg",
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwyCi_ahzFdvT8NPsk-9_jWhIV3i9F6pfggxO29tWsKA&s=10",
@@ -65,6 +64,54 @@ Trener reprezentacji Polski: Radosław Sobolewski
 Co dalej?
 
 Przed reprezentacją Polski kolejne spotkanie eliminacyjne. 17 listopada biało-czerwoni zmierzą się z Luksemburgiem w Leżajsku. Zwycięstwo w tym meczu zapewni Polakom awans do ostatniej fazy kwalifikacji.`
+  },
+
+  {
+    id: "luksemburg-andora-u19-przeworsk-2026",
+    title: "Międzynarodowe emocje w Przeworsku! Luksemburg zmierzył się z Andorą",
+    label: "Reprezentacja U-19",
+    date: "2026-11-14",
+    excerpt: "Stadion Miejski w Przeworsku ponownie gościł międzynarodowy futbol. W ramach kwalifikacji do Mistrzostw Europy U-19 zmierzyły się reprezentacje Luksemburga i Andory.",
+    author: "Redakcja Strefy Gola",
+
+    image: "https://przeworsk.um.gov.pl/wp-content/uploads/2026/11/x24.jpg.pagespeed.ic.d7_TSmlhoQ.jpg",
+
+    images: [
+      "https://przeworsk.um.gov.pl/wp-content/uploads/2026/11/x24.jpg.pagespeed.ic.d7_TSmlhoQ.jpg",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwyCi_ahzFdvT8NPsk-9_jWhIV3i9F6pfggxO29tWsKA&s=10",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRT4v79jt6gFGe3Sw6Vn4nszHUmJRQaUgB_S_zcWkYZIA&s=10",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRc0PsSe-lVA7IIsupQuZDwXa69vt-z_sLrvapYiK8KQw&s"
+    ],
+
+    featured: false,
+
+    content: `Przeworsk ponownie stał się areną międzynarodowego futbolu. W sobotę, 14 listopada 2026 roku, na Stadionie Miejskim odbyło się kolejne spotkanie drugiej rundy kwalifikacji do Mistrzostw Europy U-19. Tym razem na murawie zmierzyły się reprezentacje Luksemburga i Andory.
+
+Drugie spotkanie turnieju w Przeworsku
+
+Mecz rozpoczął się o godzinie 12:00 i był częścią turnieju kwalifikacyjnego do Mistrzostw Europy U-19 2027.
+
+Po wcześniejszym zwycięstwie Polski nad Andorą 5:0, oba zespoły przystąpiły do rywalizacji z nadzieją na zdobycie ważnych punktów.
+
+Przeworsk gospodarzem międzynarodowej piłki
+
+Stadion Miejski w Przeworsku po raz kolejny gościł młodzieżowe reprezentacje narodowe. Organizacja turnieju to ważne wydarzenie dla miasta i całego regionu Podkarpacia.
+
+Kolejne spotkanie już w Leżajsku
+
+Przed nami ostatni mecz polskiej reprezentacji w tej rundzie kwalifikacji. We wtorek, 17 listopada, Polska U-19 zmierzy się z Luksemburgiem na Stadionie Miejskim w Leżajsku.
+
+Zwycięstwo zapewni biało-czerwonym awans do ostatniej fazy kwalifikacji.
+
+Informacje o spotkaniu
+
+Luksemburg U-19 – Andora U-19
+Data: 14 listopada 2026 roku
+Godzina: 12:00
+Stadion: Stadion Miejski w Przeworsku
+Rozgrywki: Kwalifikacje do Mistrzostw Europy U-19 2027
+
+Wynik i strzelcy bramek zostaną uzupełnieni po potwierdzeniu oficjalnego protokołu spotkania.`
   }
 ];
 
